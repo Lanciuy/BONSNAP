@@ -8,6 +8,16 @@ interface ResultSheetProps {
   onSave: () => void;
   theme: ThemeState;
   onNavigate: (view: string) => void;
+  parsedData?: {
+    merchant: string;
+    category: string;
+    items: Array<{
+      id: string;
+      name: string;
+      qty: number;
+      price: number;
+    }>;
+  };
 }
 
 interface ScannedItem {
@@ -17,10 +27,10 @@ interface ScannedItem {
   price: number;
 }
 
-export const ResultSheet: React.FC<ResultSheetProps> = ({ onClose, onSave, theme, onNavigate }) => {
+export const ResultSheet: React.FC<ResultSheetProps> = ({ onClose, onSave, theme, onNavigate, parsedData }) => {
   const isMecha = theme === 'mecha';
-  const [merchant, setMerchant] = useState(isMecha ? "Sector 7 Depot 🚀" : "Maid Cafe 🌸");
-  const [category, setCategory] = useState(isMecha ? "Ammunition & Fuel" : "Sweets & Food");
+  const [merchant, setMerchant] = useState(parsedData?.merchant || (isMecha ? "Sector 7 Depot 🚀" : "Maid Cafe 🌸"));
+  const [category, setCategory] = useState(parsedData?.category || (isMecha ? "Ammunition & Fuel" : "Sweets & Food"));
   const [date, setDate] = useState("Today, 14:30");
   
   const initialItemsGirl = [
@@ -35,7 +45,7 @@ export const ResultSheet: React.FC<ResultSheetProps> = ({ onClose, onSave, theme
     { id: "3", name: "Micro-servo", qty: 1, price: 25000 },
   ];
 
-  const [items, setItems] = useState<ScannedItem[]>(isMecha ? initialItemsRobot : initialItemsGirl);
+  const [items, setItems] = useState<ScannedItem[]>(parsedData?.items || (isMecha ? initialItemsRobot : initialItemsGirl));
 
   const totalAmount = items.reduce((acc, item) => acc + item.price, 0);
 

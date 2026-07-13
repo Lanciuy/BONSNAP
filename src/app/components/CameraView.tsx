@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { ResultSheet } from "./ResultSheet";
 import { Mascot, MascotMood } from "./Mascot";
 import { ThemeState } from '../App';
+import { analyzeReceipt, ScannedReceiptData } from "../../services/geminiService";
 
 interface CameraViewProps {
   onGoToDashboard: () => void;
@@ -15,6 +16,7 @@ interface CameraViewProps {
 export const CameraView: React.FC<CameraViewProps> = ({ onGoToDashboard, theme, onNavigate }) => {
   const [sheetState, setSheetState] = useState<"viewfinder" | "processing" | "result">("viewfinder");
   const [isFlashOn, setIsFlashOn] = useState(false);
+  const [parsedData, setParsedData] = useState<ScannedReceiptData | undefined>(undefined);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   
   const isMecha = theme === "mecha";
@@ -37,27 +39,43 @@ export const CameraView: React.FC<CameraViewProps> = ({ onGoToDashboard, theme, 
     }
   }, [theme, sheetState, isMecha]);
 
-  const handleCapture = () => {
+  const handleCapture = (file?: File) => {
     setSheetState("processing");
     setMood("surprised");
     setMsg(isMecha ? "PROCESSING DATA ENGRAMS. STAND BY." : "Wait ya, AI gue lagi muter otak nih! ✨");
-    
-    // Sequence
-    setTimeout(() => {
-      setLoadingText(isMecha ? "EXTRACTING DATA ENGRAMS..." : "Lagi baca struk lo nih...");
-      setLoadingIcon(isMecha ? <Cpu size={48} className="text-red-500" /> : <Sparkles size={48} className="text-purple-500" />);
-    }, 1500);
+    setLoadingText(isMecha ? "EXTRACTING DATA ENGRAMS..." : "Lagi baca struk lo nih...");
+    setLoadingIcon(isMecha ? <Cpu size={48} className="text-red-500" /> : <Sparkles size={48} className="text-purple-500" />);
 
-    setTimeout(() => {
-      setLoadingText(isMecha ? "CALCULATING VECTORS..." : "Sikat, dikit lagi kelar!");
-      setLoadingIcon(isMecha ? <Crosshair size={48} className="text-blue-500" /> : <Heart size={48} className="text-pink-500" />);
-    }, 3000);
-
-    setTimeout(() => {
-      setSheetState("result");
-      setMood("cute");
-      setMsg(isMecha ? "EXTRACTION COMPLETE. 3 ASSETS LOGGED." : "Tadaa! Ketemu 3 barang nih. AI gue emang se-slay itu! 🥺");
-    }, 4500);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        try {
+          const base64String = reader.result as string;
+          setLoadingText(isMecha ? "CALCULATING VECTORS..." : "Sikat, dikit lagi kelar!");
+          setLoadingIcon(isMecha ? <Crosshair size={48} className="text-blue-500" /> : <Heart size={48} className="text-pink-500" />);
+          
+          const data = await analyzeReceipt(base64String, file.type);
+          setParsedData(data);
+          
+          setSheetState("result");
+          setMood("cute");
+          setMsg(isMecha ? "EXTRACTION COMPLETE." : "Tadaa! Kelar di-parse nih. AI gue emang se-slay itu! 🥺");
+        } catch (error) {
+          console.error(error);
+          setSheetState("viewfinder");
+          setMood("angry");
+          setMsg("Error AI: " + (error as Error).message);
+        }
+      };
+      reader.readAsDataURL(file);
+    } else {
+      // Mock sequence if taking empty picture
+      setTimeout(() => {
+        setSheetState("result");
+        setMood("cute");
+        setMsg(isMecha ? "EXTRACTION COMPLETE (MOCK)." : "Tadaa! Ketemu 3 barang nih (MOCK).");
+      }, 3000);
+    }
   };
 
   return (
@@ -132,7 +150,7 @@ export const CameraView: React.FC<CameraViewProps> = ({ onGoToDashboard, theme, 
                 accept="image/*" 
                 onChange={(e) => {
                   if (e.target.files && e.target.files.length > 0) {
-                    handleCapture();
+                    handleCapture(e.target.files[0]);
                   }
                 }} 
               />
@@ -141,7 +159,7 @@ export const CameraView: React.FC<CameraViewProps> = ({ onGoToDashboard, theme, 
             {/* Shutter Button */}
             <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-20">
               <button 
-                onClick={handleCapture}
+                onClick={() => handleCapture()}
                 onMouseEnter={() => { setMood("happy"); setMsg(isMecha ? "SCANNER PREPPED." : "Ready? 1, 2, 3... Cekrek! 🧀"); }}
                 onMouseLeave={() => { setMood("excited"); setMsg(initialMsg); }}
                 className="group relative w-[84px] h-[84px] flex items-center justify-center"
@@ -223,6 +241,7 @@ export const CameraView: React.FC<CameraViewProps> = ({ onGoToDashboard, theme, 
               onSave={onGoToDashboard}
               theme={theme}
               onNavigate={onNavigate}
+              parsedData={parsedData}
             />
           </>
         )}
