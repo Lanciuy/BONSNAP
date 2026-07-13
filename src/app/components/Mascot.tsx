@@ -18,6 +18,7 @@ interface MascotProps {
   message?: string;
   showDialogue?: boolean;
   theme: ThemeState;
+  placement?: "default" | "top" | "bottom" | "left" | "right";
 }
 
 export const moodMap: Record<MascotMood, string> = {
@@ -65,8 +66,18 @@ export const getGeneratedMascotUrl = (mood: MascotMood, theme: ThemeState) => {
   return `https://api.dicebear.com/9.x/lorelei/svg?seed=${seedMap[mood]}&backgroundColor=transparent`;
 };
 
-export const Mascot: React.FC<MascotProps> = ({ mood, message = "", showDialogue = true, theme }) => {
+export const Mascot: React.FC<MascotProps> = ({ mood, message = "", showDialogue = true, theme, placement = "default" }) => {
   const [displayedText, setDisplayedText] = useState("");
+
+  const getInitialAnimation = () => {
+    switch (placement) {
+      case "top": return { y: -50, opacity: 0 };
+      case "bottom": return { y: 50, opacity: 0 };
+      case "left": return { x: -50, opacity: 0 };
+      case "right": return { x: 50, opacity: 0 };
+      default: return { scale: 0.95, opacity: 0 };
+    }
+  };
 
   useEffect(() => {
     setDisplayedText("");
@@ -92,6 +103,9 @@ export const Mascot: React.FC<MascotProps> = ({ mood, message = "", showDialogue
         drag 
         dragConstraints={{ left: -300, right: 0, top: -600, bottom: 50 }}
         dragElastic={0.2}
+        initial={getInitialAnimation()}
+        animate={{ x: 0, y: 0, scale: 1, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 250, damping: 25 }}
         className="pointer-events-auto flex flex-col items-end cursor-grab active:cursor-grabbing w-full max-w-[90%]"
       >
         {/* Mascot Image */}
