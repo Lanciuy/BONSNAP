@@ -87,45 +87,52 @@ export const Mascot: React.FC<MascotProps> = ({ mood, message = "", showDialogue
   const mascotName = theme === "mecha" ? "G-UNIT 01 🤖" : "Bon-chan 🌸";
 
   return (
-    <div className="absolute bottom-32 left-0 w-full z-50 pointer-events-none px-4 flex flex-col items-end">
-      {/* Mascot Image */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={mood + theme}
-          initial={{ y: 20, opacity: 0, scale: 0.95 }}
-          animate={{ y: 0, opacity: 1, scale: 1 }}
-          exit={{ y: 20, opacity: 0, scale: 0.95 }}
-          transition={{ type: "spring", stiffness: 300, damping: 25 }}
-          className={`relative z-10 drop-shadow-2xl ${isOriginal ? 'w-48 h-48 mr-[-10px] mb-[-25px]' : 'w-32 h-32 mr-2 mb-[-15px]'}`}
-        >
-          <img 
-            src={avatarUrl} 
-            alt="Mascot" 
-            className={`w-full h-full object-contain filter ${theme === 'mecha' ? 'drop-shadow-[0_10px_15px_rgba(59,130,246,0.5)]' : 'drop-shadow-[0_10px_15px_rgba(244,114,182,0.5)]'}`} 
-          />
-        </motion.div>
-      </AnimatePresence>
-
-      {/* Visual Novel Dialogue Box */}
-      <AnimatePresence>
-        {showDialogue && message && (
+    <div className="absolute bottom-24 left-0 w-full z-50 pointer-events-none px-4 flex flex-col items-end">
+      <motion.div 
+        drag 
+        dragConstraints={{ left: -300, right: 0, top: -600, bottom: 50 }}
+        dragElastic={0.2}
+        className="pointer-events-auto flex flex-col items-end cursor-grab active:cursor-grabbing w-full max-w-[90%]"
+      >
+        {/* Mascot Image */}
+        <AnimatePresence mode="wait">
           <motion.div
-            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            className={`w-full bg-white/95 backdrop-blur-xl border-[3px] rounded-[24px] p-4 relative pointer-events-auto ${theme === 'mecha' ? 'border-blue-200 shadow-[0_15px_40px_rgba(59,130,246,0.2)]' : 'border-pink-200 shadow-[0_15px_40px_rgba(244,114,182,0.2)]'}`}
+            key={mood + theme}
+            initial={{ y: 20, opacity: 0, scale: 0.95 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
+            exit={{ y: 20, opacity: 0, scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className={`relative z-10 drop-shadow-2xl ${isOriginal ? 'w-32 h-32 mr-[-10px] mb-[-15px]' : 'w-24 h-24 mr-2 mb-[-10px]'}`}
           >
-            {/* Name Tag */}
-            <div className={`absolute -top-4 left-6 text-white font-black px-4 py-1 rounded-full text-[10px] uppercase tracking-wider shadow-lg border-[2px] border-white ${theme === 'mecha' ? 'bg-gradient-to-r from-blue-500 to-red-500' : 'bg-gradient-to-r from-pink-400 to-purple-400'}`}>
-              {mascotName}
-            </div>
-            <p className="text-slate-700 font-bold text-sm leading-relaxed min-h-[40px]">
-              {displayedText}
-              <span className={`animate-pulse ml-1 ${theme === 'mecha' ? 'text-blue-500' : 'text-pink-400'}`}>▼</span>
-            </p>
+            <img 
+              src={avatarUrl} 
+              alt="Mascot" 
+              className={`w-full h-full object-contain filter pointer-events-none ${theme === 'mecha' ? 'drop-shadow-[0_10px_15px_rgba(59,130,246,0.5)]' : 'drop-shadow-[0_10px_15px_rgba(244,114,182,0.5)]'}`} 
+            />
           </motion.div>
-        )}
-      </AnimatePresence>
+        </AnimatePresence>
+
+        {/* Visual Novel Dialogue Box */}
+        <AnimatePresence>
+          {showDialogue && message && (
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className={`w-full bg-white/95 backdrop-blur-xl border-[2px] rounded-[20px] p-3 relative ${theme === 'mecha' ? 'border-blue-200 shadow-[0_15px_40px_rgba(59,130,246,0.2)]' : 'border-pink-200 shadow-[0_15px_40px_rgba(244,114,182,0.2)]'}`}
+            >
+              {/* Name Tag */}
+              <div className={`absolute -top-3 left-4 text-white font-black px-3 py-0.5 rounded-full text-[9px] uppercase tracking-wider shadow-lg border-[2px] border-white ${theme === 'mecha' ? 'bg-gradient-to-r from-blue-500 to-red-500' : 'bg-gradient-to-r from-pink-400 to-purple-400'}`}>
+                {mascotName}
+              </div>
+              <p className="text-slate-700 font-bold text-xs leading-relaxed min-h-[36px]">
+                {displayedText}
+                <span className={`animate-pulse ml-1 ${theme === 'mecha' ? 'text-blue-500' : 'text-pink-400'}`}>▼</span>
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </div>
   );
 };

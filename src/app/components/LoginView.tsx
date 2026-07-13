@@ -4,7 +4,7 @@ import { ChevronRight, ShieldAlert, UserPlus, LogIn, ArrowLeft } from "lucide-re
 import { Mascot, MascotMood, moodMap, getGeneratedMascotUrl } from "./Mascot";
 import { ThemeState } from '../App';
 
-import bgImage from "../../imports/image-10.png";
+import bgImage from "../../imports/image.png";
 
 interface LoginViewProps {
   onLogin: () => void;
