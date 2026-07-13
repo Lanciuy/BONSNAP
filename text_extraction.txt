@@ -1,0 +1,3276 @@
+﻿import React, { useState, useEffect } from "react";
+import { Camera, X, Wand2, Sparkles, Heart, Crosshair, Cpu, Flashlight, Image as ImageIcon } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import { ResultSheet } from "./ResultSheet";
+import { Mascot, MascotMood } from "./Mascot";
+import { ThemeState } from '../App';
+interface CameraViewProps {
+  onGoToDashboard: () => void;
+  onGoToInsights: () => void;
+  theme: ThemeState;
+  onNavigate: (view: string) => void;
+export const CameraView: React.FC<CameraViewProps> = ({ onGoToDashboard, theme, onNavigate }) => {
+  const [sheetState, setSheetState] = useState<"viewfinder" | "processing" | "result">("viewfinder");
+  const [isFlashOn, setIsFlashOn] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const isMecha = theme === "mecha";
+  const [mood, setMood] = useState<MascotMood>("excited");
+  const initialMsg = isMecha 
+    ? "TARGET ACQUIRED. AWAITING MANUAL OVERRIDE." 
+    : "Pasin struknya di kamera ya, AI gue yang bakal mikir! 📸";
+  const [msg, setMsg] = useState(initialMsg);
+  const [loadingText, setLoadingText] = useState(isMecha ? "INITIALIZING SCANNERS..." : "Mantra AI diaktifkan...");
+  const [loadingIcon, setLoadingIcon] = useState(
+    isMecha ? <Crosshair size={48} className="text-blue-500" /> : <Wand2 size={48} className="text-pink-500" />
+  useEffect(() => {
+    if (sheetState === "viewfinder") {
+      setLoadingText(isMecha ? "INITIALIZING SCANNERS..." : "Mantra AI diaktifkan...");
+      setLoadingIcon(isMecha ? <Crosshair size={48} className="text-blue-500" /> : <Wand2 size={48} className="text-pink-500" />);
+    }
+  }, [theme, sheetState, isMecha]);
+  const handleCapture = () => {
+    setSheetState("processing");
+    setMood("surprised");
+    setMsg(isMecha ? "PROCESSING DATA ENGRAMS. STAND BY." : "Wait ya, AI gue lagi muter otak nih! ✨");
+    
+    // Sequence
+    setTimeout(() => {
+      setLoadingText(isMecha ? "EXTRACTING DATA ENGRAMS..." : "Lagi baca struk lo nih...");
+      setLoadingIcon(isMecha ? <Cpu size={48} className="text-red-500" /> : <Sparkles size={48} className="text-purple-500" />);
+    }, 1500);
+      setLoadingText(isMecha ? "CALCULATING VECTORS..." : "Sikatt, dikit lagi kelar!...");
+      setLoadingIcon(isMecha ? <Crosshair size={48} className="text-blue-500" /> : <Heart size={48} className="text-pink-500" />);
+    }, 3000);
+      setSheetState("result");
+      setMood("cute");
+      setMsg(isMecha ? "EXTRACTION COMPLETE. 3 ASSETS LOGGED." : "Tadaaa! Ketemu 3 barang nih. AI gue emang se-slay itu! 🥺");
+    }, 4500);
+  return (
+    <div className="relative w-full h-full bg-white text-slate-800 overflow-hidden flex flex-col">
+      {/* Background */}
+      <div 
+        className="absolute inset-0 z-0 bg-cover bg-center"
+        style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1558403194-611308249627?q=80&w=1000&auto=format&fit=crop")' }}
+      >
+        <div className={`absolute inset-0 transition-colors duration-300 ${sheetState === "processing" ? "bg-white/60 backdrop-blur-md" : "bg-black/40 backdrop-blur-[2px]"}`} />
+      </div>
+      {/* Top Bar */}
+      <div className="relative z-10 flex justify-between items-center p-6 pt-12 bg-gradient-to-b from-black/50 to-transparent">
+        <button onClick={onGoToDashboard} className="w-10 h-10 bg-white/30 backdrop-blur-xl rounded-full border border-white/40 flex items-center justify-center hover:bg-white/50 transition shadow-sm">
+          <X size={20} className="text-white" strokeWidth={3} />
+        </button>
+        <div className={`flex items-center gap-2 bg-white/90 backdrop-blur-xl px-4 py-2 rounded-[16px] shadow-md border ${isMecha ? 'border-blue-300' : 'border-pink-200'}`}>
+          {isMecha ? <Crosshair size={16} className="text-blue-500" /> : <Sparkles size={16} className="text-pink-500" />}
+          <span className={`text-[11px] font-black tracking-wider uppercase ${isMecha ? 'text-blue-600' : 'text-pink-500'}`}>
+            {isMecha ? 'TARGET ACQUISITION' : 'Magical Scan'}
+          </span>
+        </div>
+        <div className="w-10 h-10"></div> {/* Spacer */}
+      {/* Viewfinder State */}
+      <AnimatePresence>
+        {sheetState === "viewfinder" && (
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }}
+            className="flex-1 flex flex-col items-center justify-center p-6 relative z-10"
+          >
+            <div className="w-full max-w-[280px] aspect-[3/4] relative">
+              <div className={`absolute top-0 left-0 w-10 h-10 border-t-[4px] border-l-[4px] rounded-tl-[32px] ${isMecha ? 'border-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'border-pink-400 shadow-[0_0_15px_rgba(244,114,182,0.5)]'}`}></div>
+              <div className={`absolute top-0 right-0 w-10 h-10 border-t-[4px] border-r-[4px] rounded-tr-[32px] ${isMecha ? 'border-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'border-pink-400 shadow-[0_0_15px_rgba(244,114,182,0.5)]'}`}></div>
+              <div className={`absolute bottom-0 left-0 w-10 h-10 border-b-[4px] border-l-[4px] rounded-bl-[32px] ${isMecha ? 'border-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'border-pink-400 shadow-[0_0_15px_rgba(244,114,182,0.5)]'}`}></div>
+              <div className={`absolute bottom-0 right-0 w-10 h-10 border-b-[4px] border-r-[4px] rounded-br-[32px] ${isMecha ? 'border-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'border-pink-400 shadow-[0_0_15px_rgba(244,114,182,0.5)]'}`}></div>
+              
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                <div className="w-12 h-12 rounded-full border border-white/50 flex items-center justify-center bg-white/30 backdrop-blur-md shadow-sm">
+                  <Camera size={20} className="text-white" strokeWidth={2.5} />
+                </div>
+                <span className="text-white text-sm font-bold tracking-wide drop-shadow-md text-center max-w-[80%]">
+                  {isMecha ? 'CENTER TARGET IN HUD' : 'Pasin struk di kotak ya!'}
+                </span>
+              </div>
+            </div>
+            {/* Extra Camera Actions */}
+            <div className="flex justify-between w-full max-w-[280px] mt-8 px-4">
+              <button 
+                onClick={() => setIsFlashOn(!isFlashOn)}
+                className={`w-12 h-12 rounded-full backdrop-blur-md border flex items-center justify-center transition-all ${isFlashOn ? 'bg-yellow-400 text-black border-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.5)]' : 'bg-black/40 border-white/20 text-white hover:bg-white/20'}`}
+                onMouseEnter={() => { setMood("thinking"); setMsg("Gelap ya? Pake flash aja sini! 🔦"); }}
+              >
+                <Flashlight size={20} />
+              </button>
+                onClick={() => fileInputRef.current?.click()}
+                className="w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all text-white"
+                onMouseEnter={() => { setMood("cute"); setMsg("Upload dari galeri juga bisa lho! 🖼️"); }}
+                <ImageIcon size={20} />
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                className="hidden" 
+                accept="image/*" 
+                onChange={(e) => {
+                  if (e.target.files && e.target.files.length > 0) {
+                    handleCapture();
+                  }
+                }} 
+              />
+            {/* Shutter Button */}
+            <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-20">
+                onClick={handleCapture}
+                onMouseEnter={() => { setMood("happy"); setMsg(isMecha ? "SCANNER PREPPED." : "Ready? 1, 2, 3... Cekrek! 🧀"); }}
+                onMouseLeave={() => { setMood("excited"); setMsg(initialMsg); }}
+                className="group relative w-[84px] h-[84px] flex items-center justify-center"
+                <div className={`absolute inset-0 bg-white/40 backdrop-blur-xl rounded-full border-[3px] group-active:scale-95 transition-transform duration-200 ${isMecha ? 'border-blue-300' : 'border-pink-200'}`}></div>
+                <div className={`w-[64px] h-[64px] rounded-full group-active:scale-90 transition-transform duration-200 flex items-center justify-center ${isMecha ? 'bg-gradient-to-tr from-blue-500 to-red-500 shadow-[0_0_30px_rgba(59,130,246,0.6)]' : 'bg-gradient-to-tr from-pink-400 to-purple-400 shadow-[0_0_30px_rgba(244,114,182,0.6)]'}`}>
+                  {isMecha ? <Crosshair className="text-white" size={24} /> : <Sparkles className="text-white" size={24} />}
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {/* Processing Animation State */}
+        {sheetState === "processing" && (
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.1 }}
+            className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-8"
+            {/* Flash Effect on capture */}
+            <motion.div 
+              initial={{ opacity: 1 }}
+              animate={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className={`absolute inset-0 z-0 pointer-events-none ${isMecha ? 'bg-blue-100' : 'bg-pink-100'}`}
+            />
+            <div className="relative z-10 flex flex-col items-center gap-6">
+              <motion.div 
+                animate={{ y: [0, -15, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                className={`w-32 h-32 bg-white/80 rounded-full flex items-center justify-center border-4 shadow-xl backdrop-blur-md ${isMecha ? 'border-blue-300 shadow-blue-200/50' : 'border-pink-200 shadow-pink-200/50'}`}
+                <motion.div
+                  key={loadingText}
+                  initial={{ rotate: -15, scale: 0.8 }}
+                  animate={{ rotate: 15, scale: 1.1 }}
+                  transition={{ duration: 0.6, repeat: Infinity, repeatType: "reverse" }}
+                >
+                  {loadingIcon}
+                </motion.div>
+              </motion.div>
+              <div className={`bg-white/90 backdrop-blur-xl px-6 py-3 rounded-full border shadow-md ${isMecha ? 'border-blue-200' : 'border-pink-100'}`}>
+                <motion.span 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`font-black tracking-wide text-sm ${isMecha ? 'text-blue-600 font-mono' : 'text-pink-500'}`}
+                  {loadingText}
+                </motion.span>
+      {/* Result Bottom Sheet */}
+        {sheetState === "result" && (
+          <>
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-slate-900/40 z-30 backdrop-blur-md"
+            <ResultSheet 
+              onClose={() => {
+                setSheetState("viewfinder");
+                setMood("excited");
+                setMsg("Scan lagi dong, biar rajin nyatet! 📸");
+              }} 
+              onSave={onGoToDashboard}
+              theme={theme}
+              onNavigate={onNavigate}
+          </>
+        {sheetState !== "result" && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 pointer-events-none z-40">
+            <Mascot theme={theme} mood={mood} message={msg} />
+    </div>
+import React, { useState } from "react";
+import { Camera, Coffee, ShoppingBag, Car, Settings, Wallet, PieChart, Home, Sparkles, X, Bell, Globe, CreditCard, ChevronRight, LogOut, Swords, Send, Plus, Receipt, Gift, Target, ReceiptText, User } from "lucide-react";
+import { Mascot, MascotMood, getGeneratedMascotUrl } from "./Mascot";
+import img1 from "../../imports/image-1.png";
+interface DashboardViewProps {
+  onGoToCamera: () => void;
+  setTheme: (theme: ThemeState) => void;
+export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGoToInsights, theme, setTheme, onNavigate }) => {
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [mood, setMood] = useState<MascotMood>("happy");
+  const [notifOn, setNotifOn] = useState(true);
+  const [langEn, setLangEn] = useState(true);
+  const [currIdr, setCurrIdr] = useState(true);
+  const defaultMsg = isMecha 
+    ? "CREDITS AT 29%. RECOMMEND TACTICAL CONSERVATION FOR UPGRADES." 
+    : "Wih, sisa budget lo masih Rp 1.750.000! Valid no debat, yuk jajan cantik! 🍰";
+  const [msg, setMsg] = useState(defaultMsg);
+  const transactions = isMecha ? [
+    { id: 1, merchant: "Ammunition Depot", category: "Supplies", time: "Today, 14:30", amount: "Rp 45.000", icon: Swords, color: "text-red-500", bg: "bg-red-100", hoverMsg: "RESTOCKING KINETIC ROUNDS.", hoverMood: "alert" },
+    { id: 2, merchant: "Energy Rations", category: "Fuel", time: "Yesterday, 18:15", amount: "Rp 125.000", icon: ShoppingBag, color: "text-blue-500", bg: "bg-blue-100", hoverMsg: "CORE REFUELING COMPLETED.", hoverMood: "thinking" },
+    { id: 3, merchant: "Mech Transit", category: "Transport", time: "Yesterday, 09:00", amount: "Rp 35.000", icon: Car, color: "text-slate-500", bg: "bg-slate-100", hoverMsg: "RELOCATING TO SECTOR 7.", hoverMood: "happy" },
+    { id: 1, merchant: "Maid Cafe", category: "Food & Beverage", time: "Today, 14:30", amount: "Rp 45.000", icon: Coffee, color: "text-pink-500", bg: "bg-pink-100", hoverMsg: "Buset jajan manis mulu, gak takut diabetes? 🍰", hoverMood: "cute" },
+    { id: 2, merchant: "Convenience Store", category: "Groceries", time: "Yesterday, 18:15", amount: "Rp 125.000", icon: ShoppingBag, color: "text-purple-500", bg: "bg-purple-100", hoverMsg: "Nyetok camilan buat maraton drakor ya? 🍫", hoverMood: "thinking" },
+    { id: 3, merchant: "Train Ticket", category: "Transport", time: "Yesterday, 09:00", amount: "Rp 35.000", icon: Car, color: "text-blue-500", bg: "bg-blue-100", hoverMsg: "Jalan-jalan terus, FOMO ya bestie? 🚋", hoverMood: "happy" },
+  const quickActions = [
+    { id: "transfer", icon: Send, label: "Transfer", color: "text-blue-500", bg: "bg-blue-50", hoverMood: "excited", hoverMsg: "Wih mau transfer ke siapa tuh? Jangan lupa sedekah! 💸" },
+    { id: "splitBill", icon: Receipt, label: "Split Bill", color: "text-orange-500", bg: "bg-orange-50", hoverMood: "thinking", hoverMsg: "Nah gini dong patungan, jangan mau rugi bandar! 🧮" },
+    { id: "topUp", icon: Plus, label: "Top Up", color: "text-green-500", bg: "bg-green-50", hoverMood: "happy", hoverMsg: "Asyik, amunisi dompet nambah lagi nih! 💳" },
+    { id: "deals", icon: Gift, label: "Deals", color: "text-pink-500", bg: "bg-pink-50", hoverMood: "cute", hoverMsg: "Mata langsung melek kalau denger diskon! 👀🎁" }
+  const avatarUrl = theme === "original" ? moodMap["happy"] : getGeneratedMascotUrl("happy", theme);
+    <div className="relative w-full h-full text-slate-800 bg-[#fdfbfb] overflow-hidden flex flex-col">
+      {/* Background graphic */}
+        className="absolute inset-0 z-0 bg-cover bg-top opacity-30"
+        style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1509803874385-db7c23652552?q=80&w=1000&auto=format&fit=crop")' }}
+      />
+      <div className="relative z-10 flex-1 overflow-y-auto no-scrollbar pb-32">
+        {/* Profile Header */}
+        <div className="px-6 pt-12 pb-6 flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <div 
+              onClick={() => { setIsProfileModalOpen(true); setMood("cute"); setMsg("Mau update profil biar makin badai ya? 💅"); }} 
+              className={`cursor-pointer w-14 h-14 rounded-full overflow-hidden border-4 shadow-md relative transition-transform active:scale-95 bg-white ${isMecha ? 'border-blue-500' : 'border-pink-200'}`}
+            >
+              <img src={avatarUrl} alt="Profile" className={`w-full h-full object-contain ${theme === 'original' ? 'scale-[1.3] pt-2' : 'scale-110'}`} />
+            <div>
+              <div className="text-sm text-slate-500 font-bold">{isMecha ? 'Pilot Online,' : 'Okaeri,'}</div>
+              <div className="text-xl font-black tracking-tight text-slate-800">{isMecha ? 'PILOT-01 🚀' : '@bestie 🌸'}</div>
+          </div>
+          <button 
+            onClick={() => { setIsSettingsModalOpen(true); setMood("surprised"); setMsg(isMecha ? "SYSTEM CONFIGURATION." : "Mau ngoprek settings nih? Kepo deh! ⚙️"); }} 
+            className={`w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm border border-slate-100 transition ${isMecha ? 'hover:bg-blue-50 text-slate-400 hover:text-blue-500' : 'hover:bg-pink-50 text-slate-400 hover:text-pink-500'}`}
+            <Settings size={20} />
+          </button>
+        {/* Budget Card */}
+        <div className="px-6 mb-8 mt-2" onMouseEnter={() => { setMood("excited"); setMsg(isMecha ? "CREDITS SUFFICIENT FOR UPGRADE." : "Jujurly saldo lo bikin mupeng! 🤑"); }} onMouseLeave={() => setMood("happy")}>
+          <div className={`bg-white/80 backdrop-blur-xl border rounded-[32px] p-6 relative overflow-hidden shadow-xl ${isMecha ? 'border-blue-300 shadow-blue-100/50' : 'border-pink-200 shadow-pink-100/50'}`}>
+            <div className={`absolute -top-10 -right-10 w-40 h-40 rounded-full blur-[30px] pointer-events-none ${isMecha ? 'bg-blue-200/50' : 'bg-pink-200/50'}`} />
+            <div className={`absolute -bottom-10 -left-10 w-40 h-40 rounded-full blur-[30px] pointer-events-none ${isMecha ? 'bg-red-200/50' : 'bg-purple-200/50'}`} />
+            
+            <div className={`flex items-center gap-2 mb-2 relative z-10 ${isMecha ? 'text-blue-600' : 'text-pink-500'}`}>
+              <Wallet size={16} strokeWidth={2.5} />
+              <span className="text-[11px] uppercase tracking-wider font-black">{isMecha ? 'AVAILABLE CREDITS' : 'Total Magic Coins'}</span>
+            <div className="text-[38px] font-black tracking-tighter leading-none mb-6 text-slate-800 relative z-10 font-mono">
+              Rp 1.750.000
+            {/* Progress Bar */}
+            <div className="w-full bg-slate-200 h-3 rounded-full overflow-hidden mb-3 relative z-10 shadow-inner">
+                initial={{ width: 0 }}
+                animate={{ width: "70%" }}
+                transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+                className={`h-full rounded-full ${isMecha ? 'bg-gradient-to-r from-blue-500 to-red-500' : 'bg-gradient-to-r from-pink-400 to-purple-400'}`}
+            <div className="flex justify-between text-xs font-bold relative z-10 mb-5">
+              <span className="text-slate-500">Spent: Rp 4.250.000</span>
+              <span className="text-slate-400">Limit: Rp 6.000.000</span>
+            {/* Quick Actions Row */}
+            <div className="grid grid-cols-4 gap-2 pt-5 border-t border-slate-200/60 relative z-10">
+              {quickActions.map((action, i) => (
+                <div 
+                  key={i} 
+                  className="flex flex-col items-center gap-1.5 cursor-pointer group"
+                  onClick={() => onNavigate(action.id)}
+                  onMouseEnter={() => { setMood(action.hoverMood as MascotMood); setMsg(action.hoverMsg); }}
+                  onMouseLeave={() => { setMood("happy"); setMsg(defaultMsg); }}
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-transform group-hover:-translate-y-1 ${action.bg} ${action.color}`}>
+                    <action.icon size={20} strokeWidth={2.5} />
+                  </div>
+                  <span className="text-[10px] font-bold text-slate-600">{action.label}</span>
+              ))}
+        {/* Savings Goal */}
+        <div className="px-6 mb-6">
+          <div 
+            onClick={() => onNavigate("savings")}
+            className="bg-gradient-to-r from-indigo-500 to-purple-500 rounded-[24px] p-5 text-white shadow-lg shadow-purple-200/50 flex items-center justify-between cursor-pointer"
+            onMouseEnter={() => { setMood("excited"); setMsg("Dikit lagi tiket konser kebeli nih! Puasa boba dulu ya! 🎫"); }}
+            onMouseLeave={() => { setMood("happy"); setMsg(defaultMsg); }}
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-white/20 rounded-[16px] flex items-center justify-center backdrop-blur-sm border border-white/30">
+                <Target size={24} className="text-white" />
+              <div>
+                <h4 className="text-sm font-black mb-0.5">Tabungan Konser Bias</h4>
+                <div className="text-xs text-white/80 font-bold">Rp 1.2M / Rp 3.0M</div>
+            <ChevronRight size={20} className="text-white/70" />
+        {/* Transactions List */}
+        <div className="px-6">
+          <div className="flex justify-between items-end mb-6">
+            <h3 className="text-lg font-black tracking-tight text-slate-800">{isMecha ? 'LATEST LOGS 📊' : 'Recent Magic ✨'}</h3>
+            <button onClick={() => onNavigate("history")} className={`text-sm font-bold transition ${isMecha ? 'text-blue-500 hover:text-blue-600' : 'text-pink-500 hover:text-pink-600'}`}>See All</button>
+          <div className="space-y-3">
+            {transactions.map((tx, i) => (
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 * i }}
+                key={tx.id} 
+                onMouseEnter={() => { setMood(tx.hoverMood as MascotMood); setMsg(tx.hoverMsg); }}
+                onMouseLeave={() => { setMood("happy"); setMsg(defaultMsg); }}
+                className="flex items-center gap-4 bg-white/80 backdrop-blur-md p-3.5 rounded-[24px] border border-white hover:shadow-md hover:bg-white transition-all cursor-pointer"
+                <div className={`w-12 h-12 rounded-[16px] ${tx.bg} flex items-center justify-center shrink-0`}>
+                  <tx.icon size={20} className={tx.color} strokeWidth={2.5} />
+                <div className="flex-1 min-w-0">
+                  <div className="font-bold text-[15px] text-slate-800 truncate">{tx.merchant}</div>
+                  <div className="text-xs text-slate-500 truncate font-bold mt-0.5">
+                    {tx.category} • {tx.time}
+                <div className="font-black text-[15px] text-slate-800 shrink-0 tracking-tight font-mono">
+                  -{tx.amount}
+            ))}
+      {/* Modern Floating Bottom Navigation */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-[360px] h-[72px] bg-white/95 backdrop-blur-2xl border rounded-[32px] px-2 flex justify-between items-center shadow-[0_20px_40px_rgba(0,0,0,0.1)] z-40 pointer-events-auto border-slate-100">
+        
+        {/* Home */}
+        <button className={`flex flex-col items-center justify-center w-[20%] group ${isMecha ? 'text-blue-600' : 'text-pink-500'}`}>
+          <div className={`p-1.5 rounded-xl shadow-inner mb-0.5 ${isMecha ? 'bg-blue-100' : 'bg-pink-100'}`}>
+            <Home size={22} strokeWidth={2.5} />
+          <span className="text-[9px] font-black tracking-wide">Home</span>
+        {/* History */}
+        <button 
+          onClick={() => onNavigate('history')} 
+          className={`flex flex-col items-center justify-center w-[20%] group text-slate-400 transition-colors ${isMecha ? 'hover:text-blue-500' : 'hover:text-pink-500'}`}
+        >
+          <div className={`p-1.5 rounded-xl transition-colors mb-0.5 ${isMecha ? 'group-hover:bg-blue-50' : 'group-hover:bg-pink-50'}`}>
+            <ReceiptText size={22} strokeWidth={2.5} />
+          <span className="text-[9px] font-bold tracking-wide">History</span>
+        {/* Center Scan FAB */}
+        <div className="w-[20%] flex justify-center relative">
+          <div className="absolute -top-10">
+            <button 
+              onClick={onGoToCamera}
+              onMouseEnter={() => { setMood("alert"); setMsg(isMecha ? "SCANNER ONLINE." : "Ada struk baru? Sini gue scan-in pakai AI! 📸"); }}
+              onMouseLeave={() => { setMood("thinking"); setMsg(defaultMsg); }}
+              className={`group flex flex-col items-center justify-center w-[68px] h-[68px] rounded-full hover:scale-105 active:scale-95 transition-all border-4 border-white ${isMecha ? 'bg-gradient-to-tr from-blue-500 to-red-500 shadow-[0_10px_20px_rgba(59,130,246,0.4)]' : 'bg-gradient-to-tr from-pink-400 to-purple-400 shadow-[0_10px_20px_rgba(244,114,182,0.4)]'}`}
+              <Camera size={28} strokeWidth={2.5} className="text-white group-hover:-translate-y-0.5 transition-transform" />
+            </button>
+        {/* Insights */}
+          onClick={onGoToInsights} 
+          onMouseEnter={() => { setMood("thinking"); setMsg(isMecha ? "ACCESSING DIAGNOSTICS." : "Yuk kita pantau pengeluaran lo, biar gak boncos! 📊"); }}
+          onMouseLeave={() => { setMood("happy"); setMsg(defaultMsg); }}
+          className={`flex flex-col items-center justify-center w-[20%] group text-slate-400 transition-colors ${isMecha ? 'hover:text-red-500' : 'hover:text-purple-500'}`}
+          <div className={`p-1.5 rounded-xl transition-colors mb-0.5 ${isMecha ? 'group-hover:bg-red-50' : 'group-hover:bg-purple-50'}`}>
+            <PieChart size={22} strokeWidth={2.5} />
+          <span className="text-[9px] font-bold tracking-wide">Insights</span>
+        {/* Profile */}
+          onClick={() => { setIsProfileModalOpen(true); setMood("cute"); setMsg("Mau update profil biar makin cetar? 💅"); }}
+          className={`flex flex-col items-center justify-center w-[20%] group text-slate-400 transition-colors ${isMecha ? 'hover:text-teal-500' : 'hover:text-pink-500'}`}
+          <div className={`p-1.5 rounded-xl transition-colors mb-0.5 ${isMecha ? 'group-hover:bg-teal-50' : 'group-hover:bg-pink-50'}`}>
+            <User size={22} strokeWidth={2.5} />
+          <span className="text-[9px] font-bold tracking-wide">Profile</span>
+      <Mascot mood={mood} message={msg} theme={theme} />
+        {isProfileModalOpen && (
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-slate-900/40 z-[60] backdrop-blur-sm pointer-events-auto"
+              onClick={() => { setIsProfileModalOpen(false); setMood("happy"); setMsg(defaultMsg); }}
+            <motion.div
+              initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className={`absolute bottom-0 left-0 w-full h-[90%] bg-white/95 backdrop-blur-3xl rounded-t-[32px] z-[70] p-6 shadow-2xl pointer-events-auto flex flex-col ${isMecha ? 'border-t-4 border-blue-200' : 'border-t-4 border-pink-100'}`}
+              <div className="flex justify-between items-center mb-6 shrink-0">
+                <h2 className="text-xl font-black text-slate-800">{isMecha ? 'PILOT DATA' : 'Profile 💅'}</h2>
+                <button onClick={() => { setIsProfileModalOpen(false); setMood("happy"); setMsg(defaultMsg); }} className="p-2 bg-slate-100 rounded-full hover:bg-slate-200 transition"><X size={20} /></button>
+              <div className="flex-1 overflow-y-auto no-scrollbar pb-10 flex flex-col gap-6">
+                <div className="flex flex-col items-center justify-center pt-4">
+                  <div className={`w-28 h-28 rounded-full overflow-hidden border-4 shadow-lg bg-white mb-4 relative group cursor-pointer ${isMecha ? 'border-blue-400' : 'border-pink-300'}`}>
+                    <img src={avatarUrl} alt="Profile" className={`w-full h-full object-contain ${theme === 'original' ? 'scale-[1.3] pt-2' : 'scale-110'}`} />
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Camera className="text-white" size={24} />
+                    </div>
+                  <button className={`text-xs font-bold px-4 py-1.5 rounded-full transition ${isMecha ? 'bg-blue-50 text-blue-500 hover:bg-blue-100' : 'bg-pink-50 text-pink-500 hover:bg-pink-100'}`}>
+                    {isMecha ? 'UPDATE AVATAR' : 'Change Avatar'}
+                  </button>
+                <div className="flex flex-col gap-4">
+                  <div className={`bg-slate-50 rounded-[20px] p-4 border border-slate-100 transition-colors ${isMecha ? 'focus-within:border-blue-300' : 'focus-within:border-pink-300'}`}>
+                    <label className={`text-[10px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-400' : 'text-slate-400'}`}>Display Name</label>
+                    <input type="text" defaultValue={isMecha ? 'PILOT-01' : 'Okaeri'} className={`w-full bg-transparent text-sm text-slate-800 outline-none font-bold ${isMecha && 'font-mono'}`} />
+                    <label className={`text-[10px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-400' : 'text-slate-400'}`}>Username</label>
+                    <input type="text" defaultValue={isMecha ? 'SYSTEM_ADMIN' : '@bestie'} className={`w-full bg-transparent text-sm text-slate-800 outline-none font-bold ${isMecha && 'font-mono'}`} />
+                    <label className={`text-[10px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-400' : 'text-slate-400'}`}>Email</label>
+                    <input type="email" defaultValue="user@bonsnap.app" className={`w-full bg-transparent text-sm text-slate-800 outline-none font-bold ${isMecha && 'font-mono'}`} />
+                <button onClick={() => setIsProfileModalOpen(false)} className={`mt-2 w-full flex items-center justify-center gap-2 p-4 rounded-[24px] text-white font-black transition ${isMecha ? 'bg-gradient-to-r from-blue-500 to-red-500 hover:from-blue-600 hover:to-red-600 shadow-[0_10px_20px_rgba(59,130,246,0.3)]' : 'bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 shadow-[0_10px_20px_rgba(244,114,182,0.3)]'}`}>
+                  {isMecha ? 'SAVE CONFIGURATION' : 'Save Changes ✨'}
+                </button>
+            </motion.div>
+      {/* Settings Modal */}
+        {isSettingsModalOpen && (
+              onClick={() => { setIsSettingsModalOpen(false); setMood("happy"); setMsg(defaultMsg); }}
+              className={`absolute bottom-0 left-0 w-full h-[80%] bg-white/95 backdrop-blur-3xl rounded-t-[32px] z-[70] p-6 shadow-2xl pointer-events-auto flex flex-col ${isMecha ? 'border-t-4 border-blue-200' : 'border-t-4 border-pink-100'}`}
+                <h2 className="text-xl font-black text-slate-800">{isMecha ? 'SYSTEM CONFIG' : 'Settings ⚙️'}</h2>
+                <button onClick={() => { setIsSettingsModalOpen(false); setMood("happy"); setMsg(defaultMsg); }} className="p-2 bg-slate-100 rounded-full hover:bg-slate-200 transition"><X size={20} /></button>
+                {/* Theme Selection */}
+                <div>
+                  <h3 className={`text-xs font-black uppercase tracking-wider mb-3 ml-2 ${isMecha ? 'text-blue-500' : 'text-pink-400'}`}>
+                    Assistant Theme
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <button 
+                      className={`p-4 rounded-[24px] border-4 transition-all border-pink-400 bg-pink-50 shadow-lg shadow-pink-200/50`}
+                    >
+                      <div className="text-4xl mb-2">✨</div>
+                      <div className="font-black text-slate-800">Bon-chan</div>
+                      <div className="text-[10px] text-pink-500 font-bold mt-1">GenZ Mode (Active)</div>
+                    </button>
+                      disabled
+                      className={`p-4 rounded-[24px] border-4 transition-all border-slate-100 bg-slate-50 opacity-70 cursor-not-allowed`}
+                      <div className="text-4xl mb-2 grayscale">🤖</div>
+                      <div className="font-black text-slate-500">More Themes</div>
+                      <div className="text-[10px] text-slate-400 font-bold mt-1">Coming Soon...</div>
+                {/* Preferences */}
+                    Preferences
+                  <div className="bg-slate-50 border border-slate-100 rounded-[24px] overflow-hidden">
+                    <div onClick={() => setNotifOn(!notifOn)} className="flex items-center justify-between p-4 border-b border-slate-100 hover:bg-white transition cursor-pointer">
+                      <div className="flex items-center gap-3 text-slate-700 font-bold">
+                        <Bell size={18} className="text-slate-400" /> Notifications
+                      </div>
+                      <div className={`w-10 h-6 rounded-full relative shadow-inner transition-colors ${notifOn ? 'bg-green-400' : 'bg-slate-300'}`}>
+                        <div className={`w-4 h-4 bg-white rounded-full absolute top-1 shadow-sm transition-all ${notifOn ? 'right-1' : 'left-1'}`}></div>
+                    <div onClick={() => setLangEn(!langEn)} className="flex items-center justify-between p-4 border-b border-slate-100 hover:bg-white transition cursor-pointer">
+                        <Globe size={18} className="text-slate-400" /> Language
+                      <div className="flex items-center gap-1 text-sm font-bold text-slate-400">{langEn ? "English" : "Bahasa"} <ChevronRight size={16} /></div>
+                    <div onClick={() => setCurrIdr(!currIdr)} className="flex items-center justify-between p-4 hover:bg-white transition cursor-pointer">
+                        <CreditCard size={18} className="text-slate-400" /> Currency
+                      <div className="flex items-center gap-1 text-sm font-bold text-slate-400">{currIdr ? "IDR (Rp)" : "USD ($)"} <ChevronRight size={16} /></div>
+                {/* Log Out */}
+                <button onClick={() => onNavigate("login")} className="mt-2 w-full flex items-center justify-center gap-2 p-4 rounded-[24px] bg-red-50 text-red-500 font-black hover:bg-red-100 transition">
+                  <LogOut size={18} strokeWidth={2.5} /> TERMINATE SESSION
+import { Camera, History, PieChart, Home, AlertCircle, Target, TrendingDown, Sparkles, HeartPulse, Zap, ReceiptText, User } from "lucide-react";
+import { PieChart as RechartsPieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+interface InsightsViewProps {
+export const InsightsView: React.FC<InsightsViewProps> = ({ onGoToCamera, onGoToDashboard, theme, onNavigate }) => {
+  const [mood, setMood] = useState<MascotMood>("thinking");
+  const [msg, setMsg] = useState("Waduh, budget lo sisa dikit nih. Jangan fomo jajan mulu ya! 📉");
+  const totalBudget = 6000000;
+  const totalSpent = 4250000;
+  const remaining = totalBudget - totalSpent;
+  const percentUsed = (totalSpent / totalBudget) * 100;
+  const dailyAverage = Math.round(totalSpent / 15);
+  const projectedTotal = dailyAverage * 30;
+  const isOverBudgetProjected = projectedTotal > totalBudget;
+  const formatIDR = (num: number) => `Rp ${num.toLocaleString('id-ID')}`;
+  const categoryData = [
+    { name: 'Sweets & Food', value: 2150000, color: '#f472b6' }, // Pink
+    { name: 'Shopping', value: 1200000, color: '#a78bfa' }, // Purple
+    { name: 'Transport', value: 600000, color: '#60a5fa' }, // Blue
+    { name: 'Others', value: 300000, color: '#fbbf24' }, // Yellow
+        {/* Header */}
+        <div className="px-6 pt-12 pb-4">
+          <h2 className="text-2xl font-black tracking-tight mb-1 text-slate-800 flex items-center gap-2">
+            Analysis <Sparkles size={24} className="text-pink-400" />
+          </h2>
+          <p className="text-slate-500 text-sm font-bold tracking-wide font-mono">CYCLE: OCT-2026</p>
+        {/* Budget Tracker Card */}
+        <div className="px-6 mb-6" onMouseEnter={() => { setMood("alert"); setMsg("Awas boncos bestie! Rem dikit jajannya ⚠️"); }} onMouseLeave={() => { setMood("thinking"); setMsg("Waduh, budget lo sisa dikit nih. Jangan FOMO jajan mulu ya! 📉"); }}>
+          <div className="bg-white/80 backdrop-blur-xl border rounded-[32px] p-6 shadow-xl relative overflow-hidden border-pink-200 shadow-purple-100/50">
+            <div className="absolute top-0 left-0 w-full h-1.5 bg-slate-200">
+              <div 
+                className="h-full bg-gradient-to-r from-pink-400 to-purple-400" 
+                style={{ width: `${percentUsed}%` }}
+            <div className="flex justify-between items-end mb-4 mt-2">
+                <div className="text-[11px] uppercase tracking-wider font-black mb-1 text-purple-500">
+                  Remaining Budget
+                <div className="text-3xl font-black text-slate-800 tracking-tight font-mono">{formatIDR(remaining)}</div>
+              <div className="text-right">
+                <div className="text-[11px] uppercase tracking-wider text-slate-400 font-bold mb-1">
+                  Total Limit
+                <div className="text-sm font-black text-slate-600 font-mono">{formatIDR(totalBudget)}</div>
+            <div className="flex items-center gap-2 text-xs font-bold bg-white/50 rounded-[16px] p-3 border border-white text-slate-600">
+              <Target size={16} className="text-purple-500" />
+              <span>
+                Jujurly lo udah kepakai {percentUsed.toFixed(1)}% dari budget! ✨
+              </span>
+        {/* Health Score & Tips */}
+            className="bg-gradient-to-r from-emerald-400 to-teal-400 rounded-[24px] p-5 shadow-lg shadow-emerald-200/50 text-white relative overflow-hidden"
+            onMouseEnter={() => { setMood("excited"); setMsg("Financial score lo 85/100! Slay banget managing duitnya! 💅"); }}
+            onMouseLeave={() => { setMood("thinking"); setMsg("Waduh, budget lo sisa dikit nih. Jangan FOMO jajan mulu ya! 📉"); }}
+            <div className="absolute right-[-20px] top-[-20px] opacity-20">
+              <HeartPulse size={120} />
+            <div className="relative z-10 flex items-center gap-4">
+              <div className="w-16 h-16 rounded-[20px] bg-white text-emerald-500 flex flex-col items-center justify-center font-black shadow-inner border-[3px] border-emerald-100">
+                <span className="text-2xl leading-none">85</span>
+                <span className="text-[8px] uppercase tracking-wider">Score</span>
+                <h3 className="font-black text-lg flex items-center gap-1">
+                  Health Slay-Meter <Zap size={16} className="fill-yellow-400 text-yellow-400" />
+                </h3>
+                <p className="text-xs font-bold text-emerald-50 mt-1 line-clamp-2">
+                  "Udah jago nabung nih! Dikit lagi limit, kurangi checkout Shopee ya bestie!"
+                </p>
+        {/* Chart Section */}
+        <div className="px-6 mb-6" onMouseEnter={() => { setMood("cute"); setMsg("Suka deh liat chart warna-warni, tapi kok isinya pengeluaran semua 😭🍰"); }} onMouseLeave={() => { setMood("thinking"); setMsg("Waduh, budget lo sisa dikit nih. Jangan FOMO jajan mulu ya! 📉"); }}>
+          <h3 className="text-lg font-black tracking-tight mb-4 text-slate-800">
+            Expense Breakdown
+          </h3>
+          <div className="bg-white/80 backdrop-blur-xl border rounded-[32px] p-6 shadow-xl flex flex-col items-center border-pink-200 shadow-pink-100/50">
+            <div className="h-48 w-full relative">
+              <ResponsiveContainer width="100%" height="100%">
+                <RechartsPieChart>
+                  <Pie
+                    data={categoryData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={65}
+                    outerRadius={85}
+                    paddingAngle={5}
+                    dataKey="value"
+                    stroke="none"
+                    cornerRadius={10}
+                  >
+                    {categoryData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    formatter={(value: number) => formatIDR(value)}
+                    contentStyle={{ backgroundColor: '#ffffff', border: 'none', borderRadius: '16px', fontWeight: 'bold', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', color: '#334155' }}
+                  />
+                </RechartsPieChart>
+              </ResponsiveContainer>
+              {/* Center Label */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                <span className="text-[10px] uppercase tracking-wider text-slate-400 font-black">
+                  Total Spent
+                <span className="text-lg font-black tracking-tight text-slate-800 font-mono">{formatIDR(totalSpent)}</span>
+            {/* Legend */}
+            <div className="w-full grid grid-cols-2 gap-4 mt-6">
+              {categoryData.map((cat, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <div className="w-4 h-4 rounded-[6px]" style={{ backgroundColor: cat.color }} />
+                  <div className="flex flex-col">
+                    <span className="text-[13px] font-black text-slate-700">{cat.name}</span>
+                    <span className="text-[11px] text-slate-400 font-bold font-mono">{Math.round((cat.value/totalSpent)*100)}%</span>
+        {/* Advanced Calculations */}
+        <div className="px-6 grid grid-cols-2 gap-4">
+          <div className="bg-white/80 backdrop-blur-xl border border-slate-200 rounded-[24px] p-5 shadow-sm">
+            <div className="flex items-center gap-2 mb-2 text-pink-500">
+              <TrendingDown size={16} strokeWidth={2.5} />
+              <span className="text-[10px] uppercase tracking-wider font-black">Daily Avg</span>
+            <div className="text-xl font-black tracking-tight text-slate-800 font-mono">{formatIDR(dailyAverage)}</div>
+            <div className="text-[10px] text-slate-400 mt-1 font-bold">/ day so far</div>
+          <div className={`border rounded-[24px] p-5 shadow-sm ${isOverBudgetProjected ? 'bg-red-50 border-red-200' : 'bg-white/80 backdrop-blur-xl border-slate-200'}`}>
+            <div className={`flex items-center gap-2 mb-2 ${isOverBudgetProjected ? 'text-red-500' : 'text-purple-500'}`}>
+              {isOverBudgetProjected ? <AlertCircle size={16} strokeWidth={2.5} /> : <Sparkles size={16} strokeWidth={2.5} />}
+              <span className="text-[10px] uppercase tracking-wider font-black">Projected</span>
+            <div className={`text-xl font-black tracking-tight font-mono ${isOverBudgetProjected ? 'text-red-600' : 'text-slate-800'}`}>
+              {formatIDR(projectedTotal)}
+            <div className={`text-[10px] mt-1 font-bold ${isOverBudgetProjected ? 'text-red-400' : 'text-slate-400'}`}>
+              EOM Estimate
+          onClick={onGoToDashboard} 
+          onMouseEnter={() => { setMood("happy"); setMsg("Balik ke home nih? Gas! ✨"); }}
+          onMouseLeave={() => { setMood("thinking"); setMsg("Waduh, budget lo sisa dikit nih. Jangan FOMO jajan mulu ya! 📉"); }}
+          className={`flex flex-col items-center justify-center w-[20%] group text-slate-400 hover:text-pink-500 transition-colors`}
+          <div className="p-1.5 rounded-xl transition-colors mb-0.5 group-hover:bg-pink-50">
+          <span className="text-[9px] font-bold tracking-wide">Home</span>
+          className={`flex flex-col items-center justify-center w-[20%] group text-slate-400 transition-colors hover:text-pink-500`}
+          <div className={`p-1.5 rounded-xl transition-colors mb-0.5 group-hover:bg-pink-50`}>
+              onMouseEnter={() => { setMood("alert"); setMsg("Ada struk baru? Sini gue scan-in pakai AI! 📸"); }}
+              onMouseLeave={() => { setMood("thinking"); setMsg("Waduh, budget lo sisa dikit nih. Jangan FOMO jajan mulu ya! 📉"); }}
+              className={`group flex flex-col items-center justify-center w-[68px] h-[68px] rounded-full hover:scale-105 active:scale-95 transition-all border-4 border-white bg-gradient-to-tr from-pink-400 to-purple-400 shadow-[0_10px_20px_rgba(244,114,182,0.4)]`}
+        <button className={`flex flex-col items-center justify-center w-[20%] group text-purple-500`}>
+          <div className={`p-1.5 rounded-xl shadow-inner mb-0.5 bg-purple-100`}>
+          <span className="text-[9px] font-black tracking-wide">Insights</span>
+          onClick={() => onNavigate('editProfile')} 
+      <Mascot mood={mood} message={msg} />
+import { ChevronRight, ShieldAlert, UserPlus, LogIn, ArrowLeft } from "lucide-react";
+import { Mascot, MascotMood, moodMap, getGeneratedMascotUrl } from "./Mascot";
+import bgImage from "../../imports/image-10.png";
+interface LoginViewProps {
+  onLogin: () => void;
+export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
+  const [mode, setMode] = useState<"login" | "register">("login");
+  const initialMsg = theme === "mecha" 
+    ? "SYSTEM ONLINE. AWAITING PILOT AUTHENTICATION." 
+    : "Halo bestie! Bon-chan siap bantu nge-track pengeluaran lo nih! ✨";
+    <div className="w-full h-full relative overflow-hidden flex flex-col px-8 text-slate-800">
+        style={{ backgroundImage: `url(${bgImage})` }}
+      <div className="absolute inset-0 z-0 bg-white/20 backdrop-blur-[2px]" />
+      <AnimatePresence mode="wait">
+        {mode === "login" ? (
+            key="login-form"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 50 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="flex flex-col justify-center h-full w-full relative z-10"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="flex flex-col items-center mb-10 -mt-24"
+              <div className={`w-28 h-28 backdrop-blur-xl border-4 border-white rounded-[32px] flex items-center justify-center mb-6 shadow-xl overflow-hidden ${isMecha ? 'bg-blue-50 shadow-blue-200/50' : 'bg-pink-50 shadow-pink-200/50'}`}>
+                {isMecha ? (
+                  <ShieldAlert size={44} className="text-blue-500" strokeWidth={2.5} />
+                ) : (
+                  <img src={avatarUrl} alt="Logo" className={`w-full h-full object-contain ${theme === 'original' ? 'scale-[1.3] pt-4' : 'scale-110'}`} />
+                )}
+              <h1 className="text-[44px] font-black tracking-tighter mb-2 text-center leading-none text-slate-800 drop-shadow-sm">BonSnap</h1>
+              <p className="text-slate-700 text-[15px] tracking-wide text-center font-bold bg-white/50 px-4 py-1 rounded-full">
+                {isMecha ? 'Tactical Finance Core 🤖' : 'AI Tracker Paling Slay ✨'}
+              </p>
+              transition={{ delay: 0.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="w-full flex flex-col gap-4"
+              <div className={`bg-white/80 backdrop-blur-xl rounded-[24px] p-4 border-2 border-white transition-all shadow-lg focus-within:${isMecha ? 'border-blue-500' : 'border-pink-400'}`}>
+                <label className={`text-[11px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-500' : 'text-pink-500'}`}>
+                  {isMecha ? 'Pilot ID' : 'Username'}
+                </label>
+                <input 
+                  type="text" 
+                  placeholder={isMecha ? "PILOT-01" : "@bestie"} 
+                  onFocus={() => { 
+                    setMood("thinking"); 
+                    setMsg(isMecha ? "IDENTIFYING PILOT CREDENTIALS..." : "Spill username lo dong, biar akrab! 🧐"); 
+                  }}
+                  onBlur={() => { 
+                    setMood("happy"); 
+                    setMsg(isMecha ? "READY FOR INPUT." : "Gas terus bestie! 🌸"); 
+                  className="w-full bg-transparent text-slate-800 outline-none font-bold placeholder:text-slate-400/60 text-lg" 
+                />
+                  {isMecha ? 'Access Code' : 'Password'}
+                  type="password" 
+                  placeholder="••••••••" 
+                    setMood("shy"); 
+                    setMsg(isMecha ? "ENCRYPTING CONNECTION..." : "Selow, password lo aman kok sama AI gue! 🫣"); 
+                    setMood("love"); 
+                    setMsg(isMecha ? "ENCRYPTION SECURE." : "Sip, tinggal masuk aja nih! ✨"); 
+              transition={{ delay: 0.3, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="mt-8 flex flex-col gap-3 pb-32"
+                onClick={onLogin}
+                onMouseEnter={() => { 
+                  setMood("excited"); 
+                  setMsg(isMecha ? "COMMENCING LOGIN SEQUENCE." : "Let's goooo! Gak sabar flexing AI keuangan! 🎉"); 
+                }}
+                onMouseLeave={() => { 
+                  setMood("happy"); 
+                  setMsg(initialMsg); 
+                className={`w-full text-white font-black rounded-[24px] py-4 flex items-center justify-center gap-2 transition-all active:scale-[0.96] text-lg group border-2 border-white ${isMecha ? 'bg-gradient-to-r from-blue-500 to-red-500 hover:from-blue-600 hover:to-red-600 shadow-[0_10px_30px_rgba(59,130,246,0.4)]' : 'bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 shadow-[0_10px_30px_rgba(244,114,182,0.4)]'}`}
+                {isMecha ? 'INITIALIZE 🚀' : 'Masuk Yuk! 🌸'}
+                <ChevronRight size={20} strokeWidth={3} className="group-hover:translate-x-1.5 transition-transform duration-300" />
+                onClick={() => {
+                  setMode("register");
+                  setMood("surprised");
+                  setMsg(isMecha ? "NEW PILOT REGISTRATION PROTOCOL INITIATED." : "Wih, member baru nih! Sini gue bantuin daftar! 🎉");
+                className={`w-full bg-white/50 hover:bg-white/80 font-black rounded-[24px] py-4 flex items-center justify-center gap-2 transition-all active:scale-[0.96] border-2 border-white backdrop-blur-md ${isMecha ? 'text-blue-600' : 'text-pink-500'}`}
+                <UserPlus size={18} strokeWidth={2.5} /> 
+                {isMecha ? 'REGISTER NEW PILOT' : 'Belum Punya Akun? Daftar!'}
+        ) : (
+            key="register-form"
+            initial={{ opacity: 0, x: 50 }}
+            exit={{ opacity: 0, x: -50 }}
+            className="flex flex-col h-full w-full relative z-10 pt-16 pb-32 overflow-y-auto no-scrollbar"
+              onClick={() => {
+                setMode("login");
+                setMood("happy");
+                setMsg(initialMsg);
+              }}
+              className={`w-10 h-10 rounded-full flex items-center justify-center mb-4 bg-white/50 backdrop-blur-md border border-white transition-all ${isMecha ? 'text-blue-500 hover:bg-blue-50' : 'text-pink-500 hover:bg-pink-50'}`}
+              <ArrowLeft size={20} strokeWidth={3} />
+            <h2 className={`text-3xl font-black tracking-tighter mb-6 ${isMecha ? 'text-blue-600' : 'text-pink-500'}`}>
+              {isMecha ? 'PILOT REGISTRATION' : 'Buat Akun Baru ✨'}
+            </h2>
+            <div className="flex flex-col gap-3">
+              <div className={`bg-white/80 backdrop-blur-xl rounded-[20px] p-3 border-2 border-white transition-all shadow-sm focus-within:${isMecha ? 'border-blue-500' : 'border-pink-400'}`}>
+                <label className={`text-[10px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-500' : 'text-pink-500'}`}>Full Name</label>
+                <input type="text" placeholder="John Doe" className="w-full bg-transparent text-slate-800 outline-none font-bold placeholder:text-slate-400/60" />
+                <label className={`text-[10px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-500' : 'text-pink-500'}`}>Username</label>
+                <input type="text" placeholder="@newbestie" className="w-full bg-transparent text-slate-800 outline-none font-bold placeholder:text-slate-400/60" />
+                <label className={`text-[10px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-500' : 'text-pink-500'}`}>Password</label>
+                <input type="password" placeholder="••••••••" className="w-full bg-transparent text-slate-800 outline-none font-bold placeholder:text-slate-400/60" />
+              <div className="grid grid-cols-2 gap-3">
+                <div className={`bg-white/80 backdrop-blur-xl rounded-[20px] p-3 border-2 border-white transition-all shadow-sm`}>
+                  <label className={`text-[10px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-500' : 'text-pink-500'}`}>Gender</label>
+                  <select className="w-full bg-transparent text-slate-800 outline-none font-bold">
+                    <option value="">Pilih...</option>
+                    <option value="m">Cowok 👦</option>
+                    <option value="f">Cewek 👧</option>
+                    <option value="o">Lainnya ✨</option>
+                  </select>
+                  <label className={`text-[10px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-500' : 'text-pink-500'}`}>Status</label>
+                    <option value="student">Pelajar 📚</option>
+                    <option value="worker">Bekerja 💼</option>
+                    <option value="freelance">Freelance 💻</option>
+                <label className={`text-[10px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-500' : 'text-pink-500'}`}>Bio (Opsional)</label>
+                <textarea rows={2} placeholder="Suka jajan boba tiap hari..." className="w-full bg-transparent text-slate-800 outline-none font-bold placeholder:text-slate-400/60 resize-none"></textarea>
+                onMouseEnter={() => { setMood("love"); setMsg(isMecha ? "READY TO COMMIT DATA." : "Udah keisi semua? Yuk gass! 🚀"); }}
+                className={`mt-4 w-full text-white font-black rounded-[24px] py-4 flex items-center justify-center gap-2 transition-all active:scale-[0.96] text-lg group border-2 border-white ${isMecha ? 'bg-gradient-to-r from-blue-500 to-red-500 hover:from-blue-600 hover:to-red-600 shadow-[0_10px_30px_rgba(59,130,246,0.4)]' : 'bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 shadow-[0_10px_30px_rgba(244,114,182,0.4)]'}`}
+                {isMecha ? 'SUBMIT CONFIGURATION' : 'Daftar Sekarang! 🎉'}
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import img2 from "../../imports/image-2.png";
+import img3 from "../../imports/image-3.png";
+import img4 from "../../imports/image-4.png";
+import img5 from "../../imports/image-5.png";
+import img6 from "../../imports/image-6.png";
+import img7 from "../../imports/image-7.png";
+import img8 from "../../imports/image-8.png";
+import img9 from "../../imports/image-9.png";
+export type MascotMood = "happy" | "surprised" | "sad" | "wink" | "cute" | "thinking" | "excited" | "neutral" | "alert" | "confused" | "love" | "angry" | "sleepy" | "cool" | "shy" | "laughing" | "scared" | "smug";
+interface MascotProps {
+  mood: MascotMood;
+  message?: string;
+  showDialogue?: boolean;
+export const moodMap: Record<MascotMood, string> = {
+  happy: img1,
+  surprised: img2,
+  sad: img3,
+  wink: img4,
+  cute: img5,
+  thinking: img6,
+  excited: img7,
+  neutral: img8,
+  alert: img9,
+  confused: img6,
+  love: img5,
+  angry: img3,
+  sleepy: img8,
+  cool: img1,
+  shy: img4,
+  laughing: img7,
+  scared: img2,
+  smug: img1,
+export const getGeneratedMascotUrl = (mood: MascotMood, theme: ThemeState) => {
+  if (theme === "mecha") {
+    const botSeedMap: Record<string, string> = { 
+      happy: "GundamMax", surprised: "GundamAlert", sad: "GundamLow", 
+      wink: "GundamReady", cute: "GundamIdle", thinking: "GundamCalc",
+      excited: "GundamMax", neutral: "GundamIdle", alert: "GundamAlert",
+      confused: "GundamError", love: "GundamHeart", angry: "GundamRage",
+      sleepy: "GundamSleep", cool: "GundamPrime", shy: "GundamHide",
+      laughing: "GundamJoy", scared: "GundamFear", smug: "GundamBoss"
+    };
+    return `https://api.dicebear.com/9.x/bottts/svg?seed=${botSeedMap[mood]}&backgroundColor=transparent&baseColor=f8fafc&primaryColor=ef4444,3b82f6`;
+  // Gen Z Waifu
+  const seedMap: Record<MascotMood, string> = {
+    happy: "Lily", surprised: "Mia", sad: "Zoe", wink: "Chloe",
+    cute: "Ruby", thinking: "Luna", excited: "Stella", neutral: "Leo", alert: "Aria",
+    confused: "Nala", love: "Bella", angry: "Max",
+    sleepy: "Milo", cool: "Felix", shy: "Daisy",
+    laughing: "Coco", scared: "Lola", smug: "Charlie"
+  return `https://api.dicebear.com/9.x/lorelei/svg?seed=${seedMap[mood]}&backgroundColor=transparent`;
+export const Mascot: React.FC<MascotProps> = ({ mood, message = "", showDialogue = true, theme }) => {
+  const [displayedText, setDisplayedText] = useState("");
+    setDisplayedText("");
+    let i = 0;
+    const timer = setInterval(() => {
+      if (i < message.length) {
+        setDisplayedText((prev) => prev + message.charAt(i));
+        i++;
+      } else {
+        clearInterval(timer);
+      }
+    }, 30);
+    return () => clearInterval(timer);
+  }, [message]);
+  const isOriginal = theme === "original";
+  const avatarUrl = isOriginal ? moodMap[mood] || img1 : getGeneratedMascotUrl(mood, theme);
+  const mascotName = theme === "mecha" ? "G-UNIT 01 🤖" : "Bon-chan 🌸";
+    <div className="absolute bottom-32 left-0 w-full z-50 pointer-events-none px-4 flex flex-col items-end">
+      {/* Mascot Image */}
+        <motion.div
+          key={mood + theme}
+          initial={{ y: 20, opacity: 0, scale: 0.95 }}
+          animate={{ y: 0, opacity: 1, scale: 1 }}
+          exit={{ y: 20, opacity: 0, scale: 0.95 }}
+          transition={{ type: "spring", stiffness: 300, damping: 25 }}
+          className={`relative z-10 drop-shadow-2xl ${isOriginal ? 'w-48 h-48 mr-[-10px] mb-[-25px]' : 'w-32 h-32 mr-2 mb-[-15px]'}`}
+          <img 
+            src={avatarUrl} 
+            alt="Mascot" 
+            className={`w-full h-full object-contain filter ${theme === 'mecha' ? 'drop-shadow-[0_10px_15px_rgba(59,130,246,0.5)]' : 'drop-shadow-[0_10px_15px_rgba(244,114,182,0.5)]'}`} 
+          />
+        </motion.div>
+      {/* Visual Novel Dialogue Box */}
+        {showDialogue && message && (
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            className={`w-full bg-white/95 backdrop-blur-xl border-[3px] rounded-[24px] p-4 relative pointer-events-auto ${theme === 'mecha' ? 'border-blue-200 shadow-[0_15px_40px_rgba(59,130,246,0.2)]' : 'border-pink-200 shadow-[0_15px_40px_rgba(244,114,182,0.2)]'}`}
+            {/* Name Tag */}
+            <div className={`absolute -top-4 left-6 text-white font-black px-4 py-1 rounded-full text-[10px] uppercase tracking-wider shadow-lg border-[2px] border-white ${theme === 'mecha' ? 'bg-gradient-to-r from-blue-500 to-red-500' : 'bg-gradient-to-r from-pink-400 to-purple-400'}`}>
+              {mascotName}
+            <p className="text-slate-700 font-bold text-sm leading-relaxed min-h-[40px]">
+              {displayedText}
+              <span className={`animate-pulse ml-1 ${theme === 'mecha' ? 'text-blue-500' : 'text-pink-400'}`}>▼</span>
+            </p>
+import { motion } from "motion/react";
+import { Check, ReceiptText, Trash2, PlusCircle, PenSquare, Sparkles, Crosshair, UserPlus } from "lucide-react";
+interface ResultSheetProps {
+  onClose: () => void;
+  onSave: () => void;
+interface ScannedItem {
+  id: string;
+  name: string;
+  qty: number;
+  price: number;
+export const ResultSheet: React.FC<ResultSheetProps> = ({ onClose, onSave, theme, onNavigate }) => {
+  const isMecha = theme === 'mecha';
+  const [merchant, setMerchant] = useState(isMecha ? "Sector 7 Depot 🚀" : "Maid Cafe 🌸");
+  const [category, setCategory] = useState(isMecha ? "Ammunition & Fuel" : "Sweets & Food");
+  const [date, setDate] = useState("Today, 14:30");
+  const initialItemsGirl = [
+    { id: "1", name: "Strawberry Parfait", qty: 2, price: 56000 },
+    { id: "2", name: "Omurice", qty: 1, price: 45000 },
+    { id: "3", name: "Magical Tea", qty: 1, price: 25000 },
+  const initialItemsRobot = [
+    { id: "1", name: "Plasma Cartridge (L)", qty: 2, price: 56000 },
+    { id: "2", name: "Coolant Fluid", qty: 1, price: 45000 },
+    { id: "3", name: "Micro-servo", qty: 1, price: 25000 },
+  const [items, setItems] = useState<ScannedItem[]>(isMecha ? initialItemsRobot : initialItemsGirl);
+  const totalAmount = items.reduce((acc, item) => acc + item.price, 0);
+  const handleDeleteItem = (id: string) => {
+    setItems(items.filter(item => item.id !== id));
+  const handleAddItem = () => {
+    setItems([...items, { 
+      id: Math.random().toString(), 
+      name: isMecha ? "UNIDENTIFIED ASSET" : "Unknown Item", 
+      qty: 1, 
+      price: 0 
+    }]);
+    <motion.div
+      initial={{ y: "100%" }}
+      animate={{ y: 0 }}
+      exit={{ y: "100%" }}
+      transition={{ type: "spring", damping: 25, stiffness: 200 }}
+      className={`absolute bottom-0 left-0 w-full h-[92%] bg-white/95 backdrop-blur-3xl border-t rounded-t-[32px] z-[60] flex flex-col pointer-events-auto shadow-[0_-20px_50px_rgba(0,0,0,0.15)] ${isMecha ? 'border-blue-200' : 'border-pink-100'}`}
+    >
+      {/* Handle / Drag indicator */}
+      <div className="w-full flex justify-center pt-4 pb-2" onClick={onClose}>
+        <div className="w-12 h-1.5 bg-slate-200 rounded-full cursor-pointer hover:bg-slate-300 transition"></div>
+      <div className="flex-1 px-6 pb-6 pt-2 flex flex-col gap-5 overflow-y-auto no-scrollbar">
+        <div className="flex flex-col items-center justify-center mb-2">
+          <div className={`p-2 rounded-[16px] mb-3 shadow-lg ${isMecha ? 'bg-gradient-to-tr from-blue-500 to-red-500 shadow-blue-200/50' : 'bg-gradient-to-tr from-pink-400 to-purple-400 shadow-pink-200/50'}`}>
+            <Check size={24} className="text-white" strokeWidth={3} />
+          <h2 className="text-lg font-black tracking-tight text-slate-800">
+            {isMecha ? 'DATA EXTRACTION COMPLETE' : 'Magic Scan Success!'}
+        {/* Global Receipt Info */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className={`rounded-[20px] p-3 border transition-all ${isMecha ? 'bg-blue-50/50 border-blue-100 focus-within:border-blue-300 focus-within:bg-blue-50' : 'bg-pink-50/50 border-pink-100 focus-within:border-pink-300 focus-within:bg-pink-50'}`}>
+            <label className={`text-[10px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-500' : 'text-pink-400'}`}>
+              Merchant
+            </label>
+            <input 
+              type="text" 
+              value={merchant}
+              onChange={(e) => setMerchant(e.target.value)}
+              className={`w-full bg-transparent text-sm text-slate-800 outline-none font-bold ${isMecha && 'font-mono'}`}
+          <div className={`rounded-[20px] p-3 border transition-all ${isMecha ? 'bg-slate-50 border-slate-200 focus-within:border-slate-300' : 'bg-purple-50/50 border-purple-100 focus-within:border-purple-300 focus-within:bg-purple-50'}`}>
+            <label className={`text-[10px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-slate-500' : 'text-purple-400'}`}>
+              Date
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+        {/* Scanned Items List */}
+        <div className="bg-white border border-slate-100 rounded-[24px] p-4 flex flex-col gap-3 shadow-sm">
+          <div className="flex items-center gap-2 mb-2 text-slate-500 border-b border-slate-100 pb-3">
+            {isMecha ? <Crosshair size={16} className="text-blue-500" /> : <ReceiptText size={16} className="text-pink-400" />}
+            <span className="text-[11px] uppercase tracking-wider font-black">
+              {isMecha ? `DETECTED ASSETS (${items.length})` : `Scanned Items (${items.length})`}
+            </span>
+          <div className="flex flex-col gap-3">
+            {items.map((item) => (
+              <div key={item.id} className="flex items-center justify-between group bg-slate-50/50 p-2.5 rounded-[16px]">
+                <div className="flex items-center gap-3 flex-1 overflow-hidden pr-3">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black shrink-0 border ${isMecha ? 'bg-blue-100 text-blue-600 border-blue-200 font-mono' : 'bg-pink-100 text-pink-500 border-pink-200'}`}>
+                    {item.qty}x
+                  <div className="flex flex-col flex-1 min-w-0">
+                    <input 
+                      type="text" 
+                      value={item.name} 
+                      readOnly 
+                      className={`bg-transparent text-sm font-bold text-slate-700 outline-none w-full truncate ${isMecha && 'font-mono'}`}
+                    />
+                <div className="flex items-center gap-3">
+                  <div className={`text-sm font-black text-slate-800 ${isMecha && 'font-mono'}`}>{formatIDR(item.price)}</div>
+                  <button 
+                    onClick={() => handleDeleteItem(item.id)}
+                    className="text-slate-300 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-full transition-colors"
+                    <Trash2 size={16} />
+        {/* Category Tag Selection */}
+        <div className="bg-slate-50 rounded-[20px] p-4 border border-slate-100 relative">
+          <div className="flex justify-between items-center mb-2">
+            <label className="text-[10px] uppercase tracking-wider text-slate-400 font-black">
+              Auto-categorized as
+            <PenSquare size={14} className="text-slate-400" />
+          <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+            {['Sweets & Food', 'Shopping', 'Transport', 'Groceries', 'Entertainment'].map((cat) => (
+                key={cat}
+                onClick={() => setCategory(cat)}
+                className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border ${category === cat ? (isMecha ? 'bg-blue-500 text-white border-blue-600' : 'bg-pink-400 text-white border-pink-500') : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-100'}`}
+                {cat}
+        {/* Action Buttons: Add Item & Split Bill */}
+        <div className="flex gap-2">
+          <button onClick={handleAddItem} className={`w-1/2 py-3 rounded-[16px] border-[2px] border-dashed flex items-center justify-center gap-2 text-[11px] font-black uppercase tracking-wider transition-all ${isMecha ? 'border-blue-200 text-blue-500 hover:bg-blue-50' : 'border-pink-200 text-pink-400 hover:bg-pink-50'}`}>
+            <PlusCircle size={16} /> {isMecha ? 'MANUAL ENTRY' : 'Add Item'}
+          <button onClick={() => onNavigate("splitBill")} className={`w-1/2 py-3 rounded-[16px] border-[2px] flex items-center justify-center gap-2 text-[11px] font-black uppercase tracking-wider transition-all ${isMecha ? 'border-orange-200 text-orange-500 hover:bg-orange-50 bg-orange-50/50' : 'border-orange-200 text-orange-500 hover:bg-orange-50 bg-orange-50/50'}`}>
+            <UserPlus size={16} /> Split Bill
+        {/* Category & Total Area */}
+        <div className="flex flex-col gap-3 mt-auto pt-2">
+          {/* Grand Total */}
+          <div className={`rounded-[24px] p-5 border shadow-inner flex justify-between items-center relative overflow-hidden ${isMecha ? 'bg-gradient-to-r from-blue-100 to-slate-200 border-blue-200' : 'bg-gradient-to-r from-pink-100 to-purple-100 border-pink-200'}`}>
+            <div className="absolute right-0 top-0 opacity-10 pointer-events-none">
+              {isMecha ? <Crosshair size={100} /> : <Sparkles size={100} />}
+            <div className="relative z-10">
+              <div className={`text-[11px] uppercase tracking-wider font-black mb-1 ${isMecha ? 'text-blue-600' : 'text-pink-500'}`}>
+                {isMecha ? 'TOTAL EXPENDITURE' : 'Total Magic Coins'}
+              <div className="text-sm text-slate-500 font-bold">
+                {isMecha ? `${items.length} ASSETS` : `${items.length} items`}
+            <div className="text-3xl font-black text-slate-800 tracking-tight relative z-10 font-mono">{formatIDR(totalAmount)}</div>
+          {/* Save Button */}
+            onClick={onSave}
+            className={`w-full text-white font-black rounded-[24px] py-4.5 flex items-center justify-center gap-2 transition-all active:scale-[0.98] text-lg mt-2 border border-white/20 ${isMecha ? 'bg-gradient-to-r from-blue-500 to-red-500 hover:from-blue-600 hover:to-red-600 shadow-[0_10px_25px_rgba(59,130,246,0.4)]' : 'bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 shadow-[0_10px_25px_rgba(244,114,182,0.4)]'}`}
+            {isMecha ? 'COMMIT TO LOG 🚀' : 'Save & Track 🌸'}
+    </motion.div>
+import React from "react";
+import { Sparkles, Camera } from "lucide-react";
+interface SplashViewProps {
+export const SplashView: React.FC<SplashViewProps> = ({ theme }) => {
+    <div className="w-full h-full relative overflow-hidden flex flex-col items-center justify-center bg-gradient-to-b from-pink-300 to-purple-400 text-white">
+      {/* Background elements */}
+      <motion.div 
+        animate={{ rotate: 360 }}
+        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/10 rounded-full blur-[100px] pointer-events-none" 
+      
+      <motion.div
+        initial={{ scale: 0.5, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 200, damping: 20 }}
+        className="relative z-10 flex flex-col items-center"
+        <div className="relative w-32 h-32 bg-white/20 backdrop-blur-xl border-[4px] border-white rounded-[32px] flex items-center justify-center mb-6 shadow-[0_20px_50px_rgba(0,0,0,0.2)] overflow-hidden">
+          <img src={img1} alt="Logo" className="w-full h-full object-contain scale-[1.3] pt-4 z-10 relative" />
+          
+            animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+            className="absolute inset-0 bg-pink-400 mix-blend-overlay z-20"
+        <h1 className="text-[48px] font-black tracking-tighter mb-2 text-center leading-none drop-shadow-lg">BonSnap</h1>
+        <div className="flex items-center gap-2 bg-white/20 px-4 py-1.5 rounded-full backdrop-blur-md border border-white/40">
+          <Sparkles size={16} />
+          <span className="text-[13px] font-bold tracking-widest uppercase">Initializing Magic...</span>
+      </motion.div>
+      {/* Loading bar */}
+      <div className="absolute bottom-20 w-48 h-2 bg-white/20 rounded-full overflow-hidden">
+        <motion.div 
+          initial={{ width: 0 }}
+          animate={{ width: "100%" }}
+          transition={{ duration: 2.5, ease: "easeInOut" }}
+          className="h-full bg-white rounded-full"
+        />
+import { ChevronLeft, Send, Receipt, Plus, Gift, History, Target, User, Search, Settings2, Sparkles, Crosshair } from "lucide-react";
+import { ThemeState } from "../App";
+interface SubViewProps {
+  type: "transfer" | "splitBill" | "topUp" | "deals" | "history" | "savings" | "editProfile";
+  onBack: () => void;
+export const SubView: React.FC<SubViewProps> = ({ type, onBack, theme }) => {
+  const config = {
+    transfer: {
+      title: isMecha ? "FUNDS TRANSFER" : "Kirim Uang 💸",
+      icon: Send,
+      msg: isMecha ? "AWAITING TARGET COORDINATES." : "Mau pamer saldo ke siapa nih bestie?",
+      color: "text-blue-500",
+      bg: "bg-blue-500/20"
+    },
+    splitBill: {
+      title: isMecha ? "ASSET DIVISION" : "Bagi Tagihan 🧮",
+      icon: Receipt,
+      msg: isMecha ? "CALCULATING RESOURCE DISTRIBUTION." : "Gak jaman nombokin temen! Tagih sekarang!",
+      color: "text-orange-500",
+      bg: "bg-orange-500/20"
+    topUp: {
+      title: isMecha ? "RECHARGE CORE" : "Isi Saldo 💳",
+      icon: Plus,
+      msg: isMecha ? "ENERGY LOW. PLEASE RECHARGE." : "Asyikk saldo nambah, bisa jajan lagi dong!",
+      color: "text-green-500",
+      bg: "bg-green-500/20"
+    deals: {
+      title: isMecha ? "TACTICAL OFFERS" : "Promo Mantul 🎁",
+      icon: Gift,
+      msg: isMecha ? "SCANNING FOR TACTICAL ADVANTAGES." : "Mata diskon nyala nih! Sikat semua promo!",
+      color: "text-pink-500",
+      bg: "bg-pink-500/20"
+    history: {
+      title: isMecha ? "TRANSACTION LOGS" : "Riwayat Jajan 📜",
+      icon: History,
+      msg: isMecha ? "ACCESSING PREVIOUS DIRECTIVES." : "Waduh, panjang bener nih list dosa keuangan lo!",
+      color: "text-purple-500",
+      bg: "bg-purple-500/20"
+    savings: {
+      title: isMecha ? "OBJECTIVE: CONCERT" : "Tabungan Konser 🎫",
+      icon: Target,
+      msg: isMecha ? "RESOURCE ALLOCATION AT 40%." : "Sabar ya, dikit lagi tiket VIP kebeli kok!",
+      color: "text-indigo-500",
+      bg: "bg-indigo-500/20"
+    editProfile: {
+      title: isMecha ? "PILOT CONFIGURATION" : "Edit Profil 💅",
+      icon: User,
+      msg: isMecha ? "OVERRIDING PILOT DATA." : "Ganti PP bio dulu biar makin cetar!",
+      color: "text-teal-500",
+      bg: "bg-teal-500/20"
+  const currConfig = config[type];
+  const Icon = currConfig.icon;
+    <div className={`w-full h-full relative overflow-hidden flex flex-col text-slate-800 ${isMecha ? 'bg-slate-900' : 'bg-[#fdfbfb]'}`}>
+        className="absolute inset-0 z-0 bg-cover bg-top opacity-20"
+        style={{ backgroundImage: isMecha ? 'url("https://images.unsplash.com/photo-1581822261290-991b38693d1b?q=80&w=1000&auto=format&fit=crop")' : 'url("https://images.unsplash.com/photo-1509803874385-db7c23652552?q=80&w=1000&auto=format&fit=crop")' }}
+      {/* Header */}
+      <div className="relative z-10 px-6 pt-12 pb-4 flex items-center justify-between">
+          onClick={onBack}
+          className={`w-10 h-10 rounded-full flex items-center justify-center shadow-sm backdrop-blur-md border transition-all ${isMecha ? 'bg-blue-500/10 border-blue-500/30 text-blue-500 hover:bg-blue-500/20' : 'bg-white/80 border-pink-100 text-pink-500 hover:bg-pink-50'}`}
+          <ChevronLeft size={24} strokeWidth={3} />
+        <div className={`font-black text-lg tracking-wide ${isMecha ? 'text-blue-500 font-mono' : 'text-slate-800'}`}>
+          {currConfig.title}
+        <button className={`w-10 h-10 rounded-full flex items-center justify-center shadow-sm backdrop-blur-md border transition-all ${isMecha ? 'bg-blue-500/10 border-blue-500/30 text-blue-500 hover:bg-blue-500/20' : 'bg-white/80 border-pink-100 text-pink-500 hover:bg-pink-50'}`}>
+          <Search size={20} strokeWidth={2.5} />
+      {/* Content Area */}
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-8 pb-32">
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", bounce: 0.5 }}
+          className={`w-32 h-32 rounded-[32px] flex items-center justify-center mb-8 border-4 backdrop-blur-md shadow-2xl ${currConfig.bg} ${isMecha ? 'border-blue-400/50 shadow-blue-500/20' : 'border-white shadow-pink-200/50'}`}
+          <Icon size={64} className={currConfig.color} strokeWidth={2} />
+        <h2 className={`text-2xl font-black text-center mb-3 ${isMecha ? 'text-white font-mono' : 'text-slate-800'}`}>
+          {isMecha ? 'FEATURE IN DEVELOPMENT' : 'Lagi Dibangun Nih! 🚧'}
+        </h2>
+        <p className={`text-center font-bold px-4 ${isMecha ? 'text-blue-200/60 font-mono text-xs' : 'text-slate-500 text-sm'}`}>
+          {isMecha 
+            ? "THIS MODULE IS CURRENTLY UNDERGOING SYSTEM UPDATES. PLEASE CHECK BACK LATER." 
+            : "Sabar ya bestie, fitur ini lagi digodok sama dev-nya biar makin mantul pas lo pakai!"}
+        </p>
+        <motion.button 
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className={`mt-10 px-8 py-4 rounded-[24px] font-black tracking-wide shadow-lg flex items-center gap-2 border-2 ${isMecha ? 'bg-blue-500/20 text-blue-400 border-blue-400/30 hover:bg-blue-500/30' : 'bg-white text-pink-500 border-pink-100 hover:bg-pink-50'}`}
+          {isMecha ? <Settings2 size={20} /> : <Sparkles size={20} />}
+          {isMecha ? 'RETURN TO HUB' : 'Balik ke Dashboard'}
+        </motion.button>
+      <Mascot theme={theme} mood={mood} message={currConfig.msg} />
+import React, { useState } from 'react'
+const ERROR_IMG_SRC =
+  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODgiIGhlaWdodD0iODgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIzLjciPjxyZWN0IHg9IjE2IiB5PSIxNiIgd2lkdGg9IjU2IiBoZWlnaHQ9IjU2IiByeD0iNiIvPjxwYXRoIGQ9Im0xNiA1OCAxNi0xOCAzMiAzMiIvPjxjaXJjbGUgY3g9IjUzIiBjeT0iMzUiIHI9IjciLz48L3N2Zz4KCg=='
+export function ImageWithFallback(props: React.ImgHTMLAttributes<HTMLImageElement>) {
+  const [didError, setDidError] = useState(false)
+  const handleError = () => {
+    setDidError(true)
+  const { src, alt, style, className, ...rest } = props
+  return didError ? (
+    <div
+      className={`inline-block bg-gray-100 text-center align-middle ${className ?? ''}`}
+      style={style}
+      <div className="flex items-center justify-center w-full h-full">
+        <img src={ERROR_IMG_SRC} alt="Error loading image" {...rest} data-original-url={src} />
+    <img src={src} alt={alt} className={className} style={style} {...rest} onError={handleError} />
+"use client";
+import * as React from "react";
+import * as AccordionPrimitive from "@radix-ui/react-accordion";
+import { ChevronDownIcon } from "lucide-react";
+import { cn } from "./utils";
+function Accordion({
+  ...props
+}: React.ComponentProps<typeof AccordionPrimitive.Root>) {
+  return <AccordionPrimitive.Root data-slot="accordion" {...props} />;
+function AccordionItem({
+  className,
+}: React.ComponentProps<typeof AccordionPrimitive.Item>) {
+    <AccordionPrimitive.Item
+      data-slot="accordion-item"
+      className={cn("border-b last:border-b-0", className)}
+      {...props}
+    />
+function AccordionTrigger({
+  children,
+}: React.ComponentProps<typeof AccordionPrimitive.Trigger>) {
+    <AccordionPrimitive.Header className="flex">
+      <AccordionPrimitive.Trigger
+        data-slot="accordion-trigger"
+        className={cn(
+          "focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 items-start justify-between gap-4 rounded-md py-4 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&[data-state=open]>svg]:rotate-180",
+          className,
+        {...props}
+        {children}
+        <ChevronDownIcon className="text-muted-foreground pointer-events-none size-4 shrink-0 translate-y-0.5 transition-transform duration-200" />
+      </AccordionPrimitive.Trigger>
+    </AccordionPrimitive.Header>
+function AccordionContent({
+}: React.ComponentProps<typeof AccordionPrimitive.Content>) {
+    <AccordionPrimitive.Content
+      data-slot="accordion-content"
+      className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down overflow-hidden text-sm"
+      <div className={cn("pt-0 pb-4", className)}>{children}</div>
+    </AccordionPrimitive.Content>
+export { Accordion, AccordionItem, AccordionTrigger, AccordionContent };
+import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
+import { buttonVariants } from "./button";
+function AlertDialog({
+}: React.ComponentProps<typeof AlertDialogPrimitive.Root>) {
+  return <AlertDialogPrimitive.Root data-slot="alert-dialog" {...props} />;
+function AlertDialogTrigger({
+}: React.ComponentProps<typeof AlertDialogPrimitive.Trigger>) {
+    <AlertDialogPrimitive.Trigger data-slot="alert-dialog-trigger" {...props} />
+function AlertDialogPortal({
+}: React.ComponentProps<typeof AlertDialogPrimitive.Portal>) {
+    <AlertDialogPrimitive.Portal data-slot="alert-dialog-portal" {...props} />
+function AlertDialogOverlay({
+}: React.ComponentProps<typeof AlertDialogPrimitive.Overlay>) {
+    <AlertDialogPrimitive.Overlay
+      data-slot="alert-dialog-overlay"
+      className={cn(
+        "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50",
+        className,
+      )}
+function AlertDialogContent({
+}: React.ComponentProps<typeof AlertDialogPrimitive.Content>) {
+    <AlertDialogPortal>
+      <AlertDialogOverlay />
+      <AlertDialogPrimitive.Content
+        data-slot="alert-dialog-content"
+          "bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border p-6 shadow-lg duration-200 sm:max-w-lg",
+    </AlertDialogPortal>
+function AlertDialogHeader({
+}: React.ComponentProps<"div">) {
+      data-slot="alert-dialog-header"
+      className={cn("flex flex-col gap-2 text-center sm:text-left", className)}
+function AlertDialogFooter({
+      data-slot="alert-dialog-footer"
+        "flex flex-col-reverse gap-2 sm:flex-row sm:justify-end",
+function AlertDialogTitle({
+}: React.ComponentProps<typeof AlertDialogPrimitive.Title>) {
+    <AlertDialogPrimitive.Title
+      data-slot="alert-dialog-title"
+      className={cn("text-lg font-semibold", className)}
+function AlertDialogDescription({
+}: React.ComponentProps<typeof AlertDialogPrimitive.Description>) {
+    <AlertDialogPrimitive.Description
+      data-slot="alert-dialog-description"
+      className={cn("text-muted-foreground text-sm", className)}
+function AlertDialogAction({
+}: React.ComponentProps<typeof AlertDialogPrimitive.Action>) {
+    <AlertDialogPrimitive.Action
+      className={cn(buttonVariants(), className)}
+function AlertDialogCancel({
+}: React.ComponentProps<typeof AlertDialogPrimitive.Cancel>) {
+    <AlertDialogPrimitive.Cancel
+      className={cn(buttonVariants({ variant: "outline" }), className)}
+export {
+  AlertDialog,
+  AlertDialogPortal,
+  AlertDialogOverlay,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+import { cva, type VariantProps } from "class-variance-authority";
+const alertVariants = cva(
+  "relative w-full rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current",
+    variants: {
+      variant: {
+        default: "bg-card text-card-foreground",
+        destructive:
+          "text-destructive bg-card [&>svg]:text-current *:data-[slot=alert-description]:text-destructive/90",
+      },
+    defaultVariants: {
+      variant: "default",
+function Alert({
+  variant,
+}: React.ComponentProps<"div"> & VariantProps<typeof alertVariants>) {
+      data-slot="alert"
+      role="alert"
+      className={cn(alertVariants({ variant }), className)}
+function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
+      data-slot="alert-title"
+        "col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight",
+function AlertDescription({
+      data-slot="alert-description"
+        "text-muted-foreground col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed",
+export { Alert, AlertTitle, AlertDescription };
+import * as AspectRatioPrimitive from "@radix-ui/react-aspect-ratio";
+function AspectRatio({
+}: React.ComponentProps<typeof AspectRatioPrimitive.Root>) {
+  return <AspectRatioPrimitive.Root data-slot="aspect-ratio" {...props} />;
+export { AspectRatio };
+import * as AvatarPrimitive from "@radix-ui/react-avatar";
+function Avatar({
+}: React.ComponentProps<typeof AvatarPrimitive.Root>) {
+    <AvatarPrimitive.Root
+      data-slot="avatar"
+        "relative flex size-10 shrink-0 overflow-hidden rounded-full",
+function AvatarImage({
+}: React.ComponentProps<typeof AvatarPrimitive.Image>) {
+    <AvatarPrimitive.Image
+      data-slot="avatar-image"
+      className={cn("aspect-square size-full", className)}
+function AvatarFallback({
+}: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
+    <AvatarPrimitive.Fallback
+      data-slot="avatar-fallback"
+        "bg-muted flex size-full items-center justify-center rounded-full",
+export { Avatar, AvatarImage, AvatarFallback };
+import { Slot } from "@radix-ui/react-slot";
+const badgeVariants = cva(
+  "inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden",
+        default:
+          "border-transparent bg-primary text-primary-foreground [a&]:hover:bg-primary/90",
+        secondary:
+          "border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90",
+          "border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+        outline:
+          "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
+function Badge({
+  asChild = false,
+}: React.ComponentProps<"span"> &
+  VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
+  const Comp = asChild ? Slot : "span";
+    <Comp
+      data-slot="badge"
+      className={cn(badgeVariants({ variant }), className)}
+export { Badge, badgeVariants };
+import { ChevronRight, MoreHorizontal } from "lucide-react";
+function Breadcrumb({ ...props }: React.ComponentProps<"nav">) {
+  return <nav aria-label="breadcrumb" data-slot="breadcrumb" {...props} />;
+function BreadcrumbList({ className, ...props }: React.ComponentProps<"ol">) {
+    <ol
+      data-slot="breadcrumb-list"
+        "text-muted-foreground flex flex-wrap items-center gap-1.5 text-sm break-words sm:gap-2.5",
+function BreadcrumbItem({ className, ...props }: React.ComponentProps<"li">) {
+    <li
+      data-slot="breadcrumb-item"
+      className={cn("inline-flex items-center gap-1.5", className)}
+function BreadcrumbLink({
+  asChild,
+}: React.ComponentProps<"a"> & {
+  asChild?: boolean;
+  const Comp = asChild ? Slot : "a";
+      data-slot="breadcrumb-link"
+      className={cn("hover:text-foreground transition-colors", className)}
+function BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">) {
+    <span
+      data-slot="breadcrumb-page"
+      role="link"
+      aria-disabled="true"
+      aria-current="page"
+      className={cn("text-foreground font-normal", className)}
+function BreadcrumbSeparator({
+}: React.ComponentProps<"li">) {
+      data-slot="breadcrumb-separator"
+      role="presentation"
+      aria-hidden="true"
+      className={cn("[&>svg]:size-3.5", className)}
+      {children ?? <ChevronRight />}
+    </li>
+function BreadcrumbEllipsis({
+}: React.ComponentProps<"span">) {
+      data-slot="breadcrumb-ellipsis"
+      className={cn("flex size-9 items-center justify-center", className)}
+      <MoreHorizontal className="size-4" />
+      <span className="sr-only">More</span>
+    </span>
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+  BreadcrumbEllipsis,
+const buttonVariants = cva(
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+          "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+          "border bg-background text-foreground hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost:
+          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
+        link: "text-primary underline-offset-4 hover:underline",
+      size: {
+        default: "h-9 px-4 py-2 has-[>svg]:px-3",
+        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
+        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
+        icon: "size-9 rounded-md",
+      size: "default",
+function Button({
+  size,
+}: React.ComponentProps<"button"> &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean;
+  const Comp = asChild ? Slot : "button";
+      data-slot="button"
+      className={cn(buttonVariants({ variant, size, className }))}
+export { Button, buttonVariants };
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { DayPicker } from "react-day-picker";
+function Calendar({
+  classNames,
+  showOutsideDays = true,
+}: React.ComponentProps<typeof DayPicker>) {
+    <DayPicker
+      showOutsideDays={showOutsideDays}
+      className={cn("p-3", className)}
+      classNames={{
+        months: "flex flex-col sm:flex-row gap-2",
+        month: "flex flex-col gap-4",
+        caption: "flex justify-center pt-1 relative items-center w-full",
+        caption_label: "text-sm font-medium",
+        nav: "flex items-center gap-1",
+        nav_button: cn(
+          buttonVariants({ variant: "outline" }),
+          "size-7 bg-transparent p-0 opacity-50 hover:opacity-100",
+        ),
+        nav_button_previous: "absolute left-1",
+        nav_button_next: "absolute right-1",
+        table: "w-full border-collapse space-x-1",
+        head_row: "flex",
+        head_cell:
+          "text-muted-foreground rounded-md w-8 font-normal text-[0.8rem]",
+        row: "flex w-full mt-2",
+        cell: cn(
+          "relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent [&:has([aria-selected].day-range-end)]:rounded-r-md",
+          props.mode === "range"
+            ? "[&:has(>.day-range-end)]:rounded-r-md [&:has(>.day-range-start)]:rounded-l-md first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md"
+            : "[&:has([aria-selected])]:rounded-md",
+        day: cn(
+          buttonVariants({ variant: "ghost" }),
+          "size-8 p-0 font-normal aria-selected:opacity-100",
+        day_range_start:
+          "day-range-start aria-selected:bg-primary aria-selected:text-primary-foreground",
+        day_range_end:
+          "day-range-end aria-selected:bg-primary aria-selected:text-primary-foreground",
+        day_selected:
+          "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
+        day_today: "bg-accent text-accent-foreground",
+        day_outside:
+          "day-outside text-muted-foreground aria-selected:text-muted-foreground",
+        day_disabled: "text-muted-foreground opacity-50",
+        day_range_middle:
+          "aria-selected:bg-accent aria-selected:text-accent-foreground",
+        day_hidden: "invisible",
+        ...classNames,
+      }}
+      components={{
+        IconLeft: ({ className, ...props }) => (
+          <ChevronLeft className={cn("size-4", className)} {...props} />
+        IconRight: ({ className, ...props }) => (
+          <ChevronRight className={cn("size-4", className)} {...props} />
+export { Calendar };
+function Card({ className, ...props }: React.ComponentProps<"div">) {
+      data-slot="card"
+        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border",
+function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
+      data-slot="card-header"
+        "@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 pt-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6",
+function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
+    <h4
+      data-slot="card-title"
+      className={cn("leading-none", className)}
+function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
+    <p
+      data-slot="card-description"
+      className={cn("text-muted-foreground", className)}
+function CardAction({ className, ...props }: React.ComponentProps<"div">) {
+      data-slot="card-action"
+        "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
+function CardContent({ className, ...props }: React.ComponentProps<"div">) {
+      data-slot="card-content"
+      className={cn("px-6 [&:last-child]:pb-6", className)}
+function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
+      data-slot="card-footer"
+      className={cn("flex items-center px-6 pb-6 [.border-t]:pt-6", className)}
+  Card,
+  CardHeader,
+  CardFooter,
+  CardTitle,
+  CardAction,
+  CardDescription,
+  CardContent,
+import useEmblaCarousel, {
+  type UseEmblaCarouselType,
+} from "embla-carousel-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { Button } from "./button";
+type CarouselApi = UseEmblaCarouselType[1];
+type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
+type CarouselOptions = UseCarouselParameters[0];
+type CarouselPlugin = UseCarouselParameters[1];
+type CarouselProps = {
+  opts?: CarouselOptions;
+  plugins?: CarouselPlugin;
+  orientation?: "horizontal" | "vertical";
+  setApi?: (api: CarouselApi) => void;
+type CarouselContextProps = {
+  carouselRef: ReturnType<typeof useEmblaCarousel>[0];
+  api: ReturnType<typeof useEmblaCarousel>[1];
+  scrollPrev: () => void;
+  scrollNext: () => void;
+  canScrollPrev: boolean;
+  canScrollNext: boolean;
+} & CarouselProps;
+const CarouselContext = React.createContext<CarouselContextProps | null>(null);
+function useCarousel() {
+  const context = React.useContext(CarouselContext);
+  if (!context) {
+    throw new Error("useCarousel must be used within a <Carousel />");
+  return context;
+function Carousel({
+  orientation = "horizontal",
+  opts,
+  setApi,
+  plugins,
+}: React.ComponentProps<"div"> & CarouselProps) {
+  const [carouselRef, api] = useEmblaCarousel(
+    {
+      ...opts,
+      axis: orientation === "horizontal" ? "x" : "y",
+    plugins,
+  const [canScrollPrev, setCanScrollPrev] = React.useState(false);
+  const [canScrollNext, setCanScrollNext] = React.useState(false);
+  const onSelect = React.useCallback((api: CarouselApi) => {
+    if (!api) return;
+    setCanScrollPrev(api.canScrollPrev());
+    setCanScrollNext(api.canScrollNext());
+  const scrollPrev = React.useCallback(() => {
+    api?.scrollPrev();
+  const scrollNext = React.useCallback(() => {
+    api?.scrollNext();
+  const handleKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        scrollPrev();
+      } else if (event.key === "ArrowRight") {
+        scrollNext();
+    [scrollPrev, scrollNext],
+  React.useEffect(() => {
+    if (!api || !setApi) return;
+    setApi(api);
+  }, [api, setApi]);
+    onSelect(api);
+    api.on("reInit", onSelect);
+    api.on("select", onSelect);
+    return () => {
+      api?.off("select", onSelect);
+  }, [api, onSelect]);
+    <CarouselContext.Provider
+      value={{
+        carouselRef,
+        api: api,
+        opts,
+        orientation:
+          orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
+        scrollPrev,
+        scrollNext,
+        canScrollPrev,
+        canScrollNext,
+      <div
+        onKeyDownCapture={handleKeyDown}
+        className={cn("relative", className)}
+        role="region"
+        aria-roledescription="carousel"
+        data-slot="carousel"
+    </CarouselContext.Provider>
+function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
+  const { carouselRef, orientation } = useCarousel();
+      ref={carouselRef}
+      className="overflow-hidden"
+      data-slot="carousel-content"
+          "flex",
+          orientation === "horizontal" ? "-ml-4" : "-mt-4 flex-col",
+function CarouselItem({ className, ...props }: React.ComponentProps<"div">) {
+  const { orientation } = useCarousel();
+      role="group"
+      aria-roledescription="slide"
+      data-slot="carousel-item"
+        "min-w-0 shrink-0 grow-0 basis-full",
+        orientation === "horizontal" ? "pl-4" : "pt-4",
+function CarouselPrevious({
+  variant = "outline",
+  size = "icon",
+}: React.ComponentProps<typeof Button>) {
+  const { orientation, scrollPrev, canScrollPrev } = useCarousel();
+    <Button
+      data-slot="carousel-previous"
+      variant={variant}
+      size={size}
+        "absolute size-8 rounded-full",
+        orientation === "horizontal"
+          ? "top-1/2 -left-12 -translate-y-1/2"
+          : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
+      disabled={!canScrollPrev}
+      onClick={scrollPrev}
+      <ArrowLeft />
+      <span className="sr-only">Previous slide</span>
+    </Button>
+function CarouselNext({
+  const { orientation, scrollNext, canScrollNext } = useCarousel();
+      data-slot="carousel-next"
+          ? "top-1/2 -right-12 -translate-y-1/2"
+          : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
+      disabled={!canScrollNext}
+      onClick={scrollNext}
+      <ArrowRight />
+      <span className="sr-only">Next slide</span>
+  type CarouselApi,
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+import * as RechartsPrimitive from "recharts";
+// Format: { THEME_NAME: CSS_SELECTOR }
+const THEMES = { light: "", dark: ".dark" } as const;
+export type ChartConfig = {
+  [k in string]: {
+    label?: React.ReactNode;
+    icon?: React.ComponentType;
+    | { color?: string; theme?: never }
+    | { color?: never; theme: Record<keyof typeof THEMES, string> }
+type ChartContextProps = {
+  config: ChartConfig;
+const ChartContext = React.createContext<ChartContextProps | null>(null);
+function useChart() {
+  const context = React.useContext(ChartContext);
+    throw new Error("useChart must be used within a <ChartContainer />");
+function ChartContainer({
+  id,
+  config,
+}: React.ComponentProps<"div"> & {
+  children: React.ComponentProps<
+    typeof RechartsPrimitive.ResponsiveContainer
+  >["children"];
+  const uniqueId = React.useId();
+  const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`;
+    <ChartContext.Provider value={{ config }}>
+        data-slot="chart"
+        data-chart={chartId}
+          "[&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border flex aspect-video justify-center text-xs [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-hidden [&_.recharts-sector]:outline-hidden [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-surface]:outline-hidden",
+        <ChartStyle id={chartId} config={config} />
+        <RechartsPrimitive.ResponsiveContainer>
+          {children}
+        </RechartsPrimitive.ResponsiveContainer>
+    </ChartContext.Provider>
+const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
+  const colorConfig = Object.entries(config).filter(
+    ([, config]) => config.theme || config.color,
+  if (!colorConfig.length) {
+    return null;
+    <style
+      dangerouslySetInnerHTML={{
+        __html: Object.entries(THEMES)
+          .map(
+            ([theme, prefix]) => `
+${prefix} [data-chart=${id}] {
+${colorConfig
+  .map(([key, itemConfig]) => {
+    const color =
+      itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
+      itemConfig.color;
+    return color ? `  --color-${key}: ${color};` : null;
+  .join("\n")}
+          )
+          .join("\n"),
+const ChartTooltip = RechartsPrimitive.Tooltip;
+function ChartTooltipContent({
+  active,
+  payload,
+  indicator = "dot",
+  hideLabel = false,
+  hideIndicator = false,
+  label,
+  labelFormatter,
+  labelClassName,
+  formatter,
+  color,
+  nameKey,
+  labelKey,
+}: React.ComponentProps<typeof RechartsPrimitive.Tooltip> &
+  React.ComponentProps<"div"> & {
+    hideLabel?: boolean;
+    hideIndicator?: boolean;
+    indicator?: "line" | "dot" | "dashed";
+    nameKey?: string;
+    labelKey?: string;
+  const { config } = useChart();
+  const tooltipLabel = React.useMemo(() => {
+    if (hideLabel || !payload?.length) {
+      return null;
+    const [item] = payload;
+    const key = `${labelKey || item?.dataKey || item?.name || "value"}`;
+    const itemConfig = getPayloadConfigFromPayload(config, item, key);
+    const value =
+      !labelKey && typeof label === "string"
+        ? config[label as keyof typeof config]?.label || label
+        : itemConfig?.label;
+    if (labelFormatter) {
+      return (
+        <div className={cn("font-medium", labelClassName)}>
+          {labelFormatter(value, payload)}
+      );
+    if (!value) {
+    return <div className={cn("font-medium", labelClassName)}>{value}</div>;
+    label,
+    labelFormatter,
+    payload,
+    hideLabel,
+    labelClassName,
+    config,
+    labelKey,
+  if (!active || !payload?.length) {
+  const nestLabel = payload.length === 1 && indicator !== "dot";
+        "border-border/50 bg-background grid min-w-[8rem] items-start gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs shadow-xl",
+      {!nestLabel ? tooltipLabel : null}
+      <div className="grid gap-1.5">
+        {payload.map((item, index) => {
+          const key = `${nameKey || item.name || item.dataKey || "value"}`;
+          const itemConfig = getPayloadConfigFromPayload(config, item, key);
+          const indicatorColor = color || item.payload.fill || item.color;
+          return (
+            <div
+              key={item.dataKey}
+              className={cn(
+                "[&>svg]:text-muted-foreground flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5",
+                indicator === "dot" && "items-center",
+              )}
+              {formatter && item?.value !== undefined && item.name ? (
+                formatter(item.value, item.name, item, index, item.payload)
+              ) : (
+                <>
+                  {itemConfig?.icon ? (
+                    <itemConfig.icon />
+                  ) : (
+                    !hideIndicator && (
+                      <div
+                        className={cn(
+                          "shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg)",
+                          {
+                            "h-2.5 w-2.5": indicator === "dot",
+                            "w-1": indicator === "line",
+                            "w-0 border-[1.5px] border-dashed bg-transparent":
+                              indicator === "dashed",
+                            "my-0.5": nestLabel && indicator === "dashed",
+                          },
+                        )}
+                        style={
+                            "--color-bg": indicatorColor,
+                            "--color-border": indicatorColor,
+                          } as React.CSSProperties
+                        }
+                      />
+                    )
+                  )}
+                  <div
+                    className={cn(
+                      "flex flex-1 justify-between leading-none",
+                      nestLabel ? "items-end" : "items-center",
+                    )}
+                    <div className="grid gap-1.5">
+                      {nestLabel ? tooltipLabel : null}
+                      <span className="text-muted-foreground">
+                        {itemConfig?.label || item.name}
+                      </span>
+                    {item.value && (
+                      <span className="text-foreground font-mono font-medium tabular-nums">
+                        {item.value.toLocaleString()}
+                </>
+          );
+        })}
+const ChartLegend = RechartsPrimitive.Legend;
+function ChartLegendContent({
+  hideIcon = false,
+  verticalAlign = "bottom",
+}: React.ComponentProps<"div"> &
+  Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
+    hideIcon?: boolean;
+  if (!payload?.length) {
+        "flex items-center justify-center gap-4",
+        verticalAlign === "top" ? "pb-3" : "pt-3",
+      {payload.map((item) => {
+        const key = `${nameKey || item.dataKey || "value"}`;
+        const itemConfig = getPayloadConfigFromPayload(config, item, key);
+        return (
+          <div
+            key={item.value}
+            className={cn(
+              "[&>svg]:text-muted-foreground flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3",
+            )}
+            {itemConfig?.icon && !hideIcon ? (
+              <itemConfig.icon />
+            ) : (
+              <div
+                className="h-2 w-2 shrink-0 rounded-[2px]"
+                style={{
+                  backgroundColor: item.color,
+            {itemConfig?.label}
+        );
+      })}
+// Helper to extract item config from a payload.
+function getPayloadConfigFromPayload(
+  config: ChartConfig,
+  payload: unknown,
+  key: string,
+  if (typeof payload !== "object" || payload === null) {
+    return undefined;
+  const payloadPayload =
+    "payload" in payload &&
+    typeof payload.payload === "object" &&
+    payload.payload !== null
+      ? payload.payload
+      : undefined;
+  let configLabelKey: string = key;
+  if (
+    key in payload &&
+    typeof payload[key as keyof typeof payload] === "string"
+    configLabelKey = payload[key as keyof typeof payload] as string;
+  } else if (
+    payloadPayload &&
+    key in payloadPayload &&
+    typeof payloadPayload[key as keyof typeof payloadPayload] === "string"
+    configLabelKey = payloadPayload[
+      key as keyof typeof payloadPayload
+    ] as string;
+  return configLabelKey in config
+    ? config[configLabelKey]
+    : config[key as keyof typeof config];
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+  ChartStyle,
+import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
+import { CheckIcon } from "lucide-react";
+function Checkbox({
+}: React.ComponentProps<typeof CheckboxPrimitive.Root>) {
+    <CheckboxPrimitive.Root
+      data-slot="checkbox"
+        "peer border bg-input-background dark:bg-input/30 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground dark:data-[state=checked]:bg-primary data-[state=checked]:border-primary focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive size-4 shrink-0 rounded-[4px] border shadow-xs transition-shadow outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50",
+      <CheckboxPrimitive.Indicator
+        data-slot="checkbox-indicator"
+        className="flex items-center justify-center text-current transition-none"
+        <CheckIcon className="size-3.5" />
+      </CheckboxPrimitive.Indicator>
+    </CheckboxPrimitive.Root>
+export { Checkbox };
+import * as CollapsiblePrimitive from "@radix-ui/react-collapsible";
+function Collapsible({
+}: React.ComponentProps<typeof CollapsiblePrimitive.Root>) {
+  return <CollapsiblePrimitive.Root data-slot="collapsible" {...props} />;
+function CollapsibleTrigger({
+}: React.ComponentProps<typeof CollapsiblePrimitive.CollapsibleTrigger>) {
+    <CollapsiblePrimitive.CollapsibleTrigger
+      data-slot="collapsible-trigger"
+function CollapsibleContent({
+}: React.ComponentProps<typeof CollapsiblePrimitive.CollapsibleContent>) {
+    <CollapsiblePrimitive.CollapsibleContent
+      data-slot="collapsible-content"
+export { Collapsible, CollapsibleTrigger, CollapsibleContent };
+import { Command as CommandPrimitive } from "cmdk";
+import { SearchIcon } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "./dialog";
+function Command({
+}: React.ComponentProps<typeof CommandPrimitive>) {
+    <CommandPrimitive
+      data-slot="command"
+        "bg-popover text-popover-foreground flex h-full w-full flex-col overflow-hidden rounded-md",
+function CommandDialog({
+  title = "Command Palette",
+  description = "Search for a command to run...",
+}: React.ComponentProps<typeof Dialog> & {
+  title?: string;
+  description?: string;
+    <Dialog {...props}>
+      <DialogHeader className="sr-only">
+        <DialogTitle>{title}</DialogTitle>
+        <DialogDescription>{description}</DialogDescription>
+      </DialogHeader>
+      <DialogContent className="overflow-hidden p-0">
+        <Command className="[&_[cmdk-group-heading]]:text-muted-foreground **:data-[slot=command-input-wrapper]:h-12 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group]]:px-2 [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5">
+        </Command>
+      </DialogContent>
+    </Dialog>
+function CommandInput({
+}: React.ComponentProps<typeof CommandPrimitive.Input>) {
+      data-slot="command-input-wrapper"
+      className="flex h-9 items-center gap-2 border-b px-3"
+      <SearchIcon className="size-4 shrink-0 opacity-50" />
+      <CommandPrimitive.Input
+        data-slot="command-input"
+          "placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50",
+function CommandList({
+}: React.ComponentProps<typeof CommandPrimitive.List>) {
+    <CommandPrimitive.List
+      data-slot="command-list"
+        "max-h-[300px] scroll-py-1 overflow-x-hidden overflow-y-auto",
+function CommandEmpty({
+}: React.ComponentProps<typeof CommandPrimitive.Empty>) {
+    <CommandPrimitive.Empty
+      data-slot="command-empty"
+      className="py-6 text-center text-sm"
+function CommandGroup({
+}: React.ComponentProps<typeof CommandPrimitive.Group>) {
+    <CommandPrimitive.Group
+      data-slot="command-group"
+        "text-foreground [&_[cmdk-group-heading]]:text-muted-foreground overflow-hidden p-1 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium",
+function CommandSeparator({
+}: React.ComponentProps<typeof CommandPrimitive.Separator>) {
+    <CommandPrimitive.Separator
+      data-slot="command-separator"
+      className={cn("bg-border -mx-1 h-px", className)}
+function CommandItem({
+}: React.ComponentProps<typeof CommandPrimitive.Item>) {
+    <CommandPrimitive.Item
+      data-slot="command-item"
+        "data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+function CommandShortcut({
+      data-slot="command-shortcut"
+        "text-muted-foreground ml-auto text-xs tracking-widest",
+  Command,
+  CommandDialog,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandShortcut,
+  CommandSeparator,
+import * as ContextMenuPrimitive from "@radix-ui/react-context-menu";
+import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react";
+function ContextMenu({
+}: React.ComponentProps<typeof ContextMenuPrimitive.Root>) {
+  return <ContextMenuPrimitive.Root data-slot="context-menu" {...props} />;
+function ContextMenuTrigger({
+}: React.ComponentProps<typeof ContextMenuPrimitive.Trigger>) {
+    <ContextMenuPrimitive.Trigger data-slot="context-menu-trigger" {...props} />
+function ContextMenuGroup({
+}: React.ComponentProps<typeof ContextMenuPrimitive.Group>) {
+    <ContextMenuPrimitive.Group data-slot="context-menu-group" {...props} />
+function ContextMenuPortal({
+}: React.ComponentProps<typeof ContextMenuPrimitive.Portal>) {
+    <ContextMenuPrimitive.Portal data-slot="context-menu-portal" {...props} />
+function ContextMenuSub({
+}: React.ComponentProps<typeof ContextMenuPrimitive.Sub>) {
+  return <ContextMenuPrimitive.Sub data-slot="context-menu-sub" {...props} />;
+function ContextMenuRadioGroup({
+}: React.ComponentProps<typeof ContextMenuPrimitive.RadioGroup>) {
+    <ContextMenuPrimitive.RadioGroup
+      data-slot="context-menu-radio-group"
+function ContextMenuSubTrigger({
+  inset,
+}: React.ComponentProps<typeof ContextMenuPrimitive.SubTrigger> & {
+  inset?: boolean;
+    <ContextMenuPrimitive.SubTrigger
+      data-slot="context-menu-sub-trigger"
+      data-inset={inset}
+        "focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground flex cursor-default items-center rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[inset]:pl-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+      {children}
+      <ChevronRightIcon className="ml-auto" />
+    </ContextMenuPrimitive.SubTrigger>
+function ContextMenuSubContent({
+}: React.ComponentProps<typeof ContextMenuPrimitive.SubContent>) {
+    <ContextMenuPrimitive.SubContent
+      data-slot="context-menu-sub-content"
+        "bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-hidden rounded-md border p-1 shadow-lg",
+function ContextMenuContent({
+}: React.ComponentProps<typeof ContextMenuPrimitive.Content>) {
+    <ContextMenuPrimitive.Portal>
+      <ContextMenuPrimitive.Content
+        data-slot="context-menu-content"
+          "bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 max-h-(--radix-context-menu-content-available-height) min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-md border p-1 shadow-md",
+    </ContextMenuPrimitive.Portal>
+function ContextMenuItem({
+  variant = "default",
+}: React.ComponentProps<typeof ContextMenuPrimitive.Item> & {
+  variant?: "default" | "destructive";
+    <ContextMenuPrimitive.Item
+      data-slot="context-menu-item"
+      data-variant={variant}
+        "focus:bg-accent focus:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 dark:data-[variant=destructive]:focus:bg-destructive/20 data-[variant=destructive]:focus:text-destructive data-[variant=destructive]:*:[svg]:!text-destructive [&_svg:not([class*='text-'])]:text-muted-foreground relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+function ContextMenuCheckboxItem({
+  checked,
+}: React.ComponentProps<typeof ContextMenuPrimitive.CheckboxItem>) {
+    <ContextMenuPrimitive.CheckboxItem
+      data-slot="context-menu-checkbox-item"
+        "focus:bg-accent focus:text-accent-foreground relative flex cursor-default items-center gap-2 rounded-sm py-1.5 pr-2 pl-8 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+      checked={checked}
+      <span className="pointer-events-none absolute left-2 flex size-3.5 items-center justify-center">
+        <ContextMenuPrimitive.ItemIndicator>
+          <CheckIcon className="size-4" />
+        </ContextMenuPrimitive.ItemIndicator>
+      </span>
+    </ContextMenuPrimitive.CheckboxItem>
+function ContextMenuRadioItem({
+}: React.ComponentProps<typeof ContextMenuPrimitive.RadioItem>) {
+    <ContextMenuPrimitive.RadioItem
+      data-slot="context-menu-radio-item"
+          <CircleIcon className="size-2 fill-current" />
+    </ContextMenuPrimitive.RadioItem>
+function ContextMenuLabel({
+}: React.ComponentProps<typeof ContextMenuPrimitive.Label> & {
+    <ContextMenuPrimitive.Label
+      data-slot="context-menu-label"
+        "text-foreground px-2 py-1.5 text-sm font-medium data-[inset]:pl-8",
+function ContextMenuSeparator({
+}: React.ComponentProps<typeof ContextMenuPrimitive.Separator>) {
+    <ContextMenuPrimitive.Separator
+      data-slot="context-menu-separator"
+      className={cn("bg-border -mx-1 my-1 h-px", className)}
+function ContextMenuShortcut({
+      data-slot="context-menu-shortcut"
+  ContextMenu,
+  ContextMenuTrigger,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuCheckboxItem,
+  ContextMenuRadioItem,
+  ContextMenuLabel,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuGroup,
+  ContextMenuPortal,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuRadioGroup,
+import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { XIcon } from "lucide-react";
+function Dialog({
+}: React.ComponentProps<typeof DialogPrimitive.Root>) {
+  return <DialogPrimitive.Root data-slot="dialog" {...props} />;
+function DialogTrigger({
+}: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
+  return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />;
+function DialogPortal({
+}: React.ComponentProps<typeof DialogPrimitive.Portal>) {
+  return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />;
+function DialogClose({
+}: React.ComponentProps<typeof DialogPrimitive.Close>) {
+  return <DialogPrimitive.Close data-slot="dialog-close" {...props} />;
+function DialogOverlay({
+}: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
+    <DialogPrimitive.Overlay
+      data-slot="dialog-overlay"
+function DialogContent({
+}: React.ComponentProps<typeof DialogPrimitive.Content>) {
+    <DialogPortal data-slot="dialog-portal">
+      <DialogOverlay />
+      <DialogPrimitive.Content
+        data-slot="dialog-content"
+        <DialogPrimitive.Close className="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
+          <XIcon />
+          <span className="sr-only">Close</span>
+        </DialogPrimitive.Close>
+      </DialogPrimitive.Content>
+    </DialogPortal>
+function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
+      data-slot="dialog-header"
+function DialogFooter({ className, ...props }: React.ComponentProps<"div">) {
+      data-slot="dialog-footer"
+function DialogTitle({
+}: React.ComponentProps<typeof DialogPrimitive.Title>) {
+    <DialogPrimitive.Title
+      data-slot="dialog-title"
+      className={cn("text-lg leading-none font-semibold", className)}
+function DialogDescription({
+}: React.ComponentProps<typeof DialogPrimitive.Description>) {
+    <DialogPrimitive.Description
+      data-slot="dialog-description"
+  DialogClose,
+  DialogFooter,
+  DialogOverlay,
+  DialogPortal,
+  DialogTrigger,
+import { Drawer as DrawerPrimitive } from "vaul";
+function Drawer({
+}: React.ComponentProps<typeof DrawerPrimitive.Root>) {
+  return <DrawerPrimitive.Root data-slot="drawer" {...props} />;
+function DrawerTrigger({
+}: React.ComponentProps<typeof DrawerPrimitive.Trigger>) {
+  return <DrawerPrimitive.Trigger data-slot="drawer-trigger" {...props} />;
+function DrawerPortal({
+}: React.ComponentProps<typeof DrawerPrimitive.Portal>) {
+  return <DrawerPrimitive.Portal data-slot="drawer-portal" {...props} />;
+function DrawerClose({
+}: React.ComponentProps<typeof DrawerPrimitive.Close>) {
+  return <DrawerPrimitive.Close data-slot="drawer-close" {...props} />;
+function DrawerOverlay({
+}: React.ComponentProps<typeof DrawerPrimitive.Overlay>) {
+    <DrawerPrimitive.Overlay
+      data-slot="drawer-overlay"
+function DrawerContent({
+}: React.ComponentProps<typeof DrawerPrimitive.Content>) {
+    <DrawerPortal data-slot="drawer-portal">
+      <DrawerOverlay />
+      <DrawerPrimitive.Content
+        data-slot="drawer-content"
+          "group/drawer-content bg-background fixed z-50 flex h-auto flex-col",
+          "data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:mb-24 data-[vaul-drawer-direction=top]:max-h-[80vh] data-[vaul-drawer-direction=top]:rounded-b-lg data-[vaul-drawer-direction=top]:border-b",
+          "data-[vaul-drawer-direction=bottom]:inset-x-0 data-[vaul-drawer-direction=bottom]:bottom-0 data-[vaul-drawer-direction=bottom]:mt-24 data-[vaul-drawer-direction=bottom]:max-h-[80vh] data-[vaul-drawer-direction=bottom]:rounded-t-lg data-[vaul-drawer-direction=bottom]:border-t",
+          "data-[vaul-drawer-direction=right]:inset-y-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:w-3/4 data-[vaul-drawer-direction=right]:border-l data-[vaul-drawer-direction=right]:sm:max-w-sm",
+          "data-[vaul-drawer-direction=left]:inset-y-0 data-[vaul-drawer-direction=left]:left-0 data-[vaul-drawer-direction=left]:w-3/4 data-[vaul-drawer-direction=left]:border-r data-[vaul-drawer-direction=left]:sm:max-w-sm",
+        <div className="bg-muted mx-auto mt-4 hidden h-2 w-[100px] shrink-0 rounded-full group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />
+      </DrawerPrimitive.Content>
+    </DrawerPortal>
+function DrawerHeader({ className, ...props }: React.ComponentProps<"div">) {
+      data-slot="drawer-header"
+      className={cn("flex flex-col gap-1.5 p-4", className)}
+function DrawerFooter({ className, ...props }: React.ComponentProps<"div">) {
+      data-slot="drawer-footer"
+      className={cn("mt-auto flex flex-col gap-2 p-4", className)}
+function DrawerTitle({
+}: React.ComponentProps<typeof DrawerPrimitive.Title>) {
+    <DrawerPrimitive.Title
+      data-slot="drawer-title"
+      className={cn("text-foreground font-semibold", className)}
+function DrawerDescription({
+}: React.ComponentProps<typeof DrawerPrimitive.Description>) {
+    <DrawerPrimitive.Description
+      data-slot="drawer-description"
+  Drawer,
+  DrawerPortal,
+  DrawerOverlay,
+  DrawerTrigger,
+  DrawerClose,
+  DrawerContent,
+  DrawerHeader,
+  DrawerFooter,
+  DrawerTitle,
+  DrawerDescription,
+import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
+function DropdownMenu({
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
+  return <DropdownMenuPrimitive.Root data-slot="dropdown-menu" {...props} />;
+function DropdownMenuPortal({
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Portal>) {
+    <DropdownMenuPrimitive.Portal data-slot="dropdown-menu-portal" {...props} />
+function DropdownMenuTrigger({
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>) {
+    <DropdownMenuPrimitive.Trigger
+      data-slot="dropdown-menu-trigger"
+function DropdownMenuContent({
+  sideOffset = 4,
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Content>) {
+    <DropdownMenuPrimitive.Portal>
+      <DropdownMenuPrimitive.Content
+        data-slot="dropdown-menu-content"
+        sideOffset={sideOffset}
+          "bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 max-h-(--radix-dropdown-menu-content-available-height) min-w-[8rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-md border p-1 shadow-md",
+    </DropdownMenuPrimitive.Portal>
+function DropdownMenuGroup({
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Group>) {
+    <DropdownMenuPrimitive.Group data-slot="dropdown-menu-group" {...props} />
+function DropdownMenuItem({
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Item> & {
+    <DropdownMenuPrimitive.Item
+      data-slot="dropdown-menu-item"
+function DropdownMenuCheckboxItem({
+}: React.ComponentProps<typeof DropdownMenuPrimitive.CheckboxItem>) {
+    <DropdownMenuPrimitive.CheckboxItem
+      data-slot="dropdown-menu-checkbox-item"
+        <DropdownMenuPrimitive.ItemIndicator>
+        </DropdownMenuPrimitive.ItemIndicator>
+    </DropdownMenuPrimitive.CheckboxItem>
+function DropdownMenuRadioGroup({
+}: React.ComponentProps<typeof DropdownMenuPrimitive.RadioGroup>) {
+    <DropdownMenuPrimitive.RadioGroup
+      data-slot="dropdown-menu-radio-group"
+function DropdownMenuRadioItem({
+}: React.ComponentProps<typeof DropdownMenuPrimitive.RadioItem>) {
+    <DropdownMenuPrimitive.RadioItem
+      data-slot="dropdown-menu-radio-item"
+    </DropdownMenuPrimitive.RadioItem>
+function DropdownMenuLabel({
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Label> & {
+    <DropdownMenuPrimitive.Label
+      data-slot="dropdown-menu-label"
+        "px-2 py-1.5 text-sm font-medium data-[inset]:pl-8",
+function DropdownMenuSeparator({
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Separator>) {
+    <DropdownMenuPrimitive.Separator
+      data-slot="dropdown-menu-separator"
+function DropdownMenuShortcut({
+      data-slot="dropdown-menu-shortcut"
+function DropdownMenuSub({
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Sub>) {
+  return <DropdownMenuPrimitive.Sub data-slot="dropdown-menu-sub" {...props} />;
+function DropdownMenuSubTrigger({
+}: React.ComponentProps<typeof DropdownMenuPrimitive.SubTrigger> & {
+    <DropdownMenuPrimitive.SubTrigger
+      data-slot="dropdown-menu-sub-trigger"
+        "focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground flex cursor-default items-center rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[inset]:pl-8",
+      <ChevronRightIcon className="ml-auto size-4" />
+    </DropdownMenuPrimitive.SubTrigger>
+function DropdownMenuSubContent({
+}: React.ComponentProps<typeof DropdownMenuPrimitive.SubContent>) {
+    <DropdownMenuPrimitive.SubContent
+      data-slot="dropdown-menu-sub-content"
+        "bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 min-w-[8rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-hidden rounded-md border p-1 shadow-lg",
+  DropdownMenu,
+  DropdownMenuPortal,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuItem,
+  DropdownMenuCheckboxItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+import * as LabelPrimitive from "@radix-ui/react-label";
+  Controller,
+  FormProvider,
+  useFormContext,
+  useFormState,
+  type ControllerProps,
+  type FieldPath,
+  type FieldValues,
+} from "react-hook-form";
+import { Label } from "./label";
+const Form = FormProvider;
+type FormFieldContextValue<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+  name: TName;
+const FormFieldContext = React.createContext<FormFieldContextValue>(
+  {} as FormFieldContextValue,
+const FormField = <
+}: ControllerProps<TFieldValues, TName>) => {
+    <FormFieldContext.Provider value={{ name: props.name }}>
+      <Controller {...props} />
+    </FormFieldContext.Provider>
+const useFormField = () => {
+  const fieldContext = React.useContext(FormFieldContext);
+  const itemContext = React.useContext(FormItemContext);
+  const { getFieldState } = useFormContext();
+  const formState = useFormState({ name: fieldContext.name });
+  const fieldState = getFieldState(fieldContext.name, formState);
+  if (!fieldContext) {
+    throw new Error("useFormField should be used within <FormField>");
+  const { id } = itemContext;
+  return {
+    id,
+    name: fieldContext.name,
+    formItemId: `${id}-form-item`,
+    formDescriptionId: `${id}-form-item-description`,
+    formMessageId: `${id}-form-item-message`,
+    ...fieldState,
+type FormItemContextValue = {
+const FormItemContext = React.createContext<FormItemContextValue>(
+  {} as FormItemContextValue,
+function FormItem({ className, ...props }: React.ComponentProps<"div">) {
+  const id = React.useId();
+    <FormItemContext.Provider value={{ id }}>
+        data-slot="form-item"
+        className={cn("grid gap-2", className)}
+    </FormItemContext.Provider>
+function FormLabel({
+}: React.ComponentProps<typeof LabelPrimitive.Root>) {
+  const { error, formItemId } = useFormField();
+    <Label
+      data-slot="form-label"
+      data-error={!!error}
+      className={cn("data-[error=true]:text-destructive", className)}
+      htmlFor={formItemId}
+function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {
+  const { error, formItemId, formDescriptionId, formMessageId } =
+    useFormField();
+    <Slot
+      data-slot="form-control"
+      id={formItemId}
+      aria-describedby={
+        !error
+          ? `${formDescriptionId}`
+          : `${formDescriptionId} ${formMessageId}`
+      aria-invalid={!!error}
+function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
+  const { formDescriptionId } = useFormField();
+      data-slot="form-description"
+      id={formDescriptionId}
+function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
+  const { error, formMessageId } = useFormField();
+  const body = error ? String(error?.message ?? "") : props.children;
+  if (!body) {
+      data-slot="form-message"
+      id={formMessageId}
+      className={cn("text-destructive text-sm", className)}
+      {body}
+    </p>
+  useFormField,
+  Form,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormDescription,
+  FormMessage,
+  FormField,
+import * as HoverCardPrimitive from "@radix-ui/react-hover-card";
+function HoverCard({
+}: React.ComponentProps<typeof HoverCardPrimitive.Root>) {
+  return <HoverCardPrimitive.Root data-slot="hover-card" {...props} />;
+function HoverCardTrigger({
+}: React.ComponentProps<typeof HoverCardPrimitive.Trigger>) {
+    <HoverCardPrimitive.Trigger data-slot="hover-card-trigger" {...props} />
+function HoverCardContent({
+  align = "center",
+}: React.ComponentProps<typeof HoverCardPrimitive.Content>) {
+    <HoverCardPrimitive.Portal data-slot="hover-card-portal">
+      <HoverCardPrimitive.Content
+        data-slot="hover-card-content"
+        align={align}
+          "bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-64 origin-(--radix-hover-card-content-transform-origin) rounded-md border p-4 shadow-md outline-hidden",
+    </HoverCardPrimitive.Portal>
+export { HoverCard, HoverCardTrigger, HoverCardContent };
+import { OTPInput, OTPInputContext } from "input-otp";
+import { MinusIcon } from "lucide-react";
+function InputOTP({
+  containerClassName,
+}: React.ComponentProps<typeof OTPInput> & {
+  containerClassName?: string;
+    <OTPInput
+      data-slot="input-otp"
+      containerClassName={cn(
+        "flex items-center gap-2 has-disabled:opacity-50",
+        containerClassName,
+      className={cn("disabled:cursor-not-allowed", className)}
+function InputOTPGroup({ className, ...props }: React.ComponentProps<"div">) {
+      data-slot="input-otp-group"
+      className={cn("flex items-center gap-1", className)}
+function InputOTPSlot({
+  index,
+  index: number;
+  const inputOTPContext = React.useContext(OTPInputContext);
+  const { char, hasFakeCaret, isActive } = inputOTPContext?.slots[index] ?? {};
+      data-slot="input-otp-slot"
+      data-active={isActive}
+        "data-[active=true]:border-ring data-[active=true]:ring-ring/50 data-[active=true]:aria-invalid:ring-destructive/20 dark:data-[active=true]:aria-invalid:ring-destructive/40 aria-invalid:border-destructive data-[active=true]:aria-invalid:border-destructive dark:bg-input/30 border-input relative flex h-9 w-9 items-center justify-center border-y border-r text-sm bg-input-background transition-all outline-none first:rounded-l-md first:border-l last:rounded-r-md data-[active=true]:z-10 data-[active=true]:ring-[3px]",
+      {char}
+      {hasFakeCaret && (
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <div className="animate-caret-blink bg-foreground h-4 w-px duration-1000" />
+function InputOTPSeparator({ ...props }: React.ComponentProps<"div">) {
+    <div data-slot="input-otp-separator" role="separator" {...props}>
+      <MinusIcon />
+export { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator };
+function Input({ className, type, ...props }: React.ComponentProps<"input">) {
+    <input
+      type={type}
+      data-slot="input"
+        "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border px-3 py-1 text-base bg-input-background transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+        "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+        "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+export { Input };
+function Label({
+    <LabelPrimitive.Root
+      data-slot="label"
+        "flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50",
+export { Label };
+import * as MenubarPrimitive from "@radix-ui/react-menubar";
+function Menubar({
+}: React.ComponentProps<typeof MenubarPrimitive.Root>) {
+    <MenubarPrimitive.Root
+      data-slot="menubar"
+        "bg-background flex h-9 items-center gap-1 rounded-md border p-1 shadow-xs",
+function MenubarMenu({
+}: React.ComponentProps<typeof MenubarPrimitive.Menu>) {
+  return <MenubarPrimitive.Menu data-slot="menubar-menu" {...props} />;
+function MenubarGroup({
+}: React.ComponentProps<typeof MenubarPrimitive.Group>) {
+  return <MenubarPrimitive.Group data-slot="menubar-group" {...props} />;
+function MenubarPortal({
+}: React.ComponentProps<typeof MenubarPrimitive.Portal>) {
+  return <MenubarPrimitive.Portal data-slot="menubar-portal" {...props} />;
+function MenubarRadioGroup({
+}: React.ComponentProps<typeof MenubarPrimitive.RadioGroup>) {
+    <MenubarPrimitive.RadioGroup data-slot="menubar-radio-group" {...props} />
+function MenubarTrigger({
+}: React.ComponentProps<typeof MenubarPrimitive.Trigger>) {
+    <MenubarPrimitive.Trigger
+      data-slot="menubar-trigger"
+        "focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground flex items-center rounded-sm px-2 py-1 text-sm font-medium outline-hidden select-none",
+function MenubarContent({
+  align = "start",
+  alignOffset = -4,
+  sideOffset = 8,
+}: React.ComponentProps<typeof MenubarPrimitive.Content>) {
+    <MenubarPortal>
+      <MenubarPrimitive.Content
+        data-slot="menubar-content"
+        alignOffset={alignOffset}
+          "bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 min-w-[12rem] origin-(--radix-menubar-content-transform-origin) overflow-hidden rounded-md border p-1 shadow-md",
+    </MenubarPortal>
+function MenubarItem({
+}: React.ComponentProps<typeof MenubarPrimitive.Item> & {
+    <MenubarPrimitive.Item
+      data-slot="menubar-item"
+function MenubarCheckboxItem({
+}: React.ComponentProps<typeof MenubarPrimitive.CheckboxItem>) {
+    <MenubarPrimitive.CheckboxItem
+      data-slot="menubar-checkbox-item"
+        "focus:bg-accent focus:text-accent-foreground relative flex cursor-default items-center gap-2 rounded-xs py-1.5 pr-2 pl-8 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        <MenubarPrimitive.ItemIndicator>
+        </MenubarPrimitive.ItemIndicator>
+    </MenubarPrimitive.CheckboxItem>
+function MenubarRadioItem({
+}: React.ComponentProps<typeof MenubarPrimitive.RadioItem>) {
+    <MenubarPrimitive.RadioItem
+      data-slot="menubar-radio-item"
+    </MenubarPrimitive.RadioItem>
+function MenubarLabel({
+}: React.ComponentProps<typeof MenubarPrimitive.Label> & {
+    <MenubarPrimitive.Label
+      data-slot="menubar-label"
+function MenubarSeparator({
+}: React.ComponentProps<typeof MenubarPrimitive.Separator>) {
+    <MenubarPrimitive.Separator
+      data-slot="menubar-separator"
+function MenubarShortcut({
+      data-slot="menubar-shortcut"
+function MenubarSub({
+}: React.ComponentProps<typeof MenubarPrimitive.Sub>) {
+  return <MenubarPrimitive.Sub data-slot="menubar-sub" {...props} />;
+function MenubarSubTrigger({
+}: React.ComponentProps<typeof MenubarPrimitive.SubTrigger> & {
+    <MenubarPrimitive.SubTrigger
+      data-slot="menubar-sub-trigger"
+        "focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground flex cursor-default items-center rounded-sm px-2 py-1.5 text-sm outline-none select-none data-[inset]:pl-8",
+      <ChevronRightIcon className="ml-auto h-4 w-4" />
+    </MenubarPrimitive.SubTrigger>
+function MenubarSubContent({
+}: React.ComponentProps<typeof MenubarPrimitive.SubContent>) {
+    <MenubarPrimitive.SubContent
+      data-slot="menubar-sub-content"
+        "bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 min-w-[8rem] origin-(--radix-menubar-content-transform-origin) overflow-hidden rounded-md border p-1 shadow-lg",
+  Menubar,
+  MenubarPortal,
+  MenubarMenu,
+  MenubarTrigger,
+  MenubarContent,
+  MenubarGroup,
+  MenubarSeparator,
+  MenubarLabel,
+  MenubarItem,
+  MenubarShortcut,
+  MenubarCheckboxItem,
+  MenubarRadioGroup,
+  MenubarRadioItem,
+  MenubarSub,
+  MenubarSubTrigger,
+  MenubarSubContent,
+import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
+import { cva } from "class-variance-authority";
+function NavigationMenu({
+  viewport = true,
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Root> & {
+  viewport?: boolean;
+    <NavigationMenuPrimitive.Root
+      data-slot="navigation-menu"
+      data-viewport={viewport}
+        "group/navigation-menu relative flex max-w-max flex-1 items-center justify-center",
+      {viewport && <NavigationMenuViewport />}
+    </NavigationMenuPrimitive.Root>
+function NavigationMenuList({
+}: React.ComponentProps<typeof NavigationMenuPrimitive.List>) {
+    <NavigationMenuPrimitive.List
+      data-slot="navigation-menu-list"
+        "group flex flex-1 list-none items-center justify-center gap-1",
+function NavigationMenuItem({
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Item>) {
+    <NavigationMenuPrimitive.Item
+      data-slot="navigation-menu-item"
+      className={cn("relative", className)}
+const navigationMenuTriggerStyle = cva(
+  "group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-[state=open]:hover:bg-accent data-[state=open]:text-accent-foreground data-[state=open]:focus:bg-accent data-[state=open]:bg-accent/50 focus-visible:ring-ring/50 outline-none transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1",
+function NavigationMenuTrigger({
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Trigger>) {
+    <NavigationMenuPrimitive.Trigger
+      data-slot="navigation-menu-trigger"
+      className={cn(navigationMenuTriggerStyle(), "group", className)}
+      {children}{" "}
+      <ChevronDownIcon
+        className="relative top-[1px] ml-1 size-3 transition duration-300 group-data-[state=open]:rotate-180"
+        aria-hidden="true"
+    </NavigationMenuPrimitive.Trigger>
+function NavigationMenuContent({
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Content>) {
+    <NavigationMenuPrimitive.Content
+      data-slot="navigation-menu-content"
+        "data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 top-0 left-0 w-full p-2 pr-2.5 md:absolute md:w-auto",
+        "group-data-[viewport=false]/navigation-menu:bg-popover group-data-[viewport=false]/navigation-menu:text-popover-foreground group-data-[viewport=false]/navigation-menu:data-[state=open]:animate-in group-data-[viewport=false]/navigation-menu:data-[state=closed]:animate-out group-data-[viewport=false]/navigation-menu:data-[state=closed]:zoom-out-95 group-data-[viewport=false]/navigation-menu:data-[state=open]:zoom-in-95 group-data-[viewport=false]/navigation-menu:data-[state=open]:fade-in-0 group-data-[viewport=false]/navigation-menu:data-[state=closed]:fade-out-0 group-data-[viewport=false]/navigation-menu:top-full group-data-[viewport=false]/navigation-menu:mt-1.5 group-data-[viewport=false]/navigation-menu:overflow-hidden group-data-[viewport=false]/navigation-menu:rounded-md group-data-[viewport=false]/navigation-menu:border group-data-[viewport=false]/navigation-menu:shadow group-data-[viewport=false]/navigation-menu:duration-200 **:data-[slot=navigation-menu-link]:focus:ring-0 **:data-[slot=navigation-menu-link]:focus:outline-none",
+function NavigationMenuViewport({
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Viewport>) {
+        "absolute top-full left-0 isolate z-50 flex justify-center",
+      <NavigationMenuPrimitive.Viewport
+        data-slot="navigation-menu-viewport"
+          "origin-top-center bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90 relative mt-1.5 h-[var(--radix-navigation-menu-viewport-height)] w-full overflow-hidden rounded-md border shadow md:w-[var(--radix-navigation-menu-viewport-width)]",
+function NavigationMenuLink({
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Link>) {
+    <NavigationMenuPrimitive.Link
+      data-slot="navigation-menu-link"
+        "data-[active=true]:focus:bg-accent data-[active=true]:hover:bg-accent data-[active=true]:bg-accent/50 data-[active=true]:text-accent-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus-visible:ring-ring/50 [&_svg:not([class*='text-'])]:text-muted-foreground flex flex-col gap-1 rounded-sm p-2 text-sm transition-all outline-none focus-visible:ring-[3px] focus-visible:outline-1 [&_svg:not([class*='size-'])]:size-4",
+function NavigationMenuIndicator({
+}: React.ComponentProps<typeof NavigationMenuPrimitive.Indicator>) {
+    <NavigationMenuPrimitive.Indicator
+      data-slot="navigation-menu-indicator"
+        "data-[state=visible]:animate-in data-[state=hidden]:animate-out data-[state=hidden]:fade-out data-[state=visible]:fade-in top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden",
+      <div className="bg-border relative top-[60%] h-2 w-2 rotate-45 rounded-tl-sm shadow-md" />
+    </NavigationMenuPrimitive.Indicator>
+  NavigationMenu,
+  NavigationMenuList,
+  NavigationMenuItem,
+  NavigationMenuContent,
+  NavigationMenuTrigger,
+  NavigationMenuLink,
+  NavigationMenuIndicator,
+  NavigationMenuViewport,
+  navigationMenuTriggerStyle,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  MoreHorizontalIcon,
+} from "lucide-react";
+import { Button, buttonVariants } from "./button";
+function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
+    <nav
+      role="navigation"
+      aria-label="pagination"
+      data-slot="pagination"
+      className={cn("mx-auto flex w-full justify-center", className)}
+function PaginationContent({
+}: React.ComponentProps<"ul">) {
+    <ul
+      data-slot="pagination-content"
+      className={cn("flex flex-row items-center gap-1", className)}
+function PaginationItem({ ...props }: React.ComponentProps<"li">) {
+  return <li data-slot="pagination-item" {...props} />;
+type PaginationLinkProps = {
+  isActive?: boolean;
+} & Pick<React.ComponentProps<typeof Button>, "size"> &
+  React.ComponentProps<"a">;
+function PaginationLink({
+  isActive,
+}: PaginationLinkProps) {
+    <a
+      aria-current={isActive ? "page" : undefined}
+      data-slot="pagination-link"
+        buttonVariants({
+          variant: isActive ? "outline" : "ghost",
+          size,
+        }),
+function PaginationPrevious({
+}: React.ComponentProps<typeof PaginationLink>) {
+    <PaginationLink
+      aria-label="Go to previous page"
+      size="default"
+      className={cn("gap-1 px-2.5 sm:pl-2.5", className)}
+      <ChevronLeftIcon />
+      <span className="hidden sm:block">Previous</span>
+    </PaginationLink>
+function PaginationNext({
+      aria-label="Go to next page"
+      className={cn("gap-1 px-2.5 sm:pr-2.5", className)}
+      <span className="hidden sm:block">Next</span>
+      <ChevronRightIcon />
+function PaginationEllipsis({
+      aria-hidden
+      data-slot="pagination-ellipsis"
+      <MoreHorizontalIcon className="size-4" />
+      <span className="sr-only">More pages</span>
+  Pagination,
+  PaginationContent,
+  PaginationLink,
+  PaginationItem,
+  PaginationPrevious,
+  PaginationNext,
+  PaginationEllipsis,
+import * as PopoverPrimitive from "@radix-ui/react-popover";
+function Popover({
+}: React.ComponentProps<typeof PopoverPrimitive.Root>) {
+  return <PopoverPrimitive.Root data-slot="popover" {...props} />;
+function PopoverTrigger({
+}: React.ComponentProps<typeof PopoverPrimitive.Trigger>) {
+  return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />;
+function PopoverContent({
+}: React.ComponentProps<typeof PopoverPrimitive.Content>) {
+    <PopoverPrimitive.Portal>
+      <PopoverPrimitive.Content
+        data-slot="popover-content"
+          "bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-72 origin-(--radix-popover-content-transform-origin) rounded-md border p-4 shadow-md outline-hidden",
+    </PopoverPrimitive.Portal>
+function PopoverAnchor({
+}: React.ComponentProps<typeof PopoverPrimitive.Anchor>) {
+  return <PopoverPrimitive.Anchor data-slot="popover-anchor" {...props} />;
+export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor };
+import * as ProgressPrimitive from "@radix-ui/react-progress";
+function Progress({
+  value,
+}: React.ComponentProps<typeof ProgressPrimitive.Root>) {
+    <ProgressPrimitive.Root
+      data-slot="progress"
+        "bg-primary/20 relative h-2 w-full overflow-hidden rounded-full",
+      <ProgressPrimitive.Indicator
+        data-slot="progress-indicator"
+        className="bg-primary h-full w-full flex-1 transition-all"
+        style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+    </ProgressPrimitive.Root>
+export { Progress };
+import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
+import { CircleIcon } from "lucide-react";
+function RadioGroup({
+}: React.ComponentProps<typeof RadioGroupPrimitive.Root>) {
+    <RadioGroupPrimitive.Root
+      data-slot="radio-group"
+      className={cn("grid gap-3", className)}
+function RadioGroupItem({
+}: React.ComponentProps<typeof RadioGroupPrimitive.Item>) {
+    <RadioGroupPrimitive.Item
+      data-slot="radio-group-item"
+        "border-input text-primary focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 aspect-square size-4 shrink-0 rounded-full border shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50",
+      <RadioGroupPrimitive.Indicator
+        data-slot="radio-group-indicator"
+        className="relative flex items-center justify-center"
+        <CircleIcon className="fill-primary absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2" />
+      </RadioGroupPrimitive.Indicator>
+    </RadioGroupPrimitive.Item>
+export { RadioGroup, RadioGroupItem };
+import { GripVerticalIcon } from "lucide-react";
+import * as ResizablePrimitive from "react-resizable-panels";
+function ResizablePanelGroup({
+}: React.ComponentProps<typeof ResizablePrimitive.PanelGroup>) {
+    <ResizablePrimitive.PanelGroup
+      data-slot="resizable-panel-group"
+        "flex h-full w-full data-[panel-group-direction=vertical]:flex-col",
+function ResizablePanel({
+}: React.ComponentProps<typeof ResizablePrimitive.Panel>) {
+  return <ResizablePrimitive.Panel data-slot="resizable-panel" {...props} />;
+function ResizableHandle({
+  withHandle,
+}: React.ComponentProps<typeof ResizablePrimitive.PanelResizeHandle> & {
+  withHandle?: boolean;
+    <ResizablePrimitive.PanelResizeHandle
+      data-slot="resizable-handle"
+        "bg-border focus-visible:ring-ring relative flex w-px items-center justify-center after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 focus-visible:ring-1 focus-visible:ring-offset-1 focus-visible:outline-hidden data-[panel-group-direction=vertical]:h-px data-[panel-group-direction=vertical]:w-full data-[panel-group-direction=vertical]:after:left-0 data-[panel-group-direction=vertical]:after:h-1 data-[panel-group-direction=vertical]:after:w-full data-[panel-group-direction=vertical]:after:-translate-y-1/2 data-[panel-group-direction=vertical]:after:translate-x-0 [&[data-panel-group-direction=vertical]>div]:rotate-90",
+      {withHandle && (
+        <div className="bg-border z-10 flex h-4 w-3 items-center justify-center rounded-xs border">
+          <GripVerticalIcon className="size-2.5" />
+    </ResizablePrimitive.PanelResizeHandle>
+export { ResizablePanelGroup, ResizablePanel, ResizableHandle };
+import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
+function ScrollArea({
+}: React.ComponentProps<typeof ScrollAreaPrimitive.Root>) {
+    <ScrollAreaPrimitive.Root
+      data-slot="scroll-area"
+      <ScrollAreaPrimitive.Viewport
+        data-slot="scroll-area-viewport"
+        className="focus-visible:ring-ring/50 size-full rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:outline-1"
+      </ScrollAreaPrimitive.Viewport>
+      <ScrollBar />
+      <ScrollAreaPrimitive.Corner />
+    </ScrollAreaPrimitive.Root>
+function ScrollBar({
+  orientation = "vertical",
+}: React.ComponentProps<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>) {
+    <ScrollAreaPrimitive.ScrollAreaScrollbar
+      data-slot="scroll-area-scrollbar"
+      orientation={orientation}
+        "flex touch-none p-px transition-colors select-none",
+        orientation === "vertical" &&
+          "h-full w-2.5 border-l border-l-transparent",
+        orientation === "horizontal" &&
+          "h-2.5 flex-col border-t border-t-transparent",
+      <ScrollAreaPrimitive.ScrollAreaThumb
+        data-slot="scroll-area-thumb"
+        className="bg-border relative flex-1 rounded-full"
+    </ScrollAreaPrimitive.ScrollAreaScrollbar>
+export { ScrollArea, ScrollBar };
+import * as SelectPrimitive from "@radix-ui/react-select";
+  CheckIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+function Select({
+}: React.ComponentProps<typeof SelectPrimitive.Root>) {
+  return <SelectPrimitive.Root data-slot="select" {...props} />;
+function SelectGroup({
+}: React.ComponentProps<typeof SelectPrimitive.Group>) {
+  return <SelectPrimitive.Group data-slot="select-group" {...props} />;
+function SelectValue({
+}: React.ComponentProps<typeof SelectPrimitive.Value>) {
+  return <SelectPrimitive.Value data-slot="select-value" {...props} />;
+function SelectTrigger({
+  size = "default",
+}: React.ComponentProps<typeof SelectPrimitive.Trigger> & {
+  size?: "sm" | "default";
+    <SelectPrimitive.Trigger
+      data-slot="select-trigger"
+      data-size={size}
+        "border-input data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex w-full items-center justify-between gap-2 rounded-md border bg-input-background px-3 py-2 text-sm whitespace-nowrap transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+      <SelectPrimitive.Icon asChild>
+        <ChevronDownIcon className="size-4 opacity-50" />
+      </SelectPrimitive.Icon>
+    </SelectPrimitive.Trigger>
+function SelectContent({
+  position = "popper",
+}: React.ComponentProps<typeof SelectPrimitive.Content>) {
+    <SelectPrimitive.Portal>
+      <SelectPrimitive.Content
+        data-slot="select-content"
+          "bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-(--radix-select-content-available-height) min-w-[8rem] origin-(--radix-select-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-md border shadow-md",
+          position === "popper" &&
+            "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
+        position={position}
+        <SelectScrollUpButton />
+        <SelectPrimitive.Viewport
+          className={cn(
+            "p-1",
+            position === "popper" &&
+              "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)] scroll-my-1",
+          )}
+        </SelectPrimitive.Viewport>
+        <SelectScrollDownButton />
+      </SelectPrimitive.Content>
+    </SelectPrimitive.Portal>
+function SelectLabel({
+}: React.ComponentProps<typeof SelectPrimitive.Label>) {
+    <SelectPrimitive.Label
+      data-slot="select-label"
+      className={cn("text-muted-foreground px-2 py-1.5 text-xs", className)}
+function SelectItem({
+}: React.ComponentProps<typeof SelectPrimitive.Item>) {
+    <SelectPrimitive.Item
+      data-slot="select-item"
+        "focus:bg-accent focus:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
+      <span className="absolute right-2 flex size-3.5 items-center justify-center">
+        <SelectPrimitive.ItemIndicator>
+        </SelectPrimitive.ItemIndicator>
+      <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+    </SelectPrimitive.Item>
+function SelectSeparator({
+}: React.ComponentProps<typeof SelectPrimitive.Separator>) {
+    <SelectPrimitive.Separator
+      data-slot="select-separator"
+      className={cn("bg-border pointer-events-none -mx-1 my-1 h-px", className)}
+function SelectScrollUpButton({
+}: React.ComponentProps<typeof SelectPrimitive.ScrollUpButton>) {
+    <SelectPrimitive.ScrollUpButton
+      data-slot="select-scroll-up-button"
+        "flex cursor-default items-center justify-center py-1",
+      <ChevronUpIcon className="size-4" />
+    </SelectPrimitive.ScrollUpButton>
+function SelectScrollDownButton({
+}: React.ComponentProps<typeof SelectPrimitive.ScrollDownButton>) {
+    <SelectPrimitive.ScrollDownButton
+      data-slot="select-scroll-down-button"
+      <ChevronDownIcon className="size-4" />
+    </SelectPrimitive.ScrollDownButton>
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectScrollDownButton,
+  SelectScrollUpButton,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+import * as SeparatorPrimitive from "@radix-ui/react-separator";
+function Separator({
+  decorative = true,
+}: React.ComponentProps<typeof SeparatorPrimitive.Root>) {
+    <SeparatorPrimitive.Root
+      data-slot="separator-root"
+      decorative={decorative}
+        "bg-border shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px",
+export { Separator };
+import * as SheetPrimitive from "@radix-ui/react-dialog";
+function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
+  return <SheetPrimitive.Root data-slot="sheet" {...props} />;
+function SheetTrigger({
+}: React.ComponentProps<typeof SheetPrimitive.Trigger>) {
+  return <SheetPrimitive.Trigger data-slot="sheet-trigger" {...props} />;
+function SheetClose({
+}: React.ComponentProps<typeof SheetPrimitive.Close>) {
+  return <SheetPrimitive.Close data-slot="sheet-close" {...props} />;
+function SheetPortal({
+}: React.ComponentProps<typeof SheetPrimitive.Portal>) {
+  return <SheetPrimitive.Portal data-slot="sheet-portal" {...props} />;
+function SheetOverlay({
+}: React.ComponentProps<typeof SheetPrimitive.Overlay>) {
+    <SheetPrimitive.Overlay
+      data-slot="sheet-overlay"
+function SheetContent({
+  side = "right",
+}: React.ComponentProps<typeof SheetPrimitive.Content> & {
+  side?: "top" | "right" | "bottom" | "left";
+    <SheetPortal>
+      <SheetOverlay />
+      <SheetPrimitive.Content
+        data-slot="sheet-content"
+          "bg-background data-[state=open]:animate-in data-[state=closed]:animate-out fixed z-50 flex flex-col gap-4 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500",
+          side === "right" &&
+            "data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm",
+          side === "left" &&
+            "data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-sm",
+          side === "top" &&
+            "data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top inset-x-0 top-0 h-auto border-b",
+          side === "bottom" &&
+            "data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom inset-x-0 bottom-0 h-auto border-t",
+        <SheetPrimitive.Close className="ring-offset-background focus:ring-ring data-[state=open]:bg-secondary absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none">
+          <XIcon className="size-4" />
+        </SheetPrimitive.Close>
+      </SheetPrimitive.Content>
+    </SheetPortal>
+function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
+      data-slot="sheet-header"
+function SheetFooter({ className, ...props }: React.ComponentProps<"div">) {
+      data-slot="sheet-footer"
+function SheetTitle({
+}: React.ComponentProps<typeof SheetPrimitive.Title>) {
+    <SheetPrimitive.Title
+      data-slot="sheet-title"
+function SheetDescription({
+}: React.ComponentProps<typeof SheetPrimitive.Description>) {
+    <SheetPrimitive.Description
+      data-slot="sheet-description"
+  Sheet,
+  SheetTrigger,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetFooter,
+  SheetTitle,
+  SheetDescription,
+import { VariantProps, cva } from "class-variance-authority";
+import { PanelLeftIcon } from "lucide-react";
+import { useIsMobile } from "./use-mobile";
+import { Input } from "./input";
+import { Separator } from "./separator";
+} from "./sheet";
+import { Skeleton } from "./skeleton";
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./tooltip";
+const SIDEBAR_COOKIE_NAME = "sidebar_state";
+const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
+const SIDEBAR_WIDTH = "16rem";
+const SIDEBAR_WIDTH_MOBILE = "18rem";
+const SIDEBAR_WIDTH_ICON = "3rem";
+const SIDEBAR_KEYBOARD_SHORTCUT = "b";
+type SidebarContextProps = {
+  state: "expanded" | "collapsed";
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  openMobile: boolean;
+  setOpenMobile: (open: boolean) => void;
+  isMobile: boolean;
+  toggleSidebar: () => void;
+const SidebarContext = React.createContext<SidebarContextProps | null>(null);
+function useSidebar() {
+  const context = React.useContext(SidebarContext);
+    throw new Error("useSidebar must be used within a SidebarProvider.");
+function SidebarProvider({
+  defaultOpen = true,
+  open: openProp,
+  onOpenChange: setOpenProp,
+  style,
+  defaultOpen?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  const isMobile = useIsMobile();
+  const [openMobile, setOpenMobile] = React.useState(false);
+  // This is the internal state of the sidebar.
+  // We use openProp and setOpenProp for control from outside the component.
+  const [_open, _setOpen] = React.useState(defaultOpen);
+  const open = openProp ?? _open;
+  const setOpen = React.useCallback(
+    (value: boolean | ((value: boolean) => boolean)) => {
+      const openState = typeof value === "function" ? value(open) : value;
+      if (setOpenProp) {
+        setOpenProp(openState);
+        _setOpen(openState);
+      // This sets the cookie to keep the sidebar state.
+      document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
+    [setOpenProp, open],
+  // Helper to toggle the sidebar.
+  const toggleSidebar = React.useCallback(() => {
+    return isMobile ? setOpenMobile((open) => !open) : setOpen((open) => !open);
+  }, [isMobile, setOpen, setOpenMobile]);
+  // Adds a keyboard shortcut to toggle the sidebar.
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        event.key === SIDEBAR_KEYBOARD_SHORTCUT &&
+        (event.metaKey || event.ctrlKey)
+      ) {
+        toggleSidebar();
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [toggleSidebar]);
+  // We add a state so that we can do data-state="expanded" or "collapsed".
+  // This makes it easier to style the sidebar with Tailwind classes.
+  const state = open ? "expanded" : "collapsed";
+  const contextValue = React.useMemo<SidebarContextProps>(
+    () => ({
+      state,
+      open,
+      setOpen,
+      isMobile,
+      openMobile,
+      setOpenMobile,
+      toggleSidebar,
+    }),
+    [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar],
+    <SidebarContext.Provider value={contextValue}>
+      <TooltipProvider delayDuration={0}>
+        <div
+          data-slot="sidebar-wrapper"
+          style={
+            {
+              "--sidebar-width": SIDEBAR_WIDTH,
+              "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
+              ...style,
+            } as React.CSSProperties
+          }
+            "group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex min-h-svh w-full",
+            className,
+          {...props}
+      </TooltipProvider>
+    </SidebarContext.Provider>
+function Sidebar({
+  side = "left",
+  variant = "sidebar",
+  collapsible = "offcanvas",
+  side?: "left" | "right";
+  variant?: "sidebar" | "floating" | "inset";
+  collapsible?: "offcanvas" | "icon" | "none";
+  const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
+  if (collapsible === "none") {
+    return (
+        data-slot="sidebar"
+          "bg-sidebar text-sidebar-foreground flex h-full w-(--sidebar-width) flex-col",
+    );
+  if (isMobile) {
+      <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
+        <SheetContent
+          data-sidebar="sidebar"
+          data-slot="sidebar"
+          data-mobile="true"
+          className="bg-sidebar text-sidebar-foreground w-(--sidebar-width) p-0 [&>button]:hidden"
+              "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
+          side={side}
+          <SheetHeader className="sr-only">
+            <SheetTitle>Sidebar</SheetTitle>
+            <SheetDescription>Displays the mobile sidebar.</SheetDescription>
+          </SheetHeader>
+          <div className="flex h-full w-full flex-col">{children}</div>
+        </SheetContent>
+      </Sheet>
+      className="group peer text-sidebar-foreground hidden md:block"
+      data-state={state}
+      data-collapsible={state === "collapsed" ? collapsible : ""}
+      data-side={side}
+      data-slot="sidebar"
+      {/* This is what handles the sidebar gap on desktop */}
+        data-slot="sidebar-gap"
+          "relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear",
+          "group-data-[collapsible=offcanvas]:w-0",
+          "group-data-[side=right]:rotate-180",
+          variant === "floating" || variant === "inset"
+            ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]"
+            : "group-data-[collapsible=icon]:w-(--sidebar-width-icon)",
+        data-slot="sidebar-container"
+          "fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex",
+          side === "left"
+            ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
+            : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
+          // Adjust the padding for floating and inset variants.
+            ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
+            : "group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l",
+          data-slot="sidebar-inner"
+          className="bg-sidebar group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm"
+function SidebarTrigger({
+  onClick,
+  const { toggleSidebar } = useSidebar();
+      data-sidebar="trigger"
+      data-slot="sidebar-trigger"
+      variant="ghost"
+      size="icon"
+      className={cn("size-7", className)}
+      onClick={(event) => {
+        onClick?.(event);
+      <PanelLeftIcon />
+      <span className="sr-only">Toggle Sidebar</span>
+function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
+    <button
+      data-sidebar="rail"
+      data-slot="sidebar-rail"
+      aria-label="Toggle Sidebar"
+      tabIndex={-1}
+      onClick={toggleSidebar}
+      title="Toggle Sidebar"
+        "hover:after:bg-sidebar-border absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] sm:flex",
+        "in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize",
+        "[[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize",
+        "hover:group-data-[collapsible=offcanvas]:bg-sidebar group-data-[collapsible=offcanvas]:translate-x-0 group-data-[collapsible=offcanvas]:after:left-full",
+        "[[data-side=left][data-collapsible=offcanvas]_&]:-right-2",
+        "[[data-side=right][data-collapsible=offcanvas]_&]:-left-2",
+function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
+    <main
+      data-slot="sidebar-inset"
+        "bg-background relative flex w-full flex-1 flex-col",
+        "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2",
+function SidebarInput({
+}: React.ComponentProps<typeof Input>) {
+    <Input
+      data-slot="sidebar-input"
+      data-sidebar="input"
+      className={cn("bg-background h-8 w-full shadow-none", className)}
+function SidebarHeader({ className, ...props }: React.ComponentProps<"div">) {
+      data-slot="sidebar-header"
+      data-sidebar="header"
+      className={cn("flex flex-col gap-2 p-2", className)}
+function SidebarFooter({ className, ...props }: React.ComponentProps<"div">) {
+      data-slot="sidebar-footer"
+      data-sidebar="footer"
+function SidebarSeparator({
+}: React.ComponentProps<typeof Separator>) {
+    <Separator
+      data-slot="sidebar-separator"
+      data-sidebar="separator"
+      className={cn("bg-sidebar-border mx-2 w-auto", className)}
+function SidebarContent({ className, ...props }: React.ComponentProps<"div">) {
+      data-slot="sidebar-content"
+      data-sidebar="content"
+        "flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden",
+function SidebarGroup({ className, ...props }: React.ComponentProps<"div">) {
+      data-slot="sidebar-group"
+      data-sidebar="group"
+      className={cn("relative flex w-full min-w-0 flex-col p-2", className)}
+function SidebarGroupLabel({
+}: React.ComponentProps<"div"> & { asChild?: boolean }) {
+  const Comp = asChild ? Slot : "div";
+      data-slot="sidebar-group-label"
+      data-sidebar="group-label"
+        "text-sidebar-foreground/70 ring-sidebar-ring flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
+        "group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0",
+function SidebarGroupAction({
+}: React.ComponentProps<"button"> & { asChild?: boolean }) {
+      data-slot="sidebar-group-action"
+      data-sidebar="group-action"
+        "text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground absolute top-3.5 right-3 flex aspect-square w-5 items-center justify-center rounded-md p-0 outline-hidden transition-transform focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
+        // Increases the hit area of the button on mobile.
+        "after:absolute after:-inset-2 md:after:hidden",
+        "group-data-[collapsible=icon]:hidden",
+function SidebarGroupContent({
+      data-slot="sidebar-group-content"
+      data-sidebar="group-content"
+      className={cn("w-full text-sm", className)}
+function SidebarMenu({ className, ...props }: React.ComponentProps<"ul">) {
+      data-slot="sidebar-menu"
+      data-sidebar="menu"
+      className={cn("flex w-full min-w-0 flex-col gap-1", className)}
+function SidebarMenuItem({ className, ...props }: React.ComponentProps<"li">) {
+      data-slot="sidebar-menu-item"
+      data-sidebar="menu-item"
+      className={cn("group/menu-item relative", className)}
+const sidebarMenuButtonVariants = cva(
+  "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-hidden ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+        default: "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+          "bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]",
+        default: "h-8 text-sm",
+        sm: "h-7 text-xs",
+        lg: "h-12 text-sm group-data-[collapsible=icon]:p-0!",
+function SidebarMenuButton({
+  isActive = false,
+  tooltip,
+}: React.ComponentProps<"button"> & {
+  tooltip?: string | React.ComponentProps<typeof TooltipContent>;
+} & VariantProps<typeof sidebarMenuButtonVariants>) {
+  const { isMobile, state } = useSidebar();
+  const button = (
+      data-slot="sidebar-menu-button"
+      data-sidebar="menu-button"
+      className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
+  if (!tooltip) {
+    return button;
+  if (typeof tooltip === "string") {
+    tooltip = {
+      children: tooltip,
+    <Tooltip>
+      <TooltipTrigger asChild>{button}</TooltipTrigger>
+      <TooltipContent
+        side="right"
+        align="center"
+        hidden={state !== "collapsed" || isMobile}
+        {...tooltip}
+    </Tooltip>
+function SidebarMenuAction({
+  showOnHover = false,
+  showOnHover?: boolean;
+      data-slot="sidebar-menu-action"
+      data-sidebar="menu-action"
+        "text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground peer-hover/menu-button:text-sidebar-accent-foreground absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 outline-hidden transition-transform focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
+        "peer-data-[size=sm]/menu-button:top-1",
+        "peer-data-[size=default]/menu-button:top-1.5",
+        "peer-data-[size=lg]/menu-button:top-2.5",
+        showOnHover &&
+          "peer-data-[active=true]/menu-button:text-sidebar-accent-foreground group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 md:opacity-0",
+function SidebarMenuBadge({
+      data-slot="sidebar-menu-badge"
+      data-sidebar="menu-badge"
+        "text-sidebar-foreground pointer-events-none absolute right-1 flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-xs font-medium tabular-nums select-none",
+        "peer-hover/menu-button:text-sidebar-accent-foreground peer-data-[active=true]/menu-button:text-sidebar-accent-foreground",
+function SidebarMenuSkeleton({
+  showIcon = false,
+  showIcon?: boolean;
+  // Random width between 50 to 90%.
+  const width = React.useMemo(() => {
+    return `${Math.floor(Math.random() * 40) + 50}%`;
+      data-slot="sidebar-menu-skeleton"
+      data-sidebar="menu-skeleton"
+      className={cn("flex h-8 items-center gap-2 rounded-md px-2", className)}
+      {showIcon && (
+        <Skeleton
+          className="size-4 rounded-md"
+          data-sidebar="menu-skeleton-icon"
+      <Skeleton
+        className="h-4 max-w-(--skeleton-width) flex-1"
+        data-sidebar="menu-skeleton-text"
+        style={
+          {
+            "--skeleton-width": width,
+          } as React.CSSProperties
+        }
+function SidebarMenuSub({ className, ...props }: React.ComponentProps<"ul">) {
+      data-slot="sidebar-menu-sub"
+      data-sidebar="menu-sub"
+        "border-sidebar-border mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l px-2.5 py-0.5",
+function SidebarMenuSubItem({
+      data-slot="sidebar-menu-sub-item"
+      data-sidebar="menu-sub-item"
+      className={cn("group/menu-sub-item relative", className)}
+function SidebarMenuSubButton({
+  size = "md",
+  size?: "sm" | "md";
+      data-slot="sidebar-menu-sub-button"
+      data-sidebar="menu-sub-button"
+        "text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground [&>svg]:text-sidebar-accent-foreground flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-md px-2 outline-hidden focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+        "data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground",
+        size === "sm" && "text-xs",
+        size === "md" && "text-sm",
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupAction,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInput,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSkeleton,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarSeparator,
+  SidebarTrigger,
+  useSidebar,
+function Skeleton({ className, ...props }: React.ComponentProps<"div">) {
+      data-slot="skeleton"
+      className={cn("bg-accent animate-pulse rounded-md", className)}
+export { Skeleton };
+import * as SliderPrimitive from "@radix-ui/react-slider";
+function Slider({
+  defaultValue,
+  min = 0,
+  max = 100,
+}: React.ComponentProps<typeof SliderPrimitive.Root>) {
+  const _values = React.useMemo(
+    () =>
+      Array.isArray(value)
+        ? value
+        : Array.isArray(defaultValue)
+          ? defaultValue
+          : [min, max],
+    [value, defaultValue, min, max],
+    <SliderPrimitive.Root
+      data-slot="slider"
+      defaultValue={defaultValue}
+      value={value}
+      min={min}
+      max={max}
+        "relative flex w-full touch-none items-center select-none data-[disabled]:opacity-50 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col",
+      <SliderPrimitive.Track
+        data-slot="slider-track"
+          "bg-muted relative grow overflow-hidden rounded-full data-[orientation=horizontal]:h-4 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5",
+        <SliderPrimitive.Range
+          data-slot="slider-range"
+            "bg-primary absolute data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full",
+      </SliderPrimitive.Track>
+      {Array.from({ length: _values.length }, (_, index) => (
+        <SliderPrimitive.Thumb
+          data-slot="slider-thumb"
+          key={index}
+          className="border-primary bg-background ring-ring/50 block size-4 shrink-0 rounded-full border shadow-sm transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
+      ))}
+    </SliderPrimitive.Root>
+export { Slider };
+import { useTheme } from "next-themes";
+import { Toaster as Sonner, ToasterProps } from "sonner";
+const Toaster = ({ ...props }: ToasterProps) => {
+  const { theme = "system" } = useTheme();
+    <Sonner
+      theme={theme as ToasterProps["theme"]}
+      className="toaster group"
+      style={
+        {
+          "--normal-bg": "var(--popover)",
+          "--normal-text": "var(--popover-foreground)",
+          "--normal-border": "var(--border)",
+        } as React.CSSProperties
+export { Toaster };
+import * as SwitchPrimitive from "@radix-ui/react-switch";
+function Switch({
+}: React.ComponentProps<typeof SwitchPrimitive.Root>) {
+    <SwitchPrimitive.Root
+      data-slot="switch"
+        "peer data-[state=checked]:bg-primary data-[state=unchecked]:bg-switch-background focus-visible:border-ring focus-visible:ring-ring/50 dark:data-[state=unchecked]:bg-input/80 inline-flex h-[1.15rem] w-8 shrink-0 items-center rounded-full border border-transparent transition-all outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50",
+      <SwitchPrimitive.Thumb
+        data-slot="switch-thumb"
+          "bg-card dark:data-[state=unchecked]:bg-card-foreground dark:data-[state=checked]:bg-primary-foreground pointer-events-none block size-4 rounded-full ring-0 transition-transform data-[state=checked]:translate-x-[calc(100%-2px)] data-[state=unchecked]:translate-x-0",
+    </SwitchPrimitive.Root>
+export { Switch };
+function Table({ className, ...props }: React.ComponentProps<"table">) {
+      data-slot="table-container"
+      className="relative w-full overflow-x-auto"
+      <table
+        data-slot="table"
+        className={cn("w-full caption-bottom text-sm", className)}
+function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
+    <thead
+      data-slot="table-header"
+      className={cn("[&_tr]:border-b", className)}
+function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
+    <tbody
+      data-slot="table-body"
+      className={cn("[&_tr:last-child]:border-0", className)}
+function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
+    <tfoot
+      data-slot="table-footer"
+        "bg-muted/50 border-t font-medium [&>tr]:last:border-b-0",
+function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
+    <tr
+      data-slot="table-row"
+        "hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors",
+function TableHead({ className, ...props }: React.ComponentProps<"th">) {
+    <th
+      data-slot="table-head"
+        "text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+function TableCell({ className, ...props }: React.ComponentProps<"td">) {
+    <td
+      data-slot="table-cell"
+        "p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+function TableCaption({
+}: React.ComponentProps<"caption">) {
+    <caption
+      data-slot="table-caption"
+      className={cn("text-muted-foreground mt-4 text-sm", className)}
+  Table,
+  TableHeader,
+  TableBody,
+  TableFooter,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableCaption,
+import * as TabsPrimitive from "@radix-ui/react-tabs";
+function Tabs({
+}: React.ComponentProps<typeof TabsPrimitive.Root>) {
+    <TabsPrimitive.Root
+      data-slot="tabs"
+      className={cn("flex flex-col gap-2", className)}
+function TabsList({
+}: React.ComponentProps<typeof TabsPrimitive.List>) {
+    <TabsPrimitive.List
+      data-slot="tabs-list"
+        "bg-muted text-muted-foreground inline-flex h-9 w-fit items-center justify-center rounded-xl p-[3px] flex",
+function TabsTrigger({
+}: React.ComponentProps<typeof TabsPrimitive.Trigger>) {
+    <TabsPrimitive.Trigger
+      data-slot="tabs-trigger"
+        "data-[state=active]:bg-card dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-xl border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+function TabsContent({
+}: React.ComponentProps<typeof TabsPrimitive.Content>) {
+    <TabsPrimitive.Content
+      data-slot="tabs-content"
+      className={cn("flex-1 outline-none", className)}
+export { Tabs, TabsList, TabsTrigger, TabsContent };
+function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
+    <textarea
+      data-slot="textarea"
+        "resize-none border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 flex field-sizing-content min-h-16 w-full rounded-md border bg-input-background px-3 py-2 text-base transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+export { Textarea };
+import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group";
+import { type VariantProps } from "class-variance-authority";
+import { toggleVariants } from "./toggle";
+const ToggleGroupContext = React.createContext<
+  VariantProps<typeof toggleVariants>
+  size: "default",
+  variant: "default",
+function ToggleGroup({
+}: React.ComponentProps<typeof ToggleGroupPrimitive.Root> &
+  VariantProps<typeof toggleVariants>) {
+    <ToggleGroupPrimitive.Root
+      data-slot="toggle-group"
+        "group/toggle-group flex w-fit items-center rounded-md data-[variant=outline]:shadow-xs",
+      <ToggleGroupContext.Provider value={{ variant, size }}>
+      </ToggleGroupContext.Provider>
+    </ToggleGroupPrimitive.Root>
+function ToggleGroupItem({
+}: React.ComponentProps<typeof ToggleGroupPrimitive.Item> &
+  const context = React.useContext(ToggleGroupContext);
+    <ToggleGroupPrimitive.Item
+      data-slot="toggle-group-item"
+      data-variant={context.variant || variant}
+      data-size={context.size || size}
+        toggleVariants({
+          variant: context.variant || variant,
+          size: context.size || size,
+        "min-w-0 flex-1 shrink-0 rounded-none shadow-none first:rounded-l-md last:rounded-r-md focus:z-10 focus-visible:z-10 data-[variant=outline]:border-l-0 data-[variant=outline]:first:border-l",
+    </ToggleGroupPrimitive.Item>
+export { ToggleGroup, ToggleGroupItem };
+import * as TogglePrimitive from "@radix-ui/react-toggle";
+const toggleVariants = cva(
+  "inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium hover:bg-muted hover:text-muted-foreground disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] outline-none transition-[color,box-shadow] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive whitespace-nowrap",
+        default: "bg-transparent",
+          "border border-input bg-transparent hover:bg-accent hover:text-accent-foreground",
+        default: "h-9 px-2 min-w-9",
+        sm: "h-8 px-1.5 min-w-8",
+        lg: "h-10 px-2.5 min-w-10",
+function Toggle({
+}: React.ComponentProps<typeof TogglePrimitive.Root> &
+    <TogglePrimitive.Root
+      data-slot="toggle"
+      className={cn(toggleVariants({ variant, size, className }))}
+export { Toggle, toggleVariants };
+import * as TooltipPrimitive from "@radix-ui/react-tooltip";
+function TooltipProvider({
+  delayDuration = 0,
+}: React.ComponentProps<typeof TooltipPrimitive.Provider>) {
+    <TooltipPrimitive.Provider
+      data-slot="tooltip-provider"
+      delayDuration={delayDuration}
+function Tooltip({
+}: React.ComponentProps<typeof TooltipPrimitive.Root>) {
+    <TooltipProvider>
+      <TooltipPrimitive.Root data-slot="tooltip" {...props} />
+    </TooltipProvider>
+function TooltipTrigger({
+}: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
+  return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />;
+function TooltipContent({
+  sideOffset = 0,
+}: React.ComponentProps<typeof TooltipPrimitive.Content>) {
+    <TooltipPrimitive.Portal>
+      <TooltipPrimitive.Content
+        data-slot="tooltip-content"
+          "bg-primary text-primary-foreground animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-fit origin-(--radix-tooltip-content-transform-origin) rounded-md px-3 py-1.5 text-xs text-balance",
+        <TooltipPrimitive.Arrow className="bg-primary fill-primary z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px]" />
+      </TooltipPrimitive.Content>
+    </TooltipPrimitive.Portal>
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider };
