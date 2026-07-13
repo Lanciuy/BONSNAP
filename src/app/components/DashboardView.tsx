@@ -57,7 +57,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
         style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1509803874385-db7c23652552?q=80&w=1000&auto=format&fit=crop")' }}
       />
 
-      <div className="relative z-10 flex-1 overflow-y-auto no-scrollbar pb-48">
+      <div className="relative z-10 flex-1 overflow-y-auto no-scrollbar pb-[320px]">
         {/* Profile Header */}
         <div className="px-6 pt-12 pb-4 flex justify-between items-center">
           <div className="flex items-center gap-4">
