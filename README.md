@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
   # Expense Tracker App Design
 
@@ -9,3 +10,6 @@
 
   Run `npm run dev` to start the development server.
   
+=======
+# BONSNAP
+>>>>>>> 020abb9862c5529d1bf2fb5a1fc8343bfc7b451e
