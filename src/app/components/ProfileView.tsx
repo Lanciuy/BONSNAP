@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Camera, PieChart, Home, ReceiptText, User, ChevronLeft, MapPin, GraduationCap, Link2, Sparkles, Trophy, Scan, ShieldCheck, LogOut, Lock, Palette, Edit2, Settings, Image as ImageIcon, Gamepad2, Target, Heart, Tag, Medal, Crown, Download, Bell } from "lucide-react";
+import { Camera, PieChart, Home, ReceiptText, User, ChevronLeft, MapPin, GraduationCap, Link2, Sparkles, Trophy, Scan, ShieldCheck, LogOut, Lock, Palette, Edit2, Settings, Image as ImageIcon, Gamepad2, Target, Heart, Tag, Medal, Crown, Download, Bell, PartyPopper, Coffee, PiggyBank, Flame, Ghost, Pizza, ChevronRight } from "lucide-react";
 import { Mascot, MascotMood } from "./Mascot";
 import { ThemeState, Inventory } from '../App';
 import { motion, AnimatePresence } from "motion/react";
@@ -47,6 +47,15 @@ const FRAME_OPTIONS = [
   { id: 'steampunk', name: 'Steampunk Ears', class: 'border-4 border-transparent', imageUrl: '/gifs/Steampunk_Cat_Ears.gif' }
 ];
 
+const ALL_ACHIEVEMENTS = [
+  { id: '1', title: 'First Snap! 🎉', desc: 'Berhasil scan struk pertamamu.', icon: PartyPopper, color: 'text-amber-500', bg: 'bg-amber-100', unlocked: true },
+  { id: '2', title: 'Coffee Addict ☕', desc: 'Scan 5 struk kopi dalam seminggu.', icon: Coffee, color: 'text-amber-700', bg: 'bg-amber-200', unlocked: true },
+  { id: '3', title: 'Super Saver 💰', desc: 'Tidak ada pengeluaran hari ini.', icon: PiggyBank, color: 'text-pink-500', bg: 'bg-pink-100', unlocked: true },
+  { id: '4', title: 'On Fire! 🔥', desc: 'Login 7 hari berturut-turut.', icon: Flame, color: 'text-orange-500', bg: 'bg-orange-100', unlocked: false },
+  { id: '5', title: 'Invisible Money 👻', desc: 'Habis gajian tapi uangnya langsung hilang.', icon: Ghost, color: 'text-purple-500', bg: 'bg-purple-100', unlocked: false },
+  { id: '6', title: 'Pizza Party 🍕', desc: 'Jajan fast-food terlalu banyak bulan ini.', icon: Pizza, color: 'text-red-500', bg: 'bg-red-100', unlocked: false },
+];
+
 export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDashboard, theme, onNavigate, points, level, inventory }) => {
   const [mood, setMood] = useState<MascotMood>("happy");
   const [msg, setMsg] = useState("Profil lo udah cakep banget bestie! 💅");
@@ -55,8 +64,9 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
   const [activeBanner, setActiveBanner] = useState(BANNER_OPTIONS[0]);
   const [activeFrame, setActiveFrame] = useState(FRAME_OPTIONS[1]);
   
-  // Tab State for Discord Style Edit
+  // Tab States for Modals
   const [isEditing, setIsEditing] = useState(false);
+  const [isViewingAchievements, setIsViewingAchievements] = useState(false);
 
   const isMecha = theme === "mecha";
 
@@ -259,27 +269,25 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
       {/* OUTSIDE THE CARD: Extra Widgets */}
       <div className="w-full max-w-sm mx-auto mt-6 flex flex-col gap-4 shrink-0">
         
-        {/* Achievements Showcase */}
+        {/* Achievements Showcase (Compact & Clickable) */}
         <div className="w-full">
-           <div className="flex items-center justify-between mb-3 px-1">
+           <div className="flex items-center justify-between mb-2 px-1 cursor-pointer" onClick={() => setIsViewingAchievements(true)}>
               <h2 className={`text-sm font-black uppercase tracking-wider ${isMecha ? 'text-white' : 'text-slate-800'}`}>Achievements</h2>
-              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isMecha ? 'bg-slate-800 text-slate-400' : 'bg-slate-200 text-slate-500'}`}>12 / 50</span>
+              <div className="flex items-center gap-1">
+                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isMecha ? 'bg-slate-800 text-slate-400' : 'bg-slate-200 text-slate-500'}`}>3 / 50</span>
+                 <ChevronRight size={14} className={isMecha ? 'text-slate-500' : 'text-slate-400'} />
+              </div>
            </div>
-           <div className={`p-4 rounded-[24px] grid grid-cols-4 gap-3 border shadow-sm ${isMecha ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'}`}>
-              <div className={`aspect-square rounded-2xl flex flex-col items-center justify-center gap-1 bg-gradient-to-br shadow-inner ${isMecha ? 'from-amber-900/40 to-amber-600/10' : 'from-amber-100 to-yellow-50'}`}>
-                 <Crown size={24} className="text-amber-500 drop-shadow-sm" />
-                 <span className={`text-[8px] font-black uppercase ${isMecha ? 'text-amber-500' : 'text-amber-600'}`}>VIP</span>
-              </div>
-              <div className={`aspect-square rounded-2xl flex flex-col items-center justify-center gap-1 bg-gradient-to-br shadow-inner ${isMecha ? 'from-blue-900/40 to-blue-600/10' : 'from-blue-100 to-cyan-50'}`}>
-                 <Scan size={24} className="text-blue-500 drop-shadow-sm" />
-                 <span className={`text-[8px] font-black uppercase ${isMecha ? 'text-blue-500' : 'text-blue-600'}`}>100+</span>
-              </div>
-              <div className={`aspect-square rounded-2xl flex flex-col items-center justify-center gap-1 bg-gradient-to-br shadow-inner ${isMecha ? 'from-pink-900/40 to-pink-600/10' : 'from-pink-100 to-rose-50'}`}>
-                 <Medal size={24} className="text-pink-500 drop-shadow-sm" />
-                 <span className={`text-[8px] font-black uppercase ${isMecha ? 'text-pink-500' : 'text-pink-600'}`}>Saver</span>
-              </div>
-              <div className={`aspect-square rounded-2xl flex items-center justify-center border-2 border-dashed ${isMecha ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'}`}>
-                 <Lock size={16} className={isMecha ? 'text-slate-600' : 'text-slate-300'} />
+           <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 px-1">
+              {ALL_ACHIEVEMENTS.filter(a => a.unlocked).map(ach => (
+                 <div key={ach.id} onClick={() => setIsViewingAchievements(true)} className={`shrink-0 w-12 h-12 rounded-[16px] flex items-center justify-center cursor-pointer hover:scale-105 transition-transform shadow-sm border ${isMecha ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-100'}`}>
+                    <div className={`p-2 rounded-xl ${ach.bg} ${isMecha ? 'bg-opacity-20' : ''}`}>
+                       <ach.icon size={16} className={ach.color} />
+                    </div>
+                 </div>
+              ))}
+              <div onClick={() => setIsViewingAchievements(true)} className={`shrink-0 w-12 h-12 rounded-[16px] flex items-center justify-center border-2 border-dashed cursor-pointer hover:scale-105 transition-transform ${isMecha ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'}`}>
+                 <Lock size={14} className={isMecha ? 'text-slate-600' : 'text-slate-300'} />
               </div>
            </div>
         </div>
@@ -333,6 +341,43 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
            </div>
         </div>
         
+      </div>
+
+    </motion.div>
+  );
+
+  const renderAchievementsMode = () => (
+    <motion.div key="achievements-view" variants={containerVariants} initial="hidden" animate="show" exit="exit" className={`absolute inset-0 z-50 overflow-y-auto no-scrollbar flex flex-col ${isMecha ? 'bg-slate-900 text-white' : 'bg-[#fdfbfb] text-slate-800'}`}>
+      
+      {/* Header */}
+      <div className={`pt-12 pb-4 px-6 flex items-center justify-between z-20 sticky top-0 backdrop-blur-md ${isMecha ? 'bg-slate-900/80 border-b border-slate-700' : 'bg-[#fdfbfb]/80 border-b border-slate-100'}`}>
+        <div className="flex items-center gap-4">
+          <button onClick={() => setIsViewingAchievements(false)} className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isMecha ? 'bg-slate-800 text-slate-300 hover:text-white' : 'bg-slate-100 text-slate-500 hover:text-slate-800'}`}>
+            <ChevronLeft size={24} strokeWidth={2.5} />
+          </button>
+          <h1 className="text-xl font-black tracking-tight">Achievements</h1>
+        </div>
+      </div>
+
+      <div className="px-6 pt-6 pb-12 flex flex-col gap-4">
+        {ALL_ACHIEVEMENTS.map(ach => (
+           <div key={ach.id} className={`p-4 rounded-[20px] flex gap-4 items-center border ${ach.unlocked ? (isMecha ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-100 shadow-sm') : (isMecha ? 'bg-slate-900 border-slate-800 opacity-60' : 'bg-slate-50 border-slate-200 opacity-60')}`}>
+              <div className={`w-14 h-14 shrink-0 rounded-[16px] flex items-center justify-center ${ach.bg} ${isMecha && ach.unlocked ? 'bg-opacity-20' : ''}`}>
+                 <ach.icon size={24} className={ach.unlocked ? ach.color : (isMecha ? 'text-slate-600' : 'text-slate-400')} />
+              </div>
+              <div className="flex-1">
+                 <h3 className={`font-black text-sm mb-0.5 ${isMecha ? 'text-slate-200' : 'text-slate-700'}`}>
+                    {ach.unlocked ? ach.title : '???'}
+                 </h3>
+                 <p className={`text-xs font-medium leading-snug ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>
+                    {ach.unlocked ? ach.desc : 'Selesaikan misi rahasia untuk membuka pencapaian ini.'}
+                 </p>
+              </div>
+              {!ach.unlocked && (
+                 <Lock size={16} className={isMecha ? 'text-slate-600' : 'text-slate-300'} />
+              )}
+           </div>
+        ))}
       </div>
 
     </motion.div>
@@ -440,12 +485,12 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
       />
 
       <AnimatePresence mode="wait">
-        {isEditing ? renderEditMode() : renderCardBody()}
+        {isViewingAchievements ? renderAchievementsMode() : (isEditing ? renderEditMode() : renderCardBody())}
       </AnimatePresence>
 
-      {/* Modern Floating Bottom Navigation (Only visible when NOT editing) */}
+      {/* Modern Floating Bottom Navigation (Only visible when NOT editing/viewing modals) */}
       <AnimatePresence>
-        {!isEditing && (
+        {!isEditing && !isViewingAchievements && (
           <motion.div initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 100, opacity: 0 }} className={`absolute bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-[360px] h-[72px] backdrop-blur-2xl border rounded-[32px] px-2 flex justify-between items-center z-40 pointer-events-auto ${isMecha ? 'bg-slate-800/95 border-blue-500/50 shadow-[0_0_20px_rgba(59,130,246,0.3)]' : 'bg-white/95 border-slate-100 shadow-[0_20px_40px_rgba(0,0,0,0.1)]'}`}>
             
             <button onClick={onGoToDashboard} className={`flex flex-col items-center justify-center w-[20%] group transition-colors ${isMecha ? 'text-slate-400 hover:text-blue-400' : 'text-slate-400 hover:text-pink-500'}`}>
