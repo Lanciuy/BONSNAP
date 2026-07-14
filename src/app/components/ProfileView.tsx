@@ -38,7 +38,8 @@ const FRAME_OPTIONS = [
   { id: 'none', name: 'None', class: 'border-4 border-white' },
   { id: 'gold', name: 'Gold VIP', class: 'border-[6px] border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.6)]' },
   { id: 'neon', name: 'Cyber Neon', class: 'border-[6px] border-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.8)]' },
-  { id: 'flame', name: 'Hot Streak', class: 'border-[6px] border-orange-500 shadow-[0_0_20px_rgba(249,115,22,0.7)]' }
+  { id: 'flame', name: 'Hot Streak', class: 'border-[6px] border-orange-500 shadow-[0_0_20px_rgba(249,115,22,0.7)]' },
+  { id: 'gif-magic', name: 'Animated Magic', class: 'border-4 border-transparent', imageUrl: 'https://media.giphy.com/media/26FPCXdkvDbKBbgOI/giphy.gif' } // Example GIF border
 ];
 
 export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDashboard, theme, onNavigate, points, level, inventory }) => {
@@ -93,12 +94,22 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
 
           {/* Avatar & Badges */}
           <div className="absolute -bottom-14 left-6 z-20 flex items-end gap-4">
-            <div className={`relative w-28 h-28 rounded-full overflow-hidden transition-all duration-500 bg-white ${activeFrame.class}`}>
-              <img 
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400&h=400" 
-                alt="Profile"
-                className="w-full h-full object-cover"
-              />
+            <div className={`relative w-28 h-28 rounded-full flex items-center justify-center transition-all duration-500 ${activeFrame.class}`}>
+              {/* Outer GIF layer if available */}
+              {activeFrame.imageUrl && (
+                <div 
+                  className="absolute inset-0 z-30 rounded-full pointer-events-none scale-125 mix-blend-screen opacity-80"
+                  style={{ backgroundImage: `url(${activeFrame.imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                />
+              )}
+              {/* Actual Avatar */}
+              <div className="w-full h-full rounded-full overflow-hidden bg-white relative z-10 border-2 border-white">
+                <img 
+                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400&h=400" 
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                />
+              </div>
             </div>
           </div>
         </div>
