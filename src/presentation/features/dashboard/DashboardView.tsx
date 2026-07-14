@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Camera, Coffee, ShoppingBag, Car, Settings, Wallet, PieChart, Home, Sparkles, X, Bell, Globe, CreditCard, ChevronRight, LogOut, Swords, Send, Plus, Receipt, Gift, Target, ReceiptText, User, ArrowDownRight, ArrowUpRight, Activity, Users, Volume2, Music, Zap, Cloud } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { Mascot, MascotMood, getGeneratedMascotUrl } from "./Mascot";
-import { ThemeState, Inventory, UserProfile } from '../App';
-import { AVATAR_OPTIONS } from "./ProfileView";
+import { Mascot, MascotMood, getGeneratedMascotUrl } from "../../shared/Mascot/Mascot";
+import { ThemeState, Inventory, UserProfile } from '../../../core/entities';
+import { AVATAR_OPTIONS } from "../profile/ProfileView";
 
 interface DashboardViewProps {
   onGoToCamera: () => void;

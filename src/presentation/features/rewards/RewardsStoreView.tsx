@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { ChevronLeft, Coins, CalendarCheck, ShieldCheck, Flame, Sparkles, Trophy, Lock, Unlock, Zap, Calendar, CalendarDays, Target } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { ThemeState, Inventory } from '../App';
-import { Mascot, MascotMood } from "./Mascot";
+import { ThemeState, Inventory } from '../../../core/entities';
+import { Mascot, MascotMood } from "../../shared/Mascot/Mascot";
 
 interface RewardsStoreViewProps {
   onBack: () => void;

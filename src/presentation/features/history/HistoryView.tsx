@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { Camera, PieChart, Home, ReceiptText, User, ChevronLeft, Search, Filter, ShoppingBag, Gamepad2, Coffee, TrainFront, MoreHorizontal } from "lucide-react";
-import { Mascot, MascotMood } from "./Mascot";
-import { ThemeState } from '../App';
+import { Mascot, MascotMood } from "../../shared/Mascot/Mascot";
+import { ThemeState } from '../../../core/entities';
 import { motion } from "motion/react";
 
 interface HistoryViewProps {

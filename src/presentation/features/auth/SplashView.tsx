@@ -1,8 +1,8 @@
 import React from "react";
 import { motion } from "motion/react";
 import { Sparkles, Camera } from "lucide-react";
-import { ThemeState } from '../App';
-import img1 from "../../imports/image-1.png";
+import { ThemeState } from '../../../core/entities';
+import img1 from "../../../imports/image-1.png";
 
 interface SplashViewProps {
   theme: ThemeState;
@@ -10,7 +10,7 @@ interface SplashViewProps {
 
 export const SplashView: React.FC<SplashViewProps> = ({ theme }) => {
   return (
-    <div className="w-full h-full relative overflow-hidden flex flex-col items-center justify-center bg-gradient-to-b from-pink-300 to-purple-400 text-white">
+    <div className="w-full h-full relative overflow-hidden flex flex-col items-center justify-center bg-gradient-to-b from-indigo-500 to-purple-600 text-white">
       {/* Background elements */}
       <motion.div 
         animate={{ rotate: 360 }}

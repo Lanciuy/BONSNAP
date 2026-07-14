@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Camera, PieChart, Home, ReceiptText, User, ChevronLeft, MapPin, GraduationCap, Link2, Sparkles, Trophy, Scan, ShieldCheck, LogOut, Lock, Palette, Edit2, Settings, Image as ImageIcon, Gamepad2, Target, Heart, Tag, Medal, Crown, Download, Bell, PartyPopper, Coffee, PiggyBank, Flame, Ghost, Pizza, ChevronRight } from "lucide-react";
-import { Mascot, MascotMood } from "./Mascot";
-import { ThemeState, Inventory, UserProfile } from '../App';
+import { Mascot, MascotMood } from "../../shared/Mascot/Mascot";
+import { ThemeState, Inventory, UserProfile } from '../../../core/entities';
 import { motion, AnimatePresence } from "motion/react";
 
 interface ProfileViewProps {

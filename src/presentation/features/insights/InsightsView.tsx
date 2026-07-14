@@ -1,10 +1,10 @@
 import React, { useState, useMemo } from "react";
 import { Camera, History, PieChart, Home, AlertCircle, Target, TrendingDown, Sparkles, HeartPulse, Zap, ReceiptText, User, ShoppingBag, Gamepad2, Coffee, TrainFront, Crown, ChevronRight } from "lucide-react";
 import { PieChart as RechartsPieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
-import { Mascot, MascotMood } from "./Mascot";
-import { ThemeState } from '../App';
+import { Mascot, MascotMood } from "../../shared/Mascot/Mascot";
+import { ThemeState } from '../../../core/entities';
 import { motion, AnimatePresence } from "motion/react";
-import { exportToExcel } from "../../utils/exportExcel";
+import { exportToExcel } from "../../../utils/exportExcel";
 
 interface InsightsViewProps {
   onGoToCamera: () => void;

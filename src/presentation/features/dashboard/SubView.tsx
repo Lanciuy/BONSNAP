@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { motion } from "motion/react";
 import { ChevronLeft, Receipt, History, Target, User, Search, ArrowDownRight, ArrowUpRight, Image as ImageIcon, Camera } from "lucide-react";
-import { Mascot, MascotMood } from "./Mascot";
-import { ThemeState } from "../App";
+import { Mascot, MascotMood } from "../../shared/Mascot/Mascot";
+import { ThemeState } from '../../../core/entities';
 
 interface SubViewProps {
   type: "income" | "splitBill" | "expense" | "history" | "savings" | "editProfile";

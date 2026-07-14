@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ChevronRight, ShieldAlert, UserPlus, LogIn, ArrowLeft } from "lucide-react";
-import { Mascot, MascotMood, moodMap, getGeneratedMascotUrl } from "./Mascot";
-import { ThemeState } from '../App';
+import { Mascot, MascotMood, moodMap, getGeneratedMascotUrl } from "../../shared/Mascot/Mascot";
+import { ThemeState } from '../../../core/entities';
 
-import bgImage from "../../imports/image.png";
+import bgImage from "../../../imports/image.png";
 
 interface LoginViewProps {
   onLogin: () => void;
@@ -56,9 +56,11 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
                   <img src={avatarUrl} alt="Logo" className={`w-full h-full object-contain ${theme === 'original' ? 'scale-[1.3] pt-4' : 'scale-110'}`} />
                 )}
               </div>
-              <h1 className="text-[44px] font-black tracking-tighter mb-2 text-center leading-none text-slate-800 drop-shadow-sm">BonSnap</h1>
-              <p className="text-slate-700 text-[15px] tracking-wide text-center font-bold bg-white/50 px-4 py-1 rounded-full">
-                {isMecha ? 'Tactical Finance Core 🤖' : 'AI Tracker Paling Slay ✨'}
+              <h1 className="text-[32px] font-black tracking-tight text-white mb-2 drop-shadow-md">
+                BONSNAP
+              </h1>
+              <p className="text-sm font-bold text-indigo-100 mb-8 max-w-[260px] mx-auto opacity-90">
+                {isMecha ? 'Tactical Asset Management' : 'Level up your financial stats!'}
               </p>
             </motion.div>
 
@@ -68,27 +70,27 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
               transition={{ delay: 0.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="w-full flex flex-col gap-4"
             >
-              <div className={`bg-white/80 backdrop-blur-xl rounded-[24px] p-4 border-2 border-white transition-all shadow-lg focus-within:${isMecha ? 'border-blue-500' : 'border-pink-400'}`}>
-                <label className={`text-[11px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-500' : 'text-pink-500'}`}>
+              <div className={`bg-white/80 backdrop-blur-xl rounded-[24px] p-4 border-2 border-white transition-all shadow-lg focus-within:${isMecha ? 'border-blue-500' : 'border-indigo-400'}`}>
+                <label className={`text-[11px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-500' : 'text-indigo-500'}`}>
                   {isMecha ? 'Pilot ID' : 'Username'}
                 </label>
                 <input 
                   type="text" 
-                  placeholder={isMecha ? "PILOT-01" : "@bestie"} 
+                  placeholder={isMecha ? "PILOT-01" : "@user"} 
                   onFocus={() => { 
                     setMood("thinking"); 
-                    setMsg(isMecha ? "IDENTIFYING PILOT CREDENTIALS..." : "Spill username lo dong, biar akrab! 🧐"); 
+                    setMsg(isMecha ? "IDENTIFYING PILOT CREDENTIALS..." : "Enter your handle to continue! 🧐"); 
                   }}
                   onBlur={() => { 
                     setMood("happy"); 
-                    setMsg(isMecha ? "READY FOR INPUT." : "Gas terus bestie! 🌸"); 
+                    setMsg(isMecha ? "READY FOR INPUT." : "Ready to track your stats? ✨"); 
                   }}
                   className="w-full bg-transparent text-slate-800 outline-none font-bold placeholder:text-slate-400/60 text-lg" 
                 />
               </div>
               
-              <div className={`bg-white/80 backdrop-blur-xl rounded-[24px] p-4 border-2 border-white transition-all shadow-lg focus-within:${isMecha ? 'border-blue-500' : 'border-pink-400'}`}>
-                <label className={`text-[11px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-500' : 'text-pink-500'}`}>
+              <div className={`bg-white/80 backdrop-blur-xl rounded-[24px] p-4 border-2 border-white transition-all shadow-lg focus-within:${isMecha ? 'border-blue-500' : 'border-indigo-400'}`}>
+                <label className={`text-[11px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-500' : 'text-indigo-500'}`}>
                   {isMecha ? 'Access Code' : 'Password'}
                 </label>
                 <input 
@@ -96,11 +98,11 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
                   placeholder="••••••••" 
                   onFocus={() => { 
                     setMood("shy"); 
-                    setMsg(isMecha ? "ENCRYPTING CONNECTION..." : "Selow, password lo aman kok sama AI gue! 🫣"); 
+                    setMsg(isMecha ? "ENCRYPTING CONNECTION..." : "Password secure, keep it hidden! 🫣"); 
                   }}
                   onBlur={() => { 
                     setMood("love"); 
-                    setMsg(isMecha ? "ENCRYPTION SECURE." : "Sip, tinggal masuk aja nih! ✨"); 
+                    setMsg(isMecha ? "ENCRYPTION SECURE." : "Welcome back! Ready to track your stats? ✨"); 
                   }}
                   className="w-full bg-transparent text-slate-800 outline-none font-bold placeholder:text-slate-400/60 text-lg" 
                 />
@@ -115,17 +117,9 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
             >
               <button 
                 onClick={onLogin}
-                onMouseEnter={() => { 
-                  setMood("excited"); 
-                  setMsg(isMecha ? "COMMENCING LOGIN SEQUENCE." : "Let's go! Gak sabar flexing AI keuangan! 🎉"); 
-                }}
-                onMouseLeave={() => { 
-                  setMood("happy"); 
-                  setMsg(initialMsg); 
-                }}
-                className={`w-full text-white font-black rounded-[24px] py-4 flex items-center justify-center gap-2 transition-all active:scale-[0.96] text-lg group border-2 border-white ${isMecha ? 'bg-gradient-to-r from-blue-500 to-red-500 hover:from-blue-600 hover:to-red-600 shadow-[0_10px_30px_rgba(59,130,246,0.4)]' : 'bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 shadow-[0_10px_30px_rgba(244,114,182,0.4)]'}`}
+                className={`w-full text-white font-black rounded-full py-4 flex items-center justify-center gap-2 transition-transform active:scale-95 shadow-xl ${isMecha ? 'bg-blue-600 hover:bg-blue-500 shadow-blue-500/30' : 'bg-gradient-to-r from-indigo-500 to-pink-500 hover:from-indigo-400 hover:to-pink-400 shadow-pink-500/30'}`}
               >
-                {isMecha ? 'INITIALIZE 🚀' : 'Masuk Yuk! 🌸'}
+                {isMecha ? 'INITIALIZE 🚀' : 'Login'}
                 <ChevronRight size={20} strokeWidth={3} className="group-hover:translate-x-1.5 transition-transform duration-300" />
               </button>
               
@@ -133,12 +127,12 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
                 onClick={() => {
                   setMode("register");
                   setMood("surprised");
-                  setMsg(isMecha ? "NEW PILOT REGISTRATION PROTOCOL INITIATED." : "Wih, member baru nih! Sini gue bantuin daftar! 🎉");
+                  setMsg(isMecha ? "NEW PILOT REGISTRATION PROTOCOL INITIATED." : "New user? Let's get you set up! 🎉");
                 }}
-                className={`w-full bg-white/50 hover:bg-white/80 font-black rounded-[24px] py-4 flex items-center justify-center gap-2 transition-all active:scale-[0.96] border-2 border-white backdrop-blur-md ${isMecha ? 'text-blue-600' : 'text-pink-500'}`}
+                className={`w-full bg-white/50 hover:bg-white/80 font-black rounded-[24px] py-4 flex items-center justify-center gap-2 transition-all active:scale-[0.96] border-2 border-white backdrop-blur-md ${isMecha ? 'text-blue-600' : 'text-indigo-500'}`}
               >
                 <UserPlus size={18} strokeWidth={2.5} /> 
-                {isMecha ? 'REGISTER NEW PILOT' : 'Belum Punya Akun? Daftar!'}
+                {isMecha ? 'REGISTER NEW PILOT' : 'Create Account'}
               </button>
             </motion.div>
           </motion.div>
@@ -157,13 +151,13 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
                 setMood("happy");
                 setMsg(initialMsg);
               }}
-              className={`w-10 h-10 rounded-full flex items-center justify-center mb-4 bg-white/50 backdrop-blur-md border border-white transition-all ${isMecha ? 'text-blue-500 hover:bg-blue-50' : 'text-pink-500 hover:bg-pink-50'}`}
+              className={`w-10 h-10 rounded-full flex items-center justify-center mb-4 bg-white/50 backdrop-blur-md border border-white transition-all ${isMecha ? 'text-blue-500 hover:bg-blue-50' : 'text-indigo-500 hover:bg-indigo-50'}`}
             >
               <ArrowLeft size={20} strokeWidth={3} />
             </button>
             
-            <h2 className={`text-3xl font-black tracking-tighter mb-6 ${isMecha ? 'text-blue-600' : 'text-pink-500'}`}>
-              {isMecha ? 'PILOT REGISTRATION' : 'Buat Akun Baru ✨'}
+            <h2 className={`text-3xl font-black tracking-tighter mb-6 ${isMecha ? 'text-blue-600' : 'text-indigo-500'}`}>
+              {isMecha ? 'PILOT REGISTRATION' : 'Join the Community ✨'}
             </h2>
             
             <div className="flex flex-col gap-3">

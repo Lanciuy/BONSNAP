@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import img1 from "../../imports/image-1.png";
-import img2 from "../../imports/image-2.png";
-import img3 from "../../imports/image-3.png";
-import img4 from "../../imports/image-4.png";
-import img5 from "../../imports/image-5.png";
-import img6 from "../../imports/image-6.png";
-import img7 from "../../imports/image-7.png";
-import img8 from "../../imports/image-8.png";
-import img9 from "../../imports/image-9.png";
-import { ThemeState } from '../App';
+import img1 from "../../../imports/image-1.png";
+import img2 from "../../../imports/image-2.png";
+import img3 from "../../../imports/image-3.png";
+import img4 from "../../../imports/image-4.png";
+import img5 from "../../../imports/image-5.png";
+import img6 from "../../../imports/image-6.png";
+import img7 from "../../../imports/image-7.png";
+import img8 from "../../../imports/image-8.png";
+import img9 from "../../../imports/image-9.png";
+import { ThemeState } from '../../../core/entities';
 
 export type MascotMood = "happy" | "surprised" | "sad" | "wink" | "cute" | "thinking" | "excited" | "neutral" | "alert" | "confused" | "love" | "angry" | "sleepy" | "cool" | "shy" | "laughing" | "scared" | "smug";
 
@@ -96,7 +96,7 @@ export const Mascot: React.FC<MascotProps> = ({ mood, message = "", showDialogue
 
   const isOriginal = theme === "original";
   const avatarUrl = isOriginal ? moodMap[mood] || img1 : getGeneratedMascotUrl(mood, theme);
-  const mascotName = theme === "mecha" ? "G-UNIT 01 🤖" : "Bon-chan 🌸";
+  const mascotName = theme === "mecha" ? "G-UNIT 01 🤖" : "Navi ✨";
 
   return (
     <div className={`absolute ${customBottom || 'bottom-[104px]'} left-1/2 -translate-x-1/2 w-[92%] max-w-[360px] z-50 pointer-events-none flex flex-col items-end`}>

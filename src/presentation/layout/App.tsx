@@ -1,41 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { SplashView } from "./components/SplashView";
-import { CameraView } from "./components/CameraView";
-import { DashboardView } from "./components/DashboardView";
-import { LoginView } from "./components/LoginView";
-import { InsightsView } from "./components/InsightsView";
-import { HistoryView } from "./components/HistoryView";
-import { ProfileView } from "./components/ProfileView";
-import { RewardsStoreView } from "./components/RewardsStoreView";
-
-import { SubView } from "./components/SubView";
+import { SplashView } from "../features/auth/SplashView";
+import { CameraView } from "../features/camera/CameraView";
+import { DashboardView } from "../features/dashboard/DashboardView";
+import { LoginView } from "../features/auth/LoginView";
+import { InsightsView } from "../features/insights/InsightsView";
+import { HistoryView } from "../features/history/HistoryView";
+import { ProfileView } from "../features/profile/ProfileView";
+import { RewardsStoreView } from "../features/rewards/RewardsStoreView";
+import { SubView } from "../features/dashboard/SubView";
+import { ThemeState, Inventory, UserProfile } from "../../core/entities";
 
 type ViewState = "splash" | "login" | "camera" | "dashboard" | "insights" | "income" | "splitBill" | "expense" | "rewards" | "store" | "history" | "savings" | "editProfile";
-export type ThemeState = "original" | "genz" | "mecha";
-
-export interface Inventory {
-  avatars: string[];
-  banners: string[];
-  frames: string[];
-  themes: string[];
-}
-
-export interface UserProfile {
-  name: string;
-  username: string;
-  bio: string;
-  university: string;
-  location: string;
-  financialPersona: string;
-  accentColor: string;
-  goalName: string;
-  goalTarget: string;
-  goalSaved: string;
-  activeBannerId: string;
-  activeFrameId: string;
-  activeAvatarId: string;
-}
 
 const viewVariants = {
   initial: { opacity: 0, scale: 0.95, filter: "blur(4px)" },

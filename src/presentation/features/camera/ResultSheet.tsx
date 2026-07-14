@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { motion } from "motion/react";
 import { Check, ReceiptText, Trash2, PlusCircle, PenSquare, Sparkles, Crosshair, UserPlus } from "lucide-react";
-import { ThemeState } from '../App';
+import { Mascot, MascotMood } from "../../shared/Mascot/Mascot";
+import { ThemeState } from '../../../core/entities';
 
 interface ResultSheetProps {
   onClose: () => void;

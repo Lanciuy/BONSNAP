@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Camera, X, Wand2, Sparkles, Heart, Crosshair, Cpu, Flashlight, Image as ImageIcon } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { ResultSheet } from "./ResultSheet";
-import { Mascot, MascotMood } from "./Mascot";
-import { ThemeState } from '../App';
-import { analyzeReceipt, ScannedReceiptData } from "../../services/geminiService";
+import { Mascot, MascotMood } from "../../shared/Mascot/Mascot";
+import { ThemeState } from '../../../core/entities';
+import { analyzeReceipt, ScannedReceiptData } from '../../../infrastructure/services/geminiService';
 
 interface CameraViewProps {
   onGoToDashboard: () => void;
