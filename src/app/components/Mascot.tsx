@@ -19,7 +19,7 @@ interface MascotProps {
   showDialogue?: boolean;
   theme: ThemeState;
   placement?: "default" | "top" | "bottom" | "left" | "right";
-  isStatic?: boolean;
+  customBottom?: string;
 }
 
 export const moodMap: Record<MascotMood, string> = {
@@ -67,7 +67,7 @@ export const getGeneratedMascotUrl = (mood: MascotMood, theme: ThemeState) => {
   return `https://api.dicebear.com/9.x/lorelei/svg?seed=${seedMap[mood]}&backgroundColor=transparent`;
 };
 
-export const Mascot: React.FC<MascotProps> = ({ mood, message = "", showDialogue = true, theme, placement = "default", isStatic = false }) => {
+export const Mascot: React.FC<MascotProps> = ({ mood, message = "", showDialogue = true, theme, placement = "default", customBottom }) => {
   const [displayedText, setDisplayedText] = useState("");
 
   const getInitialAnimation = () => {
@@ -99,15 +99,12 @@ export const Mascot: React.FC<MascotProps> = ({ mood, message = "", showDialogue
   const mascotName = theme === "mecha" ? "G-UNIT 01 🤖" : "Bon-chan 🌸";
 
   return (
-    <div className={`${isStatic ? 'relative mt-4 mb-24' : 'absolute bottom-24'} left-0 w-full z-50 pointer-events-none px-4 flex flex-col items-end`}>
+    <div className={`absolute ${customBottom || 'bottom-[104px]'} left-1/2 -translate-x-1/2 w-[92%] max-w-[360px] z-50 pointer-events-none flex flex-col items-end`}>
       <motion.div 
-        drag 
-        dragConstraints={{ left: -300, right: 0, top: -600, bottom: 50 }}
-        dragElastic={0.2}
         initial={getInitialAnimation()}
         animate={{ x: 0, y: 0, scale: 1, opacity: 1 }}
         transition={{ type: "spring", stiffness: 250, damping: 25 }}
-        className="pointer-events-auto flex flex-col items-end cursor-grab active:cursor-grabbing w-full max-w-[90%]"
+        className="pointer-events-auto flex flex-col items-end w-full"
       >
         {/* Mascot Image */}
         <AnimatePresence mode="wait">

@@ -89,7 +89,7 @@ export const CameraView: React.FC<CameraViewProps> = ({ onGoToDashboard, theme, 
       </div>
 
       {/* Top Bar */}
-      <div className="relative z-10 flex justify-between items-center p-6 pt-12 bg-gradient-to-b from-black/50 to-transparent">
+      <div className="relative z-50 flex justify-between items-center p-6 pt-12 bg-gradient-to-b from-black/50 to-transparent">
         <button onClick={onGoToDashboard} className="w-10 h-10 bg-white/30 backdrop-blur-xl rounded-full border border-white/40 flex items-center justify-center hover:bg-white/50 transition shadow-sm">
           <X size={20} className="text-white" strokeWidth={3} />
         </button>
@@ -109,7 +109,7 @@ export const CameraView: React.FC<CameraViewProps> = ({ onGoToDashboard, theme, 
             initial={{ opacity: 0 }} 
             animate={{ opacity: 1 }} 
             exit={{ opacity: 0 }}
-            className="flex-1 flex flex-col items-center justify-center p-6 relative z-10"
+            className="absolute inset-0 flex flex-col items-center pt-48 pb-[180px] z-10"
           >
             <div className="w-full max-w-[280px] aspect-[3/4] relative">
               <div className={`absolute top-0 left-0 w-10 h-10 border-t-[4px] border-l-[4px] rounded-tl-[32px] ${isMecha ? 'border-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 'border-pink-400 shadow-[0_0_15px_rgba(244,114,182,0.5)]'}`}></div>
@@ -127,18 +127,42 @@ export const CameraView: React.FC<CameraViewProps> = ({ onGoToDashboard, theme, 
               </div>
             </div>
 
-            {/* Extra Camera Actions */}
-            <div className="flex justify-between w-full max-w-[280px] mt-8 px-4">
+            <div className="flex-1" />
+
+            {/* Bottom Camera Controls Row */}
+            <div className="flex justify-between items-center w-full max-w-[340px] px-8">
               <button 
                 onClick={() => setIsFlashOn(!isFlashOn)}
-                className={`w-12 h-12 rounded-full backdrop-blur-md border flex items-center justify-center transition-all ${isFlashOn ? 'bg-yellow-400 text-black border-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.5)]' : 'bg-black/40 border-white/20 text-white hover:bg-white/20'}`}
+                className={`w-12 h-12 rounded-full backdrop-blur-md border flex items-center justify-center transition-all shrink-0 ${isFlashOn ? 'bg-yellow-400 text-black border-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.5)]' : 'bg-black/40 border-white/20 text-white hover:bg-white/20'}`}
                 onMouseEnter={() => { setMood("thinking"); setMsg("Gelap ya? Pake flash aja sini! 🔦"); }}
               >
                 <Flashlight size={20} />
               </button>
+
+              {/* Shutter Button */}
+              <div className="relative z-20 flex flex-col items-center">
+                <button 
+                  onClick={() => handleCapture()}
+                  onMouseEnter={() => { setMood("happy"); setMsg(isMecha ? "SCANNER PREPPED." : "Ready? 1, 2, 3... Cekrek! 🧀"); }}
+                  onMouseLeave={() => { setMood("excited"); setMsg(initialMsg); }}
+                  className="group relative w-[100px] h-[100px] flex items-center justify-center"
+                >
+                  {/* Outer animated pulsing ring */}
+                  <div className={`absolute inset-0 rounded-full animate-ping opacity-20 ${isMecha ? 'bg-blue-400' : 'bg-pink-400'}`}></div>
+                  
+                  {/* Middle glass ring */}
+                  <div className={`absolute inset-2 bg-white/10 backdrop-blur-md rounded-full border-[2px] group-hover:scale-105 transition-transform duration-300 ${isMecha ? 'border-blue-300/50' : 'border-pink-300/50'}`}></div>
+                  
+                  {/* Inner solid button */}
+                  <div className={`relative z-10 w-[68px] h-[68px] rounded-full group-active:scale-95 transition-all duration-300 flex items-center justify-center shadow-2xl ${isMecha ? 'bg-gradient-to-tr from-blue-500 via-cyan-400 to-teal-400 shadow-[0_0_40px_rgba(59,130,246,0.8)]' : 'bg-gradient-to-tr from-pink-500 via-purple-500 to-indigo-500 shadow-[0_0_40px_rgba(236,72,153,0.8)]'}`}>
+                    <Camera className="text-white drop-shadow-lg group-hover:scale-110 transition-transform duration-300" size={32} strokeWidth={2} />
+                  </div>
+                </button>
+              </div>
+
               <button 
                 onClick={() => fileInputRef.current?.click()}
-                className="w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all text-white"
+                className="w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all text-white shrink-0"
                 onMouseEnter={() => { setMood("cute"); setMsg("Upload dari galeri juga bisa lho! 🖼️"); }}
               >
                 <ImageIcon size={20} />
@@ -154,21 +178,6 @@ export const CameraView: React.FC<CameraViewProps> = ({ onGoToDashboard, theme, 
                   }
                 }} 
               />
-            </div>
-
-            {/* Shutter Button */}
-            <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-20">
-              <button 
-                onClick={() => handleCapture()}
-                onMouseEnter={() => { setMood("happy"); setMsg(isMecha ? "SCANNER PREPPED." : "Ready? 1, 2, 3... Cekrek! 🧀"); }}
-                onMouseLeave={() => { setMood("excited"); setMsg(initialMsg); }}
-                className="group relative w-[84px] h-[84px] flex items-center justify-center"
-              >
-                <div className={`absolute inset-0 bg-white/40 backdrop-blur-xl rounded-full border-[3px] group-active:scale-95 transition-transform duration-200 ${isMecha ? 'border-blue-300' : 'border-pink-200'}`}></div>
-                <div className={`w-[64px] h-[64px] rounded-full group-active:scale-90 transition-transform duration-200 flex items-center justify-center ${isMecha ? 'bg-gradient-to-tr from-blue-500 to-red-500 shadow-[0_0_30px_rgba(59,130,246,0.6)]' : 'bg-gradient-to-tr from-pink-400 to-purple-400 shadow-[0_0_30px_rgba(244,114,182,0.6)]'}`}>
-                  {isMecha ? <Crosshair className="text-white" size={24} /> : <Sparkles className="text-white" size={24} />}
-                </div>
-              </button>
             </div>
           </motion.div>
         )}
@@ -250,7 +259,7 @@ export const CameraView: React.FC<CameraViewProps> = ({ onGoToDashboard, theme, 
       <AnimatePresence>
         {sheetState !== "result" && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 pointer-events-none z-40">
-            <Mascot theme={theme} mood={mood} message={msg} />
+            <Mascot theme={theme} mood={mood} message={msg} customBottom="bottom-8" />
           </motion.div>
         )}
       </AnimatePresence>

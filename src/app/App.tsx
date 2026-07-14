@@ -5,11 +5,20 @@ import { CameraView } from "./components/CameraView";
 import { DashboardView } from "./components/DashboardView";
 import { LoginView } from "./components/LoginView";
 import { InsightsView } from "./components/InsightsView";
+import { HistoryView } from "./components/HistoryView";
+import { ProfileView } from "./components/ProfileView";
+import { RewardsStoreView } from "./components/RewardsStoreView";
 
 import { SubView } from "./components/SubView";
 
-type ViewState = "splash" | "login" | "camera" | "dashboard" | "insights" | "transfer" | "splitBill" | "topUp" | "deals" | "history" | "savings" | "editProfile";
+type ViewState = "splash" | "login" | "camera" | "dashboard" | "insights" | "transfer" | "splitBill" | "topUp" | "deals" | "history" | "savings" | "editProfile" | "rewards";
 export type ThemeState = "original" | "genz" | "mecha";
+
+export interface Inventory {
+  banners: string[];
+  frames: string[];
+  themes: string[];
+}
 
 const viewVariants = {
   initial: { opacity: 0, scale: 0.95, filter: "blur(4px)" },
@@ -19,6 +28,13 @@ const viewVariants = {
 
 export default function App() {
   const [currentView, setCurrentView] = useState<ViewState>("splash");
+  const [points, setPoints] = useState(1200);
+  const [level, setLevel] = useState(12);
+  const [inventory, setInventory] = useState<Inventory>({
+    banners: ['default'],
+    frames: ['none'],
+    themes: ['genz']
+  });
 
   useEffect(() => {
     if (currentView === "splash") {
@@ -60,6 +76,9 @@ export default function App() {
                 theme={theme} 
                 setTheme={setTheme} 
                 onNavigate={(v) => setCurrentView(v as ViewState)} 
+                points={points}
+                level={level}
+                inventory={inventory}
               />
             </motion.div>
           )}
@@ -73,7 +92,44 @@ export default function App() {
               />
             </motion.div>
           )}
-          {['transfer', 'splitBill', 'topUp', 'deals', 'history', 'savings', 'editProfile'].includes(currentView) && (
+          {currentView === "history" && (
+            <motion.div key="history" variants={viewVariants} initial="initial" animate="animate" exit="exit" className="absolute inset-0 z-10">
+              <HistoryView 
+                onGoToCamera={() => setCurrentView("camera")} 
+                onGoToDashboard={() => setCurrentView("dashboard")} 
+                theme={theme} 
+                onNavigate={(v) => setCurrentView(v as ViewState)}
+              />
+            </motion.div>
+          )}
+          {currentView === "editProfile" && (
+            <motion.div key="editProfile" variants={viewVariants} initial="initial" animate="animate" exit="exit" className="absolute inset-0 z-10">
+              <ProfileView 
+                onGoToCamera={() => setCurrentView("camera")} 
+                onGoToDashboard={() => setCurrentView("dashboard")} 
+                theme={theme} 
+                onNavigate={(v) => setCurrentView(v as ViewState)}
+                points={points}
+                level={level}
+                inventory={inventory}
+                setInventory={setInventory}
+                setTheme={setTheme}
+              />
+            </motion.div>
+          )}
+          {currentView === "rewards" && (
+            <motion.div key="rewards" variants={viewVariants} initial="initial" animate="animate" exit="exit" className="absolute inset-0 z-10">
+              <RewardsStoreView 
+                onBack={() => setCurrentView("dashboard")}
+                theme={theme}
+                points={points}
+                setPoints={setPoints}
+                inventory={inventory}
+                setInventory={setInventory}
+              />
+            </motion.div>
+          )}
+          {['transfer', 'splitBill', 'topUp', 'deals', 'savings'].includes(currentView) && (
             <motion.div key={currentView} variants={viewVariants} initial="initial" animate="animate" exit="exit" className="absolute inset-0 z-20">
               <SubView type={currentView as any} onBack={() => setCurrentView("dashboard")} theme={theme} />
             </motion.div>
