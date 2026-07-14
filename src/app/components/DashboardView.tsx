@@ -48,9 +48,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
   ];
 
   const quickActions = [
-    { id: "transfer", label: "Transfer", icon: Send, color: "text-blue-500", bg: "bg-blue-100", hoverMsg: "Mau transfer ke siapa nih? Bayar utang ya? 💸", hoverMood: "cute" },
-    { id: "topUp", label: "Top Up", icon: Plus, color: "text-emerald-500", bg: "bg-emerald-100", hoverMsg: "Wah, habis gajian ya? Asik nambah saldo! 🤑", hoverMood: "excited" },
-    { id: "splitBill", label: "Split Bill", icon: Receipt, color: "text-orange-500", bg: "bg-orange-100", hoverMsg: "Biar gak rugi bandar, bagi tagihan sekarang! 🧾", hoverMood: "thinking" },
+    { id: "income", label: "Income", icon: ArrowDownRight, color: "text-emerald-500", bg: "bg-emerald-100", hoverMsg: "Ada uang masuk? Upload SS-an notif transfer atau invoice-nya ke sini!", hoverMood: "excited" },
+    { id: "expense", label: "Expense", icon: ArrowUpRight, color: "text-rose-500", bg: "bg-rose-100", hoverMsg: "Habis jajan di e-commerce? Upload screenshot invoice atau foto struk kasirnya!", hoverMood: "alert" },
+    { id: "splitBill", label: "Split Bill", icon: Receipt, color: "text-orange-500", bg: "bg-orange-100", hoverMsg: "Makan bareng temen tapi nota digabung? Foto aja, nanti AI milihin mana menu yang lu beli doang!", hoverMood: "thinking" },
     { id: "rewards", label: "Rewards", icon: Gift, color: "text-purple-500", bg: "bg-purple-100", hoverMsg: "Tuker koin kamu sama hiasan profil kece! 🎁", hoverMood: "cute" },
   ];
 

@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { motion } from "motion/react";
-import { ChevronLeft, Send, Receipt, Plus, Gift, History, Target, User, Search, Settings2, Sparkles, Crosshair } from "lucide-react";
+import { ChevronLeft, Receipt, History, Target, User, Search, ArrowDownRight, ArrowUpRight, Image as ImageIcon, Camera } from "lucide-react";
 import { Mascot, MascotMood } from "./Mascot";
 import { ThemeState } from "../App";
 
 interface SubViewProps {
-  type: "transfer" | "splitBill" | "topUp" | "deals" | "history" | "savings" | "editProfile";
+  type: "income" | "splitBill" | "expense" | "history" | "savings" | "editProfile";
   onBack: () => void;
   theme: ThemeState;
 }
@@ -15,33 +15,26 @@ export const SubView: React.FC<SubViewProps> = ({ type, onBack, theme }) => {
   const [mood, setMood] = useState<MascotMood>("happy");
 
   const config = {
-    transfer: {
-      title: isMecha ? "FUNDS TRANSFER" : "Kirim Uang 💸",
-      icon: Send,
-      msg: isMecha ? "AWAITING TARGET COORDINATES." : "Mau pamer saldo ke siapa nih bestie?",
-      color: "text-blue-500",
-      bg: "bg-blue-500/20"
+    income: {
+      title: isMecha ? "INCOMING ASSET" : "Catat Pemasukan 💵",
+      icon: ArrowDownRight,
+      msg: isMecha ? "UPLOAD PROOF OF DEPOSIT." : "Upload screenshot transfer atau foto bukti pemasukan ya!",
+      color: "text-emerald-500",
+      bg: "bg-emerald-500/20"
+    },
+    expense: {
+      title: isMecha ? "OUTGOING ASSET" : "Catat Pengeluaran 💸",
+      icon: ArrowUpRight,
+      msg: isMecha ? "UPLOAD INVOICE OR RECEIPT." : "Upload invoice Shopee/Tokped atau foto struk fisik!",
+      color: "text-rose-500",
+      bg: "bg-rose-500/20"
     },
     splitBill: {
-      title: isMecha ? "ASSET DIVISION" : "Bagi Tagihan 🧮",
+      title: isMecha ? "SMART DIVISION" : "Split Bill Pintar 🧮",
       icon: Receipt,
-      msg: isMecha ? "CALCULATING RESOURCE DISTRIBUTION." : "Gak jaman nombokin temen! Tagih sekarang!",
+      msg: isMecha ? "SCANNING RECEIPT FOR SELECTIVE DISTRIBUTION." : "Foto struknya, pilih menu yang lu makan doang, beres!",
       color: "text-orange-500",
       bg: "bg-orange-500/20"
-    },
-    topUp: {
-      title: isMecha ? "RECHARGE CORE" : "Isi Saldo 💳",
-      icon: Plus,
-      msg: isMecha ? "ENERGY LOW. PLEASE RECHARGE." : "Asyik saldo nambah, bisa jajan lagi dong!",
-      color: "text-green-500",
-      bg: "bg-green-500/20"
-    },
-    deals: {
-      title: isMecha ? "TACTICAL OFFERS" : "Promo Mantul 🎁",
-      icon: Gift,
-      msg: isMecha ? "SCANNING FOR TACTICAL ADVANTAGES." : "Mata diskon nyala nih! Sikat semua promo!",
-      color: "text-pink-500",
-      bg: "bg-pink-500/20"
     },
     history: {
       title: isMecha ? "TRANSACTION LOGS" : "Riwayat Jajan 📜",
@@ -69,6 +62,8 @@ export const SubView: React.FC<SubViewProps> = ({ type, onBack, theme }) => {
   const currConfig = config[type];
   const Icon = currConfig.icon;
 
+  const isScannerMode = type === "income" || type === "expense" || type === "splitBill";
+
   return (
     <div className={`w-full h-full relative overflow-hidden flex flex-col text-slate-800 ${isMecha ? 'bg-slate-900' : 'bg-[#fdfbfb]'}`}>
       {/* Background */}
@@ -88,7 +83,7 @@ export const SubView: React.FC<SubViewProps> = ({ type, onBack, theme }) => {
         <div className={`font-black text-lg tracking-wide ${isMecha ? 'text-blue-500 font-mono' : 'text-slate-800'}`}>
           {currConfig.title}
         </div>
-        <button className={`w-10 h-10 rounded-full flex items-center justify-center shadow-sm backdrop-blur-md border transition-all ${isMecha ? 'bg-blue-500/10 border-blue-500/30 text-blue-500 hover:bg-blue-500/20' : 'bg-white/80 border-pink-100 text-pink-500 hover:bg-pink-50'}`}>
+        <button className={`w-10 h-10 rounded-full flex items-center justify-center shadow-sm backdrop-blur-md border transition-all opacity-0 pointer-events-none`}>
           <Search size={20} strokeWidth={2.5} />
         </button>
       </div>
@@ -98,33 +93,57 @@ export const SubView: React.FC<SubViewProps> = ({ type, onBack, theme }) => {
         <motion.div 
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: "spring", bounce: 0.5 }}
-          className={`w-32 h-32 rounded-[32px] flex items-center justify-center mb-8 border-4 backdrop-blur-md shadow-2xl ${currConfig.bg} ${isMecha ? 'border-blue-400/50 shadow-blue-500/20' : 'border-white shadow-pink-200/50'}`}
+          transition={{ type: "spring", stiffness: 200, damping: 20 }}
+          className={`w-24 h-24 rounded-[32px] flex items-center justify-center mb-6 shadow-xl ${currConfig.bg} ${isMecha ? 'border-2 border-slate-700' : 'border border-white/50 backdrop-blur-md'}`}
         >
-          <Icon size={64} className={currConfig.color} strokeWidth={2} />
+          <Icon size={48} className={currConfig.color} strokeWidth={2.5} />
         </motion.div>
         
-        <h2 className={`text-2xl font-black text-center mb-3 ${isMecha ? 'text-white font-mono' : 'text-slate-800'}`}>
-          {isMecha ? 'FEATURE IN DEVELOPMENT' : 'Lagi Dibangun Nih! 🚧'}
-        </h2>
-        <p className={`text-center font-bold px-4 ${isMecha ? 'text-blue-200/60 font-mono text-xs' : 'text-slate-500 text-sm'}`}>
-          {isMecha 
-            ? "THIS MODULE IS CURRENTLY UNDERGOING SYSTEM UPDATES. PLEASE CHECK BACK LATER." 
-            : "Sabar ya bestie, fitur ini lagi digodok sama dev-nya biar makin mantul pas lo pakai!"}
-        </p>
+        {isScannerMode ? (
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.1 }}
+            className="w-full flex flex-col gap-4 mt-4"
+          >
+            <p className={`text-center font-bold text-sm mb-2 ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>
+              Pilih metode input pencatatan:
+            </p>
+            
+            <button className={`w-full py-4 rounded-[24px] border-2 border-dashed flex flex-col items-center justify-center gap-2 transition-transform active:scale-95 ${isMecha ? 'bg-slate-800 border-slate-600 hover:border-blue-400 text-slate-300' : 'bg-white/50 border-slate-300 hover:border-pink-400 text-slate-700'}`}>
+              <ImageIcon size={32} className={currConfig.color} />
+              <div className="text-center">
+                <div className="font-black">Upload Foto / Screenshot</div>
+                <div className="text-xs font-bold opacity-70">JPG, PNG, format digital</div>
+              </div>
+            </button>
 
-        <motion.button 
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={onBack}
-          className={`mt-10 px-8 py-4 rounded-[24px] font-black tracking-wide shadow-lg flex items-center gap-2 border-2 ${isMecha ? 'bg-blue-500/20 text-blue-400 border-blue-400/30 hover:bg-blue-500/30' : 'bg-white text-pink-500 border-pink-100 hover:bg-pink-50'}`}
-        >
-          {isMecha ? <Settings2 size={20} /> : <Sparkles size={20} />}
-          {isMecha ? 'RETURN TO HUB' : 'Balik ke Dashboard'}
-        </motion.button>
+            <button className={`w-full py-4 rounded-[24px] flex flex-col items-center justify-center gap-2 transition-transform active:scale-95 text-white ${isMecha ? 'bg-blue-600 hover:bg-blue-500' : 'bg-gradient-to-r from-pink-500 to-purple-500 shadow-lg shadow-pink-200'}`}>
+              <Camera size={32} />
+              <div className="text-center">
+                <div className="font-black">Scan Struk Fisik</div>
+                <div className="text-xs font-bold opacity-90">Kamera AI otomatis</div>
+              </div>
+            </button>
+          </motion.div>
+        ) : (
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.1 }}
+          >
+            <h2 className={`text-3xl font-black text-center tracking-tight mb-2 ${isMecha ? 'text-white' : 'text-slate-800'}`}>
+              {currConfig.title}
+            </h2>
+            <p className={`text-center font-bold px-4 ${isMecha ? 'text-slate-400 font-mono' : 'text-slate-500'}`}>
+              Fitur ini sedang dibangun...
+            </p>
+          </motion.div>
+        )}
+
       </div>
 
-      <Mascot theme={theme} mood={mood} message={currConfig.msg} />
+      <Mascot mood={mood} message={currConfig.msg} theme={theme} placement="right" />
     </div>
   );
 };
