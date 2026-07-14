@@ -68,6 +68,13 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
   const [isEditing, setIsEditing] = useState(false);
   const [isViewingAchievements, setIsViewingAchievements] = useState(false);
 
+  // User Profile Data State
+  const [name, setName] = useState("Sarah Jenkins");
+  const [username, setUsername] = useState("sarahj.str");
+  const [bio, setBio] = useState("Coffee addict ☕ | UI/UX Designer by day, professional overthinker by night. Trying to stop my Shopee checkout habit (failed miserably).");
+  const [university, setUniversity] = useState("Universitas Indonesia");
+  const [location, setLocation] = useState("Jakarta Selatan");
+
   const isMecha = theme === "mecha";
 
   const handleSelectBanner = (opt: typeof BANNER_OPTIONS[0]) => {
@@ -152,8 +159,8 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
 
           {/* User Info */}
           <div className="mt-2">
-            <h1 className={`text-xl font-black tracking-tight ${isMecha ? 'text-white' : 'text-slate-800'}`}>Sarah Jenkins</h1>
-            <p className={`text-xs font-bold font-mono ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>@sarahj.str</p>
+            <h1 className={`text-xl font-black tracking-tight ${isMecha ? 'text-white' : 'text-slate-800'}`}>{name}</h1>
+            <p className={`text-xs font-bold font-mono ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>@{username}</p>
           </div>
 
           <hr className={`my-4 ${isMecha ? 'border-slate-800' : 'border-slate-100'}`} />
@@ -161,8 +168,8 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
           {/* About Me Inset Box */}
           <div>
             <h2 className={`text-[10px] font-black uppercase tracking-widest mb-2 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>About Me</h2>
-            <div className={`p-3.5 rounded-[12px] text-xs leading-relaxed font-medium ${isMecha ? 'bg-slate-950 text-slate-300 border border-slate-800' : 'bg-slate-50 text-slate-600 border border-slate-100'}`}>
-              Coffee addict ☕ | UI/UX Designer by day, professional overthinker by night. Trying to stop my Shopee checkout habit (failed miserably).
+            <div className={`p-3.5 rounded-[12px] text-xs leading-relaxed font-medium whitespace-pre-wrap ${isMecha ? 'bg-slate-950 text-slate-300 border border-slate-800' : 'bg-slate-50 text-slate-600 border border-slate-100'}`}>
+              {bio}
             </div>
           </div>
 
@@ -170,11 +177,11 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
           <div className="flex items-center gap-3 mt-4 text-[11px] font-bold">
             <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full ${isMecha ? 'bg-slate-950 text-slate-300' : 'bg-slate-50 text-slate-600'}`}>
               <GraduationCap size={14} className={isMecha ? 'text-teal-400' : 'text-pink-500'} />
-              <span>Universitas Indonesia</span>
+              <span>{university}</span>
             </div>
             <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full ${isMecha ? 'bg-slate-950 text-slate-300' : 'bg-slate-50 text-slate-600'}`}>
               <MapPin size={14} className={isMecha ? 'text-blue-400' : 'text-purple-500'} />
-              <span>Jakarta Selatan</span>
+              <span>{location}</span>
             </div>
           </div>
 
@@ -415,6 +422,41 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
       </div>
 
       <div className="px-6 pt-6 pb-12 flex-1">
+        
+        {/* Profile Info Customization */}
+        <div className="mb-10 flex flex-col gap-5">
+          <h2 className={`text-sm font-black uppercase tracking-wider ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>Personal Info</h2>
+          
+          <div>
+            <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Display Name</label>
+            <input type="text" value={name} onChange={(e) => setName(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-sm outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} />
+          </div>
+
+          <div>
+            <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Username</label>
+            <div className={`flex items-center w-full p-3 rounded-[12px] font-bold text-sm border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 focus-within:border-blue-500' : 'bg-slate-50 border-slate-200 focus-within:border-purple-500'}`}>
+               <span className={isMecha ? 'text-slate-600' : 'text-slate-400'}>@</span>
+               <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} className="w-full bg-transparent outline-none ml-1 text-inherit" />
+            </div>
+          </div>
+
+          <div>
+            <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Bio / About Me</label>
+            <textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={3} className={`w-full p-3 rounded-[12px] font-medium text-xs outline-none border transition-colors resize-none ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+             <div>
+               <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>University</label>
+               <input type="text" value={university} onChange={(e) => setUniversity(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-xs outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} />
+             </div>
+             <div>
+               <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Location</label>
+               <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-xs outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} />
+             </div>
+          </div>
+        </div>
+
         {/* Banner Customization */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
