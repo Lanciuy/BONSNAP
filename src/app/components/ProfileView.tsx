@@ -138,7 +138,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
                 <span className={`text-lg font-black font-mono ${isMecha ? 'text-white' : 'text-slate-800'}`}>Lvl {level}</span>
                 <span className={`text-[10px] uppercase tracking-wider font-bold ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Rank</span>
               </div>
-              <div className={`backdrop-blur-xl border rounded-[20px] p-4 flex flex-col items-center shadow-sm cursor-pointer hover:scale-105 transition-transform ${isMecha ? 'bg-slate-800/80 border-slate-700' : 'bg-white/80 border-pink-100'}`} onClick={() => onNavigate("rewards")}>
+              <div className={`backdrop-blur-xl border rounded-[20px] p-4 flex flex-col items-center shadow-sm cursor-pointer hover:scale-105 transition-transform ${isMecha ? 'bg-slate-800/80 border-slate-700' : 'bg-white/80 border-pink-100'}`} onClick={() => onNavigate("store")}>
                 <Sparkles size={20} className={isMecha ? 'text-blue-400' : 'text-pink-500 mb-1'} />
                 <span className={`text-lg font-black font-mono ${isMecha ? 'text-white' : 'text-slate-800'}`}>{points}</span>
                 <span className={`text-[10px] uppercase tracking-wider font-bold ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Points</span>
@@ -157,7 +157,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
                   <Palette size={18} className={isMecha ? 'text-blue-400' : 'text-purple-500'} />
                   <h2 className={`text-sm font-black uppercase tracking-wider ${isMecha ? 'text-white' : 'text-slate-800'}`}>Profile Decorator</h2>
                 </div>
-                <button onClick={() => onNavigate("rewards")} className={`text-[10px] font-bold px-3 py-1 rounded-full ${isMecha ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-100 text-purple-600'}`}>Get More</button>
+                <button onClick={() => onNavigate("store")} className={`text-[10px] font-bold px-3 py-1 rounded-full ${isMecha ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-100 text-purple-600'}`}>Get More</button>
               </div>
               
               <div className="mb-4">

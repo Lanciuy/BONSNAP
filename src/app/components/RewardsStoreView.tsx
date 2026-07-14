@@ -11,6 +11,7 @@ interface RewardsStoreViewProps {
   setPoints: React.Dispatch<React.SetStateAction<number>>;
   inventory: Inventory;
   setInventory: React.Dispatch<React.SetStateAction<Inventory>>;
+  initialTab?: "quests" | "store";
 }
 
 const containerVariants = {
@@ -23,11 +24,11 @@ const itemVariants = {
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
 };
 
-export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, theme, points, setPoints, inventory, setInventory }) => {
+export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, theme, points, setPoints, inventory, setInventory, initialTab = "quests" }) => {
   const isMecha = theme === "mecha";
   const [mood, setMood] = useState<MascotMood>("excited");
   const [msg, setMsg] = useState(isMecha ? "REWARDS TERMINAL ONLINE." : "Wih banyak poin nih! Mau tuker apa bestie? 🛍️");
-  const [activeTab, setActiveTab] = useState<"quests" | "store">("quests");
+  const [activeTab, setActiveTab] = useState<"quests" | "store">(initialTab);
   const [questFilter, setQuestFilter] = useState<"daily" | "weekly" | "monthly">("daily");
 
   const [dailyClaimed, setDailyClaimed] = useState(false);

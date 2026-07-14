@@ -11,7 +11,7 @@ import { RewardsStoreView } from "./components/RewardsStoreView";
 
 import { SubView } from "./components/SubView";
 
-type ViewState = "splash" | "login" | "camera" | "dashboard" | "insights" | "income" | "splitBill" | "expense" | "rewards" | "history" | "savings" | "editProfile";
+type ViewState = "splash" | "login" | "camera" | "dashboard" | "insights" | "income" | "splitBill" | "expense" | "rewards" | "store" | "history" | "savings" | "editProfile";
 export type ThemeState = "original" | "genz" | "mecha";
 
 export interface Inventory {
@@ -117,8 +117,8 @@ export default function App() {
               />
             </motion.div>
           )}
-          {currentView === "rewards" && (
-            <motion.div key="rewards" variants={viewVariants} initial="initial" animate="animate" exit="exit" className="absolute inset-0 z-10">
+          {(currentView === "rewards" || currentView === "store") && (
+            <motion.div key={currentView} variants={viewVariants} initial="initial" animate="animate" exit="exit" className="absolute inset-0 z-10">
               <RewardsStoreView 
                 onBack={() => setCurrentView("dashboard")}
                 theme={theme}
@@ -126,6 +126,7 @@ export default function App() {
                 setPoints={setPoints}
                 inventory={inventory}
                 setInventory={setInventory}
+                initialTab={currentView === "store" ? "store" : "quests"}
               />
             </motion.div>
           )}
