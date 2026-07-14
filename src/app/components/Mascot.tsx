@@ -19,6 +19,7 @@ interface MascotProps {
   showDialogue?: boolean;
   theme: ThemeState;
   placement?: "default" | "top" | "bottom" | "left" | "right";
+  isStatic?: boolean;
 }
 
 export const moodMap: Record<MascotMood, string> = {
@@ -66,7 +67,7 @@ export const getGeneratedMascotUrl = (mood: MascotMood, theme: ThemeState) => {
   return `https://api.dicebear.com/9.x/lorelei/svg?seed=${seedMap[mood]}&backgroundColor=transparent`;
 };
 
-export const Mascot: React.FC<MascotProps> = ({ mood, message = "", showDialogue = true, theme, placement = "default" }) => {
+export const Mascot: React.FC<MascotProps> = ({ mood, message = "", showDialogue = true, theme, placement = "default", isStatic = false }) => {
   const [displayedText, setDisplayedText] = useState("");
 
   const getInitialAnimation = () => {
@@ -98,7 +99,7 @@ export const Mascot: React.FC<MascotProps> = ({ mood, message = "", showDialogue
   const mascotName = theme === "mecha" ? "G-UNIT 01 🤖" : "Bon-chan 🌸";
 
   return (
-    <div className="absolute bottom-24 left-0 w-full z-50 pointer-events-none px-4 flex flex-col items-end">
+    <div className={`${isStatic ? 'relative mt-4 mb-24' : 'absolute bottom-24'} left-0 w-full z-50 pointer-events-none px-4 flex flex-col items-end`}>
       <motion.div 
         drag 
         dragConstraints={{ left: -300, right: 0, top: -600, bottom: 50 }}

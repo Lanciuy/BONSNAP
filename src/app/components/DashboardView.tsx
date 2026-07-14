@@ -40,12 +40,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
     { id: 3, merchant: "Train Ticket", category: "Transport", time: "Yesterday, 09:00", amount: "Rp 35.000", icon: Car, color: "text-blue-500", bg: "bg-blue-100", hoverMsg: "Jalan-jalan terus, FOMO ya bestie? 🚋", hoverMood: "happy" },
   ];
 
-  const quickActions = [
-    { id: "transfer", icon: Send, label: "Transfer", color: "text-blue-500", bg: "bg-blue-50", hoverMood: "excited", hoverMsg: "Wih mau transfer ke siapa tuh? Jangan lupa sedekah! 💸" },
-    { id: "splitBill", icon: Receipt, label: "Split Bill", color: "text-orange-500", bg: "bg-orange-50", hoverMood: "thinking", hoverMsg: "Nah gini dong patungan, jangan mau rugi bandar! 🧮" },
-    { id: "topUp", icon: Plus, label: "Top Up", color: "text-green-500", bg: "bg-green-50", hoverMood: "happy", hoverMsg: "Asyik, amunisi dompet nambah lagi nih! 💳" },
-    { id: "deals", icon: Gift, label: "Deals", color: "text-pink-500", bg: "bg-pink-50", hoverMood: "cute", hoverMsg: "Mata langsung melek kalau denger diskon! 👀🎁" }
-  ];
+
 
   const avatarUrl = theme === "original" ? moodMap["happy"] : getGeneratedMascotUrl("happy", theme);
 
@@ -57,7 +52,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
         style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1509803874385-db7c23652552?q=80&w=1000&auto=format&fit=crop")' }}
       />
 
-      <div className="relative z-10 flex-1 overflow-y-auto no-scrollbar pb-[320px]">
+      <div className="relative z-10 flex-1 overflow-y-auto no-scrollbar pb-[120px]">
         {/* Profile Header */}
         <div className="px-6 pt-12 pb-4 flex justify-between items-center">
           <div className="flex items-center gap-4">
@@ -187,31 +182,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
               </motion.div>
             ))}
           </div>
+          </div>
         </div>
-      </div>
 
-      {/* Thumb-Zone Quick Actions (Floating above nav) */}
-      <div className="absolute bottom-28 left-0 w-full px-6 z-30 pointer-events-none">
-        <div className={`w-full flex justify-between p-2 rounded-[24px] backdrop-blur-xl border pointer-events-auto ${isMecha ? 'bg-slate-800/90 border-blue-500/30 shadow-[0_10px_30px_rgba(59,130,246,0.2)]' : 'bg-white/90 border-pink-100 shadow-[0_10px_30px_rgba(244,114,182,0.15)]'}`}>
-          {quickActions.map((action, i) => (
-            <button 
-              key={i} 
-              className="flex flex-col items-center gap-1 w-1/4 group transition-transform active:scale-95"
-              onClick={() => onNavigate(action.id)}
-              onMouseEnter={() => { setMood(action.hoverMood as MascotMood); setMsg(action.hoverMsg); }}
-              onMouseLeave={() => { setMood("happy"); setMsg(defaultMsg); }}
-            >
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${isMecha ? 'bg-slate-700 group-hover:bg-slate-600' : `${action.bg} group-hover:opacity-80`}`}>
-                <action.icon size={18} strokeWidth={2.5} className={isMecha ? action.color.replace('500', '400') : action.color} />
-              </div>
-              <span className={`text-[9px] font-bold ${isMecha ? 'text-slate-400' : 'text-slate-600'}`}>{action.label}</span>
-            </button>
-          ))}
-        </div>
+        {/* Contextual Mascot */}
+        <Mascot mood={mood} message={msg} theme={theme} placement="right" isStatic={true} />
       </div>
-
-      {/* Contextual Mascot Slide-in */}
-      <Mascot mood={mood} message={msg} theme={theme} placement="right" />
 
       {/* Modern Floating Bottom Navigation */}
       <div className={`absolute bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-[360px] h-[72px] backdrop-blur-2xl border rounded-[32px] px-2 flex justify-between items-center z-40 pointer-events-auto ${isMecha ? 'bg-slate-800/95 border-blue-500/50 shadow-[0_0_20px_rgba(59,130,246,0.3)]' : 'bg-white/95 border-slate-100 shadow-[0_20px_40px_rgba(0,0,0,0.1)]'}`}>
