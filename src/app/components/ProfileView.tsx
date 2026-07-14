@@ -81,10 +81,10 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
   };
 
   const renderCardBody = () => (
-    <motion.div key="profile-card" variants={containerVariants} initial="hidden" animate="show" exit="exit" className="relative z-10 flex-1 w-full overflow-y-auto no-scrollbar pt-6 pb-[120px] px-4 flex flex-col items-center">
+    <motion.div key="profile-card" variants={containerVariants} initial="hidden" animate="show" exit="exit" className="relative z-10 flex-1 w-full overflow-y-auto no-scrollbar pt-6 pb-[120px] px-4 flex flex-col">
       
       {/* Header Actions for Profile View */}
-      <div className="w-full max-w-sm flex justify-between items-center mb-4 px-2">
+      <div className="w-full max-w-sm mx-auto flex justify-between items-center mb-4 px-2">
         <button onClick={onGoToDashboard} className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isMecha ? 'bg-slate-800 text-slate-300 hover:text-white' : 'bg-white/80 text-slate-600 hover:bg-white shadow-sm'}`}>
           <ChevronLeft size={24} strokeWidth={2.5} />
         </button>
@@ -94,7 +94,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
       </div>
 
       {/* Discord Style Card Container */}
-      <div className={`w-full max-w-sm rounded-[24px] shadow-2xl overflow-hidden relative ${isMecha ? 'bg-slate-900 border border-slate-700 shadow-blue-900/20' : 'bg-white border border-slate-200 shadow-slate-200/50'}`}>
+      <div className={`w-full max-w-sm mx-auto rounded-[24px] shadow-2xl overflow-hidden relative shrink-0 ${isMecha ? 'bg-slate-900 border border-slate-700 shadow-blue-900/20' : 'bg-white border border-slate-200 shadow-slate-200/50'}`}>
         
         {/* Banner */}
         <div className={`h-32 w-full relative transition-all duration-500 ${activeBanner.bg}`}>
@@ -257,7 +257,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
       </div>
 
       {/* OUTSIDE THE CARD: Extra Widgets */}
-      <div className="w-full max-w-sm mt-6 flex flex-col gap-4">
+      <div className="w-full max-w-sm mx-auto mt-6 flex flex-col gap-4 shrink-0">
         
         {/* Achievements Showcase */}
         <div className="w-full">
