@@ -61,6 +61,10 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
     { id: 'steampunk', type: 'frame', name: 'Steampunk Ears', cost: 4000, icon: Sparkles },
 
     { id: 'mecha', type: 'theme', name: 'Mecha Theme (Skin)', cost: 5000, icon: Zap },
+
+    { id: 'wallet-obsidian', type: 'walletSkin', name: 'Obsidian Black', cost: 800, icon: ShieldCheck },
+    { id: 'wallet-hologram', type: 'walletSkin', name: 'Hologram Premium', cost: 1500, icon: Sparkles },
+    { id: 'wallet-gold', type: 'walletSkin', name: 'Royal Gold', cost: 2000, icon: Trophy },
   ];
 
   const handleClaimQuest = (id: number, reward: number) => {
@@ -88,6 +92,7 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
         if (item.type === 'frame' && !newInv.frames.includes(item.id)) newInv.frames.push(item.id);
         if (item.type === 'theme' && !newInv.themes.includes(item.id)) newInv.themes.push(item.id);
         if (item.type === 'avatar' && !newInv.avatars.includes(item.id)) newInv.avatars.push(item.id);
+        if (item.type === 'walletSkin' && !newInv.walletSkins.includes(item.id)) newInv.walletSkins.push(item.id);
         return newInv;
       });
       setMood("excited");
@@ -103,6 +108,7 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
     if (type === 'frame') return inventory.frames.includes(id);
     if (type === 'theme') return inventory.themes.includes(id);
     if (type === 'avatar') return inventory.avatars.includes(id);
+    if (type === 'walletSkin') return inventory.walletSkins.includes(id);
     return false;
   };
 
@@ -216,10 +222,10 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
           {activeTab === "store" && (
             <motion.div key="store" variants={containerVariants} initial="hidden" animate="show" exit="hidden" className="px-6 flex flex-col gap-6 mt-4">
               
-              {(['avatar', 'banner', 'frame', 'theme'] as const).map(category => (
+              {(['avatar', 'banner', 'frame', 'theme', 'walletSkin'] as const).map(category => (
                 <div key={category}>
                   <h3 className={`text-xs font-black uppercase tracking-wider mb-3 ${isMecha ? 'text-blue-400' : 'text-slate-400'}`}>
-                    {category === 'avatar' ? 'Custom Avatars' : category === 'banner' ? 'Profile Banners' : category === 'frame' ? 'Avatar Frames' : 'App Skins'}
+                    {category === 'avatar' ? 'Custom Avatars' : category === 'banner' ? 'Profile Banners' : category === 'frame' ? 'Avatar Frames' : category === 'theme' ? 'App Skins' : 'Wallet Skins'}
                   </h3>
                   <div className="grid grid-cols-2 gap-3">
                     {STORE_ITEMS.filter(item => item.type === category).map(item => {

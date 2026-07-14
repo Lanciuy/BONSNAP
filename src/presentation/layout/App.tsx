@@ -27,7 +27,8 @@ export default function App() {
     avatars: ['default'],
     banners: ['default'],
     frames: ['none', 'gold'],
-    themes: ['genz']
+    themes: ['genz'],
+    walletSkins: ['default']
   });
 
   const [userProfile, setUserProfile] = useState<UserProfile>({
@@ -43,7 +44,10 @@ export default function App() {
     goalSaved: "1500000",
     activeBannerId: "default",
     activeFrameId: "gold",
-    activeAvatarId: "default"
+    activeAvatarId: "default",
+    walletName: "MAGIC POUCH",
+    budget: 5000000,
+    activeWalletSkinId: "default"
   });
 
   useEffect(() => {

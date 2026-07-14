@@ -56,6 +56,13 @@ const FRAME_OPTIONS = [
   { id: 'steampunk', name: 'Steampunk Ears', class: 'border-4 border-transparent', imageUrl: '/gifs/Steampunk_Cat_Ears.gif' }
 ];
 
+export const WALLET_SKIN_OPTIONS = [
+  { id: 'default', name: 'Default Magic', bg: 'bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 border-white/40 shadow-purple-200/50 text-white' },
+  { id: 'wallet-obsidian', name: 'Obsidian Black', bg: 'bg-gradient-to-br from-slate-800 via-slate-900 to-black border-slate-700 shadow-slate-900/50 text-slate-100' },
+  { id: 'wallet-hologram', name: 'Hologram Premium', bg: 'bg-gradient-to-br from-teal-400 via-emerald-400 to-cyan-500 border-teal-200 shadow-teal-300/50 text-white' },
+  { id: 'wallet-gold', name: 'Royal Gold', bg: 'bg-gradient-to-br from-yellow-400 via-amber-500 to-orange-500 border-yellow-200 shadow-yellow-300/50 text-white' },
+];
+
 const PERSONAS = [
   "Wise Owl 🦉 (Master Saver)",
   "Coupon Hunter 🎫 (Promo Seeker)",
@@ -123,6 +130,14 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
   const goalSaved = userProfile.goalSaved;
   const setGoalSaved = (v: string) => setUserProfile({...userProfile, goalSaved: v});
 
+  const walletName = userProfile.walletName;
+  const setWalletName = (v: string) => setUserProfile({...userProfile, walletName: v});
+  const budget = userProfile.budget;
+  const setBudget = (v: number) => setUserProfile({...userProfile, budget: v});
+  
+  const activeWalletSkin = WALLET_SKIN_OPTIONS.find(w => w.id === userProfile.activeWalletSkinId) || WALLET_SKIN_OPTIONS[0];
+  const setActiveWalletSkin = (opt: typeof WALLET_SKIN_OPTIONS[0]) => setUserProfile({...userProfile, activeWalletSkinId: opt.id});
+
   const isMecha = theme === "mecha";
 
   const handleSelectAvatar = (opt: typeof AVATAR_OPTIONS[0]) => {
@@ -151,6 +166,16 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
       setMood("excited"); setMsg(`Frame ${opt.name} bikin foto profil lo makin bersinar! 👑`);
     } else {
       setMood("alert"); setMsg(`Ups, frame ${opt.name} masih dikunci. Beli dulu pakai poin! 🛍️`);
+      onNavigate('store');
+    }
+  };
+
+  const handleSelectWalletSkin = (opt: typeof WALLET_SKIN_OPTIONS[0]) => {
+    if (inventory.walletSkins.includes(opt.id)) {
+      setActiveWalletSkin(opt);
+      setMood("excited"); setMsg(`Wallet Skin ${opt.name} aktif! 💳`);
+    } else {
+      setMood("alert"); setMsg(`Skin ${opt.name} belum dibeli! Beli dulu di Rewards Hub 🛒`);
       onNavigate('store');
     }
   };
@@ -564,6 +589,49 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
                <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Saved So Far (Rp)</label>
                <input type="number" value={goalSaved} onChange={(e) => setGoalSaved(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-xs outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} />
              </div>
+          </div>
+        </div>
+
+        {/* Wallet Configuration */}
+        <div className="mb-10 flex flex-col gap-5">
+          <h2 className={`text-sm font-black uppercase tracking-wider ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>Wallet Settings</h2>
+          
+          <div>
+            <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Wallet Name</label>
+            <input type="text" value={walletName} onChange={(e) => setWalletName(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-sm outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} placeholder="e.g. MAGIC POUCH" />
+          </div>
+
+          <div>
+            <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Monthly Budget (Rp)</label>
+            <input type="number" value={budget} onChange={(e) => setBudget(Number(e.target.value))} className={`w-full p-3 rounded-[12px] font-bold text-xs outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} />
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-4 mt-2">
+              <label className={`block text-[10px] font-bold uppercase tracking-wider ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Wallet Skin</label>
+              <button onClick={() => onNavigate("store")} className={`text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1 ${isMecha ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-100 text-purple-600'}`}>
+                 <Palette size={10} /> Get More
+              </button>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              {WALLET_SKIN_OPTIONS.map(opt => {
+                const isOwned = inventory.walletSkins.includes(opt.id);
+                const isActive = activeWalletSkin.id === opt.id;
+                return (
+                  <button 
+                    key={opt.id}
+                    onClick={() => handleSelectWalletSkin(opt)}
+                    className={`p-3 rounded-[16px] border-2 transition-all flex flex-col gap-2 text-left ${isActive ? (isMecha ? 'border-blue-500 bg-blue-900/20' : 'border-purple-500 bg-purple-50 shadow-sm') : (isMecha ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-white')}`}
+                  >
+                    <div className={`w-full h-12 rounded-lg ${opt.bg} border`} />
+                    <div className="flex items-center gap-1.5 mt-1">
+                      {!isOwned && <Lock size={12} className={isMecha ? 'text-slate-500' : 'text-slate-400'} />}
+                      <span className={`text-xs font-bold ${isActive ? (isMecha ? 'text-blue-400' : 'text-purple-600') : (isMecha ? 'text-slate-300' : 'text-slate-600')}`}>{opt.name}</span>
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
           </div>
         </div>
 

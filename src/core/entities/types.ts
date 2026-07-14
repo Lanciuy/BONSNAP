@@ -5,6 +5,7 @@ export interface Inventory {
   banners: string[];
   frames: string[];
   themes: string[];
+  walletSkins: string[];
 }
 
 export interface UserProfile {
@@ -21,4 +22,7 @@ export interface UserProfile {
   activeBannerId: string;
   activeFrameId: string;
   activeAvatarId: string;
+  walletName: string;
+  budget: number;
+  activeWalletSkinId: string;
 }

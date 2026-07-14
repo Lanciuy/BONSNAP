@@ -3,7 +3,7 @@ import { Camera, Coffee, ShoppingBag, Car, Settings, Wallet, PieChart, Home, Spa
 import { motion, AnimatePresence } from "motion/react";
 import { Mascot, MascotMood, getGeneratedMascotUrl } from "../../shared/Mascot/Mascot";
 import { ThemeState, Inventory, UserProfile } from '../../../core/entities';
-import { AVATAR_OPTIONS } from "../profile/ProfileView";
+import { AVATAR_OPTIONS, WALLET_SKIN_OPTIONS } from "../profile/ProfileView";
 
 interface DashboardViewProps {
   onGoToCamera: () => void;
@@ -38,9 +38,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
   
   const isMecha = theme === "mecha";
 
+  const remainingBudget = Math.max(0, userProfile.budget - 3450000); // 3450000 is the hardcoded mock expense
   const defaultMsg = isMecha 
     ? "CREDITS AT 29%. RECOMMEND TACTICAL CONSERVATION FOR UPGRADES." 
-    : "Wih, sisa budget lo masih Rp 1.750.000! Valid no debat, yuk jajan cantik! 🍰";
+    : `Wih, sisa budget lo masih Rp ${remainingBudget.toLocaleString('id-ID')}! Valid no debat, yuk jajan cantik! 🍰`;
     
   const [msg, setMsg] = useState(defaultMsg);
 
@@ -63,6 +64,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
 
   const activeAvatar = AVATAR_OPTIONS.find(a => a.id === userProfile.activeAvatarId) || AVATAR_OPTIONS[0];
   const avatarUrl = (theme === "mecha" && activeAvatar.id === 'default') ? getGeneratedMascotUrl("happy", theme) : activeAvatar.imageUrl;
+  
+  const activeWalletSkin = WALLET_SKIN_OPTIONS.find(w => w.id === userProfile.activeWalletSkinId) || WALLET_SKIN_OPTIONS[0];
 
   return (
     <div className={`relative w-full h-full text-slate-800 overflow-hidden flex flex-col transition-colors duration-500 ${isMecha ? 'bg-slate-900' : 'bg-[#fdfbfb]'}`}>
@@ -107,7 +110,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
           
           {/* 1. Anime / RPG Style Balance Card */}
           <motion.div variants={itemVariants}
-            className={`w-full rounded-[32px] p-6 relative overflow-hidden shadow-2xl ${isMecha ? 'bg-slate-900 border-2 border-blue-500 shadow-[0_15px_30px_rgba(59,130,246,0.3)]' : 'bg-gradient-to-br from-pink-400 via-purple-400 to-indigo-500 border-2 border-white/40 shadow-purple-200/50 text-white'}`}
+            className={`w-full rounded-[32px] p-6 relative overflow-hidden shadow-2xl border-2 ${isMecha ? 'bg-slate-900 border-blue-500 shadow-[0_15px_30px_rgba(59,130,246,0.3)] text-white' : activeWalletSkin.bg}`}
             onMouseEnter={() => { setMood("excited"); setMsg(isMecha ? "CREDITS SUFFICIENT FOR UPGRADE." : "Jujurly saldo lo bikin mupeng! 🤑"); }} 
             onMouseLeave={() => setMood("happy")}
           >
@@ -119,14 +122,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
             
             <div className="relative z-10">
               <div className="flex justify-between items-center mb-1">
-                <div className={`flex items-center gap-1.5 text-xs uppercase tracking-widest font-black ${isMecha ? 'text-blue-400' : 'text-white/90'}`}>
-                  {isMecha ? 'CORE CREDITS' : '✨ MAGIC POUCH ✨'}
+                <div className={`flex items-center gap-1.5 text-xs uppercase tracking-widest font-black ${isMecha ? 'text-blue-400' : 'opacity-90'}`}>
+                  {isMecha ? 'CORE CREDITS' : userProfile.walletName}
                 </div>
               </div>
               
-              <div className={`text-[46px] font-black tracking-tighter leading-none mb-6 mt-2 ${isMecha ? 'text-white font-mono' : 'text-white drop-shadow-md'}`}>
-                <span className={`text-xl align-top mr-1 ${isMecha ? 'text-blue-400' : 'text-white/80'}`}>Rp</span>
-                1.750<span className={isMecha ? 'text-blue-400' : 'text-white/70'}>.000</span>
+              <div className={`text-[46px] font-black tracking-tighter leading-none mb-6 mt-2 ${isMecha ? 'text-white font-mono' : 'drop-shadow-md'}`}>
+                <span className={`text-xl align-top mr-1 ${isMecha ? 'text-blue-400' : 'opacity-80'}`}>Rp</span>
+                {remainingBudget.toLocaleString('id-ID')}
               </div>
               
               <div className="flex gap-4 pt-4 border-t border-white/20">
@@ -134,14 +137,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
                   <div className={`flex items-center gap-1 text-[10px] font-black uppercase tracking-wider mb-1 ${isMecha ? 'text-emerald-400' : 'text-emerald-300'}`}>
                     <ArrowDownRight size={12} strokeWidth={3} /> LOOT (IN)
                   </div>
-                  <div className={`text-sm font-black ${isMecha ? 'text-white font-mono' : 'text-white'}`}>Rp 5.200k</div>
+                  <div className={`text-sm font-black ${isMecha ? 'font-mono' : ''}`}>Rp {(userProfile.budget || 0).toLocaleString('id-ID')}</div>
                 </div>
                 <div className="w-px bg-white/20"></div>
                 <div className="flex-1">
                   <div className={`flex items-center gap-1 text-[10px] font-black uppercase tracking-wider mb-1 ${isMecha ? 'text-rose-400' : 'text-rose-200'}`}>
                     <ArrowUpRight size={12} strokeWidth={3} /> GACHA (OUT)
                   </div>
-                  <div className={`text-sm font-black ${isMecha ? 'text-white font-mono' : 'text-white'}`}>Rp 3.450k</div>
+                  <div className={`text-sm font-black ${isMecha ? 'font-mono' : ''}`}>Rp 3.450.000</div>
                 </div>
               </div>
             </div>
