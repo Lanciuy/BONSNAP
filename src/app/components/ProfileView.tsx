@@ -91,7 +91,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
   };
 
   const renderCardBody = () => (
-    <motion.div key="profile-card" variants={containerVariants} initial="hidden" animate="show" exit="exit" className="relative z-10 flex-1 w-full overflow-y-auto no-scrollbar pt-6 pb-[120px] px-4 flex flex-col">
+    <motion.div key="profile-card" variants={containerVariants} initial="hidden" animate="show" exit="exit" className="relative z-10 flex-1 w-full overflow-y-auto no-scrollbar pt-6 pb-[200px] px-4 flex flex-col">
       
       {/* Header Actions for Profile View */}
       <div className="w-full max-w-sm mx-auto flex justify-between items-center mb-4 px-2">
