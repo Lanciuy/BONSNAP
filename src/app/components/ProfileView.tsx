@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Camera, PieChart, Home, ReceiptText, User, ChevronLeft, MapPin, GraduationCap, Link2, Sparkles, Trophy, Scan, ShieldCheck, LogOut, Lock, Palette, Edit2, Settings, Image as ImageIcon, Gamepad2, Target, Heart, Tag } from "lucide-react";
+import { Camera, PieChart, Home, ReceiptText, User, ChevronLeft, MapPin, GraduationCap, Link2, Sparkles, Trophy, Scan, ShieldCheck, LogOut, Lock, Palette, Edit2, Settings, Image as ImageIcon, Gamepad2, Target, Heart, Tag, Medal, Crown, Download, Bell } from "lucide-react";
 import { Mascot, MascotMood } from "./Mascot";
 import { ThemeState, Inventory } from '../App';
 import { motion, AnimatePresence } from "motion/react";
@@ -255,6 +255,86 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
 
         </div>
       </div>
+
+      {/* OUTSIDE THE CARD: Extra Widgets */}
+      <div className="w-full max-w-sm mt-6 flex flex-col gap-4">
+        
+        {/* Achievements Showcase */}
+        <div className="w-full">
+           <div className="flex items-center justify-between mb-3 px-1">
+              <h2 className={`text-sm font-black uppercase tracking-wider ${isMecha ? 'text-white' : 'text-slate-800'}`}>Achievements</h2>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isMecha ? 'bg-slate-800 text-slate-400' : 'bg-slate-200 text-slate-500'}`}>12 / 50</span>
+           </div>
+           <div className={`p-4 rounded-[24px] grid grid-cols-4 gap-3 border shadow-sm ${isMecha ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'}`}>
+              <div className={`aspect-square rounded-2xl flex flex-col items-center justify-center gap-1 bg-gradient-to-br shadow-inner ${isMecha ? 'from-amber-900/40 to-amber-600/10' : 'from-amber-100 to-yellow-50'}`}>
+                 <Crown size={24} className="text-amber-500 drop-shadow-sm" />
+                 <span className={`text-[8px] font-black uppercase ${isMecha ? 'text-amber-500' : 'text-amber-600'}`}>VIP</span>
+              </div>
+              <div className={`aspect-square rounded-2xl flex flex-col items-center justify-center gap-1 bg-gradient-to-br shadow-inner ${isMecha ? 'from-blue-900/40 to-blue-600/10' : 'from-blue-100 to-cyan-50'}`}>
+                 <Scan size={24} className="text-blue-500 drop-shadow-sm" />
+                 <span className={`text-[8px] font-black uppercase ${isMecha ? 'text-blue-500' : 'text-blue-600'}`}>100+</span>
+              </div>
+              <div className={`aspect-square rounded-2xl flex flex-col items-center justify-center gap-1 bg-gradient-to-br shadow-inner ${isMecha ? 'from-pink-900/40 to-pink-600/10' : 'from-pink-100 to-rose-50'}`}>
+                 <Medal size={24} className="text-pink-500 drop-shadow-sm" />
+                 <span className={`text-[8px] font-black uppercase ${isMecha ? 'text-pink-500' : 'text-pink-600'}`}>Saver</span>
+              </div>
+              <div className={`aspect-square rounded-2xl flex items-center justify-center border-2 border-dashed ${isMecha ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-slate-50'}`}>
+                 <Lock size={16} className={isMecha ? 'text-slate-600' : 'text-slate-300'} />
+              </div>
+           </div>
+        </div>
+
+        {/* System Settings & Tools */}
+        <div className="w-full">
+           <div className="flex items-center justify-between mb-3 px-1">
+              <h2 className={`text-sm font-black uppercase tracking-wider ${isMecha ? 'text-white' : 'text-slate-800'}`}>System & Tools</h2>
+           </div>
+           <div className={`rounded-[24px] overflow-hidden border shadow-sm ${isMecha ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'}`}>
+              
+              <div className={`p-4 border-b flex items-center justify-between transition-colors cursor-pointer ${isMecha ? 'border-slate-800 hover:bg-slate-800' : 'border-slate-100 hover:bg-slate-50'}`} onMouseEnter={() => { setMood("thinking"); setMsg("Biar kamu nggak ketinggalan info diskon! 🔔"); }}>
+                 <div className="flex items-center gap-4">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isMecha ? 'bg-slate-800 text-blue-400' : 'bg-blue-50 text-blue-500'}`}>
+                       <Bell size={20} />
+                    </div>
+                    <div>
+                       <div className={`font-black text-sm ${isMecha ? 'text-slate-200' : 'text-slate-700'}`}>Notifications</div>
+                       <div className={`text-[10px] font-bold ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Manage alerts & reminders</div>
+                    </div>
+                 </div>
+                 <ChevronLeft size={18} className="text-slate-400 rotate-180" />
+              </div>
+
+              <div className={`p-4 border-b flex items-center justify-between transition-colors cursor-pointer ${isMecha ? 'border-slate-800 hover:bg-slate-800' : 'border-slate-100 hover:bg-slate-50'}`} onMouseEnter={() => { setMood("excited"); setMsg("Cetak laporan keuanganmu jadi Excel keren! 📊"); }}>
+                 <div className="flex items-center gap-4">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isMecha ? 'bg-slate-800 text-emerald-400' : 'bg-emerald-50 text-emerald-500'}`}>
+                       <Download size={20} />
+                    </div>
+                    <div>
+                       <div className={`font-black text-sm ${isMecha ? 'text-slate-200' : 'text-slate-700'}`}>Export to Excel</div>
+                       <div className={`text-[10px] font-bold ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Download professional ledger</div>
+                    </div>
+                 </div>
+                 <ChevronLeft size={18} className="text-slate-400 rotate-180" />
+              </div>
+
+              <div className={`p-4 flex items-center justify-between transition-colors cursor-pointer ${isMecha ? 'hover:bg-slate-800' : 'hover:bg-slate-50'}`} onMouseEnter={() => { setMood("happy"); setMsg("Bosan dengan tampilannya? Ayo atur aplikasinya! ⚙️"); }}>
+                 <div className="flex items-center gap-4">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isMecha ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-600'}`}>
+                       <Settings size={20} />
+                    </div>
+                    <div>
+                       <div className={`font-black text-sm ${isMecha ? 'text-slate-200' : 'text-slate-700'}`}>App Settings</div>
+                       <div className={`text-[10px] font-bold ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Language, theme, and more</div>
+                    </div>
+                 </div>
+                 <ChevronLeft size={18} className="text-slate-400 rotate-180" />
+              </div>
+
+           </div>
+        </div>
+        
+      </div>
+
     </motion.div>
   );
 
