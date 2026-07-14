@@ -198,17 +198,35 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
             </div>
           </div>
 
-          {/* Activity / Rich Presence (Discord Style) */}
-          <div className={`mt-5 p-3.5 rounded-[16px] border flex gap-3 items-center ${isMecha ? 'bg-slate-950/80 border-slate-800' : 'bg-slate-50/80 border-slate-100'}`}>
-             <div className={`w-12 h-12 rounded-[12px] flex items-center justify-center shrink-0 ${isMecha ? 'bg-blue-500/20 text-blue-400' : 'bg-green-100 text-green-500'}`}>
-                <Gamepad2 size={24} />
+          {/* Monthly Budget (More Useful Widget) */}
+          <div className={`mt-5 p-4 rounded-[16px] border ${isMecha ? 'bg-gradient-to-br from-slate-900 to-slate-950 border-slate-800' : 'bg-gradient-to-br from-white to-slate-50 border-slate-200'}`}>
+             <div className="flex justify-between items-center mb-3">
+                <div className="flex items-center gap-2">
+                   <div className={`p-1.5 rounded-lg ${isMecha ? 'bg-indigo-500/20 text-indigo-400' : 'bg-indigo-100 text-indigo-600'}`}>
+                      <ReceiptText size={14} />
+                   </div>
+                   <h3 className={`text-[11px] font-black uppercase tracking-widest ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>Budget Bulan Ini</h3>
+                </div>
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isMecha ? 'bg-rose-500/20 text-rose-400' : 'bg-rose-100 text-rose-600'}`}>Over budget!</span>
              </div>
-             <div className="flex-1">
-                <h3 className={`text-[10px] font-black uppercase tracking-widest mb-0.5 ${isMecha ? 'text-blue-400' : 'text-green-600'}`}>Playing</h3>
-                <p className={`text-sm font-bold leading-tight ${isMecha ? 'text-slate-200' : 'text-slate-800'}`}>BONSNAP Financial Tracker</p>
-                <p className={`text-[11px] font-medium ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>Scanning daily receipts... 🧾</p>
-                <p className={`text-[11px] font-mono mt-0.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Elapsed: 04:20:15</p>
+             
+             <div className="flex justify-between items-end mb-2">
+                <div>
+                   <p className={`text-[10px] font-bold ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Terpakai</p>
+                   <p className={`text-lg font-black font-mono leading-none mt-0.5 ${isMecha ? 'text-white' : 'text-slate-800'}`}>Rp 3.200k</p>
+                </div>
+                <div className="text-right">
+                   <p className={`text-[10px] font-bold ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Batas</p>
+                   <p className={`text-sm font-black font-mono leading-none mt-0.5 ${isMecha ? 'text-slate-400' : 'text-slate-600'}`}>Rp 3.000k</p>
+                </div>
              </div>
+
+             <div className={`w-full h-2 rounded-full overflow-hidden ${isMecha ? 'bg-slate-800' : 'bg-slate-200'}`}>
+                <div className={`h-full rounded-full w-full ${isMecha ? 'bg-gradient-to-r from-rose-500 to-red-500' : 'bg-gradient-to-r from-rose-400 to-red-500'}`}></div>
+             </div>
+             <p className={`text-[10px] font-medium mt-3 italic ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>
+                "Wah, pengeluaranmu bulan ini jebol 200rb nih! Kurang-kurangin jajan ya bestie."
+             </p>
           </div>
 
           {/* Savings Goal Widget */}
