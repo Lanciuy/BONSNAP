@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChevronLeft, Coins, CalendarCheck, ShieldCheck, Flame, Sparkles, Trophy, Lock, Unlock, Zap, Calendar, CalendarDays } from "lucide-react";
+import { ChevronLeft, Coins, CalendarCheck, ShieldCheck, Flame, Sparkles, Trophy, Lock, Unlock, Zap, Calendar, CalendarDays, Target } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { ThemeState, Inventory } from '../App';
 import { Mascot, MascotMood } from "./Mascot";
@@ -214,6 +214,7 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
                   <div className="grid grid-cols-2 gap-3">
                     {STORE_ITEMS.filter(item => item.type === category).map(item => {
                       const owned = hasItem(item.type, item.id);
+                      const IconComponent = item.icon;
                       return (
                         <motion.div 
                           variants={itemVariants}
@@ -221,7 +222,7 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
                           className={`p-4 rounded-[24px] border flex flex-col justify-between h-[140px] relative overflow-hidden ${isMecha ? 'bg-slate-800/80 border-slate-700' : 'bg-white border-slate-100 shadow-sm'}`}
                         >
                           <div className={`w-10 h-10 rounded-[14px] flex items-center justify-center mb-2 ${isMecha ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-100 text-purple-500'}`}>
-                            <item.icon size={20} />
+                            <IconComponent size={20} />
                           </div>
                           
                           <h4 className={`text-xs font-black leading-tight ${isMecha ? 'text-slate-200' : 'text-slate-700'}`}>{item.name}</h4>
