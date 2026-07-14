@@ -21,7 +21,7 @@ export const analyzeReceipt = async (base64Image: string, mimeType: string): Pro
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const prompt = `
       Anda adalah asisten AI ekstraktor data struk belanja terbaik di dunia.
