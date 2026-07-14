@@ -102,8 +102,14 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
               {/* Outer GIF layer if available */}
               {activeFrame.imageUrl && (
                 <div 
-                  className="absolute inset-0 z-30 rounded-full pointer-events-none scale-125 mix-blend-screen opacity-80"
-                  style={{ backgroundImage: `url(${activeFrame.imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                  className="absolute inset-0 z-30 rounded-full pointer-events-none scale-125 mix-blend-screen opacity-90"
+                  style={{ 
+                    backgroundImage: `url(${activeFrame.imageUrl})`, 
+                    backgroundSize: 'cover', 
+                    backgroundPosition: 'center',
+                    WebkitMaskImage: 'radial-gradient(circle, transparent 40%, black 50%)',
+                    maskImage: 'radial-gradient(circle, transparent 40%, black 50%)'
+                  }}
                 />
               )}
               {/* Actual Avatar */}
