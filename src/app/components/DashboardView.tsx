@@ -97,46 +97,43 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
 
         <motion.div variants={containerVariants} initial="hidden" animate="show" className="px-6 flex flex-col gap-5 mt-2">
           
-          {/* 1. Futuristic Virtual Card */}
+          {/* 1. Anime / RPG Style Balance Card */}
           <motion.div variants={itemVariants}
-            className={`w-full rounded-[28px] p-6 relative overflow-hidden shadow-2xl ${isMecha ? 'bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 border border-slate-700 shadow-blue-900/40' : 'bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 border border-white/20 shadow-purple-500/40 text-white'}`}
+            className={`w-full rounded-[32px] p-6 relative overflow-hidden shadow-2xl ${isMecha ? 'bg-slate-900 border-2 border-blue-500 shadow-[0_15px_30px_rgba(59,130,246,0.3)]' : 'bg-gradient-to-br from-pink-400 via-purple-400 to-indigo-500 border-2 border-white/40 shadow-purple-200/50 text-white'}`}
             onMouseEnter={() => { setMood("excited"); setMsg(isMecha ? "CREDITS SUFFICIENT FOR UPGRADE." : "Jujurly saldo lo bikin mupeng! 🤑"); }} 
             onMouseLeave={() => setMood("happy")}
           >
-            {/* Holographic overlays */}
-            <div className={`absolute top-0 right-0 w-64 h-64 rounded-full mix-blend-overlay blur-3xl opacity-50 ${isMecha ? 'bg-blue-400' : 'bg-pink-300'}`}></div>
-            <div className={`absolute bottom-[-20%] left-[-10%] w-48 h-48 rounded-full mix-blend-overlay blur-2xl opacity-60 ${isMecha ? 'bg-teal-400' : 'bg-orange-300'}`}></div>
+            {/* Anime Sparkles & Magic overlays */}
+            {!isMecha && <Sparkles className="absolute top-4 right-4 text-yellow-300 opacity-80" size={32} />}
+            {!isMecha && <Sparkles className="absolute bottom-10 left-6 text-pink-200 opacity-50" size={20} />}
+            <div className={`absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl opacity-50 ${isMecha ? 'bg-blue-600' : 'bg-white/40'}`}></div>
+            <div className={`absolute bottom-[-10%] left-[-10%] w-32 h-32 rounded-full blur-2xl opacity-60 ${isMecha ? 'bg-teal-600' : 'bg-pink-300'}`}></div>
             
-            <div className="relative z-10 flex flex-col justify-between h-full min-h-[160px]">
-              <div className="flex justify-between items-start">
-                <div className="flex flex-col">
-                  <span className={`text-[10px] font-bold uppercase tracking-widest mb-1 ${isMecha ? 'text-blue-300' : 'text-white/70'}`}>Current Balance</span>
-                  <div className="flex items-start gap-1">
-                     <span className={`text-lg font-bold mt-1 ${isMecha ? 'text-blue-400' : 'text-white/80'}`}>Rp</span>
-                     <span className={`text-[40px] font-black tracking-tighter leading-none font-mono ${isMecha ? 'text-white' : 'text-white'}`}>1.750<span className={isMecha ? 'text-blue-400' : 'text-white/70'}>.000</span></span>
-                  </div>
-                </div>
-                {/* Chip Icon */}
-                <div className={`w-10 h-8 rounded-md flex items-center justify-center opacity-80 ${isMecha ? 'bg-slate-700/50 border border-slate-600' : 'bg-white/20 border border-white/30 backdrop-blur-sm'}`}>
-                   <div className={`w-6 h-4 border rounded-[4px] ${isMecha ? 'border-slate-500' : 'border-white/50'}`}>
-                      <div className={`w-full h-full border-t border-b ${isMecha ? 'border-slate-500' : 'border-white/50'}`}></div>
-                   </div>
+            <div className="relative z-10">
+              <div className="flex justify-between items-center mb-1">
+                <div className={`flex items-center gap-1.5 text-xs uppercase tracking-widest font-black ${isMecha ? 'text-blue-400' : 'text-white/90'}`}>
+                  {isMecha ? 'CORE CREDITS' : '✨ MAGIC POUCH ✨'}
                 </div>
               </div>
               
-              <div className="mt-8 flex justify-between items-end">
-                <div>
-                  <div className={`text-[11px] font-bold font-mono tracking-widest ${isMecha ? 'text-slate-400' : 'text-white/80'}`}>
-                    **** **** **** 8892
+              <div className={`text-[46px] font-black tracking-tighter leading-none mb-6 mt-2 ${isMecha ? 'text-white font-mono' : 'text-white drop-shadow-md'}`}>
+                <span className={`text-xl align-top mr-1 ${isMecha ? 'text-blue-400' : 'text-white/80'}`}>Rp</span>
+                1.750<span className={isMecha ? 'text-blue-400' : 'text-white/70'}>.000</span>
+              </div>
+              
+              <div className="flex gap-4 pt-4 border-t border-white/20">
+                <div className="flex-1">
+                  <div className={`flex items-center gap-1 text-[10px] font-black uppercase tracking-wider mb-1 ${isMecha ? 'text-emerald-400' : 'text-emerald-300'}`}>
+                    <ArrowDownRight size={12} strokeWidth={3} /> LOOT (IN)
                   </div>
-                  <div className={`text-[9px] font-black uppercase tracking-wider mt-1 ${isMecha ? 'text-slate-500' : 'text-white/60'}`}>
-                    {isMecha ? 'PILOT-01' : 'SARAH JENKINS'}
-                  </div>
+                  <div className={`text-sm font-black ${isMecha ? 'text-white font-mono' : 'text-white'}`}>Rp 5.200k</div>
                 </div>
-                {/* Virtual Card Logo */}
-                <div className="flex -space-x-2">
-                   <div className={`w-6 h-6 rounded-full mix-blend-screen opacity-80 ${isMecha ? 'bg-blue-500' : 'bg-red-400'}`}></div>
-                   <div className={`w-6 h-6 rounded-full mix-blend-screen opacity-80 ${isMecha ? 'bg-teal-400' : 'bg-yellow-400'}`}></div>
+                <div className="w-px bg-white/20"></div>
+                <div className="flex-1">
+                  <div className={`flex items-center gap-1 text-[10px] font-black uppercase tracking-wider mb-1 ${isMecha ? 'text-rose-400' : 'text-rose-200'}`}>
+                    <ArrowUpRight size={12} strokeWidth={3} /> GACHA (OUT)
+                  </div>
+                  <div className={`text-sm font-black ${isMecha ? 'text-white font-mono' : 'text-white'}`}>Rp 3.450k</div>
                 </div>
               </div>
             </div>
@@ -162,19 +159,18 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
             ))}
           </motion.div>
 
-          {/* 3. Spending Trend Chart */}
-          <motion.div variants={itemVariants} className={`p-5 rounded-[24px] border shadow-sm ${isMecha ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-100'}`}>
-             <div className="flex justify-between items-center mb-4">
+          {/* 3. Spending Trend Chart (Anime Style) */}
+          <motion.div variants={itemVariants} className={`p-5 rounded-[28px] border-2 shadow-sm ${isMecha ? 'bg-slate-800 border-slate-700' : 'bg-white border-pink-100'}`}>
+             <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center gap-2">
-                   <div className={`p-1.5 rounded-lg ${isMecha ? 'bg-purple-500/20 text-purple-400' : 'bg-purple-100 text-purple-600'}`}>
-                      <Activity size={16} />
+                   <div className={`p-2 rounded-xl ${isMecha ? 'bg-purple-500/20 text-purple-400' : 'bg-pink-100 text-pink-500'}`}>
+                      <Activity size={18} strokeWidth={3} />
                    </div>
-                   <h3 className={`text-[12px] font-black uppercase tracking-wider ${isMecha ? 'text-slate-300' : 'text-slate-700'}`}>Weekly Trend</h3>
+                   <h3 className={`text-[13px] font-black uppercase tracking-wider ${isMecha ? 'text-slate-300' : 'text-slate-700'}`}>Weekly Quest 📊</h3>
                 </div>
-                <span className={`text-[10px] font-bold ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>This Week</span>
              </div>
              
-             <div className="flex justify-between items-end h-24 gap-2">
+             <div className="flex justify-between items-end h-28 gap-2">
                 {[
                   { day: 'Mon', h: '40%', val: '40k' },
                   { day: 'Tue', h: '70%', val: '70k' },
@@ -185,33 +181,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
                   { day: 'Sun', h: '10%', val: '10k' },
                 ].map((bar, i) => (
                   <div key={i} className="flex flex-col items-center flex-1 gap-1">
-                     <span className={`text-[8px] font-bold opacity-0 hover:opacity-100 transition-opacity ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>{bar.val}</span>
-                     <div className={`w-full rounded-t-[6px] transition-all duration-500 ${bar.today ? (isMecha ? 'bg-blue-400' : 'bg-pink-500') : (isMecha ? 'bg-slate-700' : 'bg-slate-100')} hover:bg-opacity-80`} style={{ height: bar.h }}></div>
-                     <span className={`text-[9px] font-bold mt-1 ${bar.today ? (isMecha ? 'text-blue-400' : 'text-pink-600') : (isMecha ? 'text-slate-500' : 'text-slate-400')}`}>{bar.day}</span>
+                     <span className={`text-[9px] font-black opacity-0 hover:opacity-100 transition-opacity ${isMecha ? 'text-slate-400' : 'text-pink-400'}`}>{bar.val}</span>
+                     <div className={`w-full rounded-full transition-all duration-500 ${bar.today ? (isMecha ? 'bg-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.6)]' : 'bg-pink-500 shadow-[0_4px_10px_rgba(236,72,153,0.4)]') : (isMecha ? 'bg-slate-700' : 'bg-slate-100')} hover:scale-110`} style={{ height: bar.h }}></div>
+                     <span className={`text-[10px] font-black mt-2 ${bar.today ? (isMecha ? 'text-blue-400' : 'text-pink-600') : (isMecha ? 'text-slate-500' : 'text-slate-400')}`}>{bar.day}</span>
                   </div>
-                ))}
-             </div>
-          </motion.div>
-
-          {/* 4. Quick Transfer / Friends */}
-          <motion.div variants={itemVariants}>
-             <div className="flex justify-between items-center mb-3 px-1">
-               <h3 className={`text-[12px] font-black uppercase tracking-wider ${isMecha ? 'text-slate-400' : 'text-slate-600'}`}>Quick Transfer</h3>
-               <button className={`text-[10px] font-bold flex items-center gap-1 ${isMecha ? 'text-blue-400' : 'text-pink-500'}`}>Add New <Plus size={12}/></button>
-             </div>
-             <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 px-1">
-                {[
-                  { name: 'Diana', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&auto=format&fit=crop' },
-                  { name: 'Michael', img: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=150&auto=format&fit=crop' },
-                  { name: 'Jessica', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=150&auto=format&fit=crop' },
-                  { name: 'Kevin', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop' },
-                ].map((friend, i) => (
-                   <div key={i} className="flex flex-col items-center gap-1 shrink-0 cursor-pointer group">
-                      <div className={`w-12 h-12 rounded-full p-0.5 border-2 transition-all ${isMecha ? 'border-transparent group-hover:border-blue-400' : 'border-transparent group-hover:border-pink-400'}`}>
-                         <img src={friend.img} alt={friend.name} className="w-full h-full object-cover rounded-full" />
-                      </div>
-                      <span className={`text-[10px] font-bold ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>{friend.name}</span>
-                   </div>
                 ))}
              </div>
           </motion.div>
