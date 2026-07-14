@@ -50,7 +50,11 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
     { id: 'gold', type: 'frame', name: 'Gold VIP Frame', cost: 1000, icon: Trophy },
     { id: 'neon', type: 'frame', name: 'Cyber Neon Frame', cost: 1500, icon: Flame },
     { id: 'flame', type: 'frame', name: 'Hot Streak Frame', cost: 1200, icon: Flame },
-    { id: 'stardust', type: 'frame', name: 'Stardust Frame (Animated)', cost: 2000, icon: Sparkles },
+    { id: 'stardust', type: 'frame', name: 'Stardust Frame', cost: 2000, icon: Sparkles },
+    { id: 'digital-sunrise', type: 'frame', name: 'Digital Sunrise', cost: 2500, icon: Sparkles },
+    { id: 'dream-dive', type: 'frame', name: 'Dream Dive Stars', cost: 3000, icon: Sparkles },
+    { id: 'starlight', type: 'frame', name: 'Starlight Revolver', cost: 3500, icon: Sparkles },
+    { id: 'steampunk', type: 'frame', name: 'Steampunk Ears', cost: 4000, icon: Sparkles },
 
     { id: 'mecha', type: 'theme', name: 'Mecha Theme (Skin)', cost: 5000, icon: Zap },
   ];

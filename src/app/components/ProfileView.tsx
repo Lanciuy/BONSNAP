@@ -39,7 +39,11 @@ const FRAME_OPTIONS = [
   { id: 'gold', name: 'Gold VIP', class: 'border-[6px] border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.6)]' },
   { id: 'neon', name: 'Cyber Neon', class: 'border-[6px] border-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.8)]' },
   { id: 'flame', name: 'Hot Streak', class: 'border-[6px] border-orange-500 shadow-[0_0_20px_rgba(249,115,22,0.7)]' },
-  { id: 'stardust', name: 'Stardust Effect', class: 'border-4 border-transparent', imageUrl: '/gifs/Stardust.gif' }
+  { id: 'stardust', name: 'Stardust Effect', class: 'border-4 border-transparent', imageUrl: '/gifs/Stardust.gif' },
+  { id: 'digital-sunrise', name: 'Digital Sunrise', class: 'border-4 border-transparent', imageUrl: '/gifs/Digital_Sunrise.gif' },
+  { id: 'dream-dive', name: 'Dream Dive Stars', class: 'border-4 border-transparent', imageUrl: '/gifs/Dream_Dive_Stars.gif' },
+  { id: 'starlight', name: 'Starlight Revolver', class: 'border-4 border-transparent', imageUrl: '/gifs/Starlight_Revolver.gif' },
+  { id: 'steampunk', name: 'Steampunk Ears', class: 'border-4 border-transparent', imageUrl: '/gifs/Steampunk_Cat_Ears.gif' }
 ];
 
 export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDashboard, theme, onNavigate, points, level, inventory }) => {
