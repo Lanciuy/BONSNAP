@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Camera, Coffee, ShoppingBag, Car, Settings, Wallet, PieChart, Home, Sparkles, X, Bell, Globe, CreditCard, ChevronRight, LogOut, Swords, Send, Plus, Receipt, Gift, Target, ReceiptText, User, ArrowDownRight, ArrowUpRight, Activity, Users, Volume2, Music, Zap, Cloud } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { Mascot, MascotMood, getGeneratedMascotUrl } from "./Mascot";
-import { ThemeState, Inventory } from '../App';
+import { ThemeState, Inventory, UserProfile } from '../App';
 
 interface DashboardViewProps {
   onGoToCamera: () => void;
@@ -10,6 +10,10 @@ interface DashboardViewProps {
   theme: ThemeState;
   setTheme: (theme: ThemeState) => void;
   onNavigate: (view: string) => void;
+  points?: number;
+  level?: number;
+  inventory?: Inventory;
+  userProfile: UserProfile;
 }
 
 const containerVariants = {
@@ -22,7 +26,7 @@ const itemVariants = {
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
 };
 
-export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGoToInsights, theme, setTheme, onNavigate, points, level, inventory }) => {
+export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGoToInsights, theme, setTheme, onNavigate, points, level, inventory, userProfile }) => {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [mood, setMood] = useState<MascotMood>("happy");
   const [notifOn, setNotifOn] = useState(true);
@@ -80,7 +84,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
             </div>
             <div>
               <div className={`text-sm font-bold ${isMecha ? 'text-blue-400' : 'text-slate-500'}`}>{isMecha ? 'System Online,' : 'Good Morning,'}</div>
-              <div className={`text-xl font-black tracking-tight ${isMecha ? 'text-white' : 'text-slate-800'}`}>{isMecha ? 'PILOT-01 🚀' : 'Sarah 🌸'}</div>
+              <div className={`text-xl font-black tracking-tight ${isMecha ? 'text-white' : 'text-slate-800'}`}>{isMecha ? 'PILOT-01 🚀' : `${userProfile.name.split(' ')[0]} 🌸`}</div>
             </div>
           </div>
           <div className="flex gap-2">

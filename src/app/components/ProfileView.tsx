@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Camera, PieChart, Home, ReceiptText, User, ChevronLeft, MapPin, GraduationCap, Link2, Sparkles, Trophy, Scan, ShieldCheck, LogOut, Lock, Palette, Edit2, Settings, Image as ImageIcon, Gamepad2, Target, Heart, Tag, Medal, Crown, Download, Bell, PartyPopper, Coffee, PiggyBank, Flame, Ghost, Pizza, ChevronRight } from "lucide-react";
 import { Mascot, MascotMood } from "./Mascot";
-import { ThemeState, Inventory } from '../App';
+import { ThemeState, Inventory, UserProfile } from '../App';
 import { motion, AnimatePresence } from "motion/react";
 
 interface ProfileViewProps {
@@ -14,6 +14,8 @@ interface ProfileViewProps {
   inventory: Inventory;
   setInventory: React.Dispatch<React.SetStateAction<Inventory>>;
   setTheme: (theme: ThemeState) => void;
+  userProfile: UserProfile;
+  setUserProfile: React.Dispatch<React.SetStateAction<UserProfile>>;
 }
 
 const containerVariants = {
@@ -74,31 +76,42 @@ const ALL_ACHIEVEMENTS = [
   { id: '6', title: 'Pizza Party 🍕', desc: 'Jajan fast-food terlalu banyak bulan ini.', icon: Pizza, color: 'text-red-500', bg: 'bg-red-100', unlocked: false },
 ];
 
-export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDashboard, theme, onNavigate, points, level, inventory }) => {
+export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDashboard, theme, onNavigate, points, level, inventory, setInventory, setTheme, userProfile, setUserProfile }) => {
   const [mood, setMood] = useState<MascotMood>("happy");
   const [msg, setMsg] = useState("Profil lo udah cakep banget bestie! 💅");
-  
-  // Customization State
-  const [activeBanner, setActiveBanner] = useState(BANNER_OPTIONS[0]);
-  const [activeFrame, setActiveFrame] = useState(FRAME_OPTIONS[1]);
   
   // Tab States for Modals
   const [isEditing, setIsEditing] = useState(false);
   const [isViewingAchievements, setIsViewingAchievements] = useState(false);
 
-  // User Profile Data State
-  const [name, setName] = useState("Sarah Jenkins");
-  const [username, setUsername] = useState("sarahj.str");
-  const [bio, setBio] = useState("Coffee addict ☕ | UI/UX Designer by day, professional overthinker by night. Trying to stop my Shopee checkout habit (failed miserably).");
-  const [university, setUniversity] = useState("Universitas Indonesia");
-  const [location, setLocation] = useState("Jakarta Selatan");
+  // Sync state with parent
+  const activeBanner = BANNER_OPTIONS.find(b => b.id === userProfile.activeBannerId) || BANNER_OPTIONS[0];
+  const setActiveBanner = (opt: typeof BANNER_OPTIONS[0]) => setUserProfile({...userProfile, activeBannerId: opt.id});
   
-  // Wild Customizations
-  const [financialPersona, setFinancialPersona] = useState("Gacha Victim 🎰 (Zero Luck)");
-  const [accentColor, setAccentColor] = useState("text-teal-400"); 
-  const [goalName, setGoalName] = useState("Tiket Konser Blackpink");
-  const [goalTarget, setGoalTarget] = useState("2000000");
-  const [goalSaved, setGoalSaved] = useState("1500000");
+  const activeFrame = FRAME_OPTIONS.find(f => f.id === userProfile.activeFrameId) || FRAME_OPTIONS[1];
+  const setActiveFrame = (opt: typeof FRAME_OPTIONS[0]) => setUserProfile({...userProfile, activeFrameId: opt.id});
+  
+  const name = userProfile.name;
+  const setName = (v: string) => setUserProfile({...userProfile, name: v});
+  const username = userProfile.username;
+  const setUsername = (v: string) => setUserProfile({...userProfile, username: v});
+  const bio = userProfile.bio;
+  const setBio = (v: string) => setUserProfile({...userProfile, bio: v});
+  const university = userProfile.university;
+  const setUniversity = (v: string) => setUserProfile({...userProfile, university: v});
+  const location = userProfile.location;
+  const setLocation = (v: string) => setUserProfile({...userProfile, location: v});
+  
+  const financialPersona = userProfile.financialPersona;
+  const setFinancialPersona = (v: string) => setUserProfile({...userProfile, financialPersona: v});
+  const accentColor = userProfile.accentColor;
+  const setAccentColor = (v: string) => setUserProfile({...userProfile, accentColor: v}); 
+  const goalName = userProfile.goalName;
+  const setGoalName = (v: string) => setUserProfile({...userProfile, goalName: v});
+  const goalTarget = userProfile.goalTarget;
+  const setGoalTarget = (v: string) => setUserProfile({...userProfile, goalTarget: v});
+  const goalSaved = userProfile.goalSaved;
+  const setGoalSaved = (v: string) => setUserProfile({...userProfile, goalSaved: v});
 
   const isMecha = theme === "mecha";
 

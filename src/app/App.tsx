@@ -20,6 +20,21 @@ export interface Inventory {
   themes: string[];
 }
 
+export interface UserProfile {
+  name: string;
+  username: string;
+  bio: string;
+  university: string;
+  location: string;
+  financialPersona: string;
+  accentColor: string;
+  goalName: string;
+  goalTarget: string;
+  goalSaved: string;
+  activeBannerId: string;
+  activeFrameId: string;
+}
+
 const viewVariants = {
   initial: { opacity: 0, scale: 0.95, filter: "blur(4px)" },
   animate: { opacity: 1, scale: 1, filter: "blur(0px)", transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } },
@@ -32,8 +47,23 @@ export default function App() {
   const [level, setLevel] = useState(12);
   const [inventory, setInventory] = useState<Inventory>({
     banners: ['default'],
-    frames: ['none'],
+    frames: ['none', 'gold'],
     themes: ['genz']
+  });
+
+  const [userProfile, setUserProfile] = useState<UserProfile>({
+    name: "Sarah Jenkins",
+    username: "sarahj.str",
+    bio: "Coffee addict ☕ | UI/UX Designer by day, professional overthinker by night. Trying to stop my Shopee checkout habit (failed miserably).",
+    university: "Universitas Indonesia",
+    location: "Jakarta Selatan",
+    financialPersona: "Gacha Victim 🎰 (Zero Luck)",
+    accentColor: "text-teal-400",
+    goalName: "Tiket Konser Blackpink",
+    goalTarget: "2000000",
+    goalSaved: "1500000",
+    activeBannerId: "default",
+    activeFrameId: "gold"
   });
 
   useEffect(() => {
@@ -79,6 +109,7 @@ export default function App() {
                 points={points}
                 level={level}
                 inventory={inventory}
+                userProfile={userProfile}
               />
             </motion.div>
           )}
@@ -114,6 +145,8 @@ export default function App() {
                 inventory={inventory}
                 setInventory={setInventory}
                 setTheme={setTheme}
+                userProfile={userProfile}
+                setUserProfile={setUserProfile}
               />
             </motion.div>
           )}
