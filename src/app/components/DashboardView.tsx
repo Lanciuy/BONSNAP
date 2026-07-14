@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Camera, Coffee, ShoppingBag, Car, Settings, Wallet, PieChart, Home, Sparkles, X, Bell, Globe, CreditCard, ChevronRight, LogOut, Swords, Send, Plus, Receipt, Gift, Target, ReceiptText, User, ArrowDownRight, ArrowUpRight, Activity, Users } from "lucide-react";
+import { Camera, Coffee, ShoppingBag, Car, Settings, Wallet, PieChart, Home, Sparkles, X, Bell, Globe, CreditCard, ChevronRight, LogOut, Swords, Send, Plus, Receipt, Gift, Target, ReceiptText, User, ArrowDownRight, ArrowUpRight, Activity, Users, Volume2, Music, Zap, Cloud } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { Mascot, MascotMood, getGeneratedMascotUrl } from "./Mascot";
 import { ThemeState, Inventory } from '../App';
@@ -28,6 +28,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
   const [notifOn, setNotifOn] = useState(true);
   const [langEn, setLangEn] = useState(true);
   const [currIdr, setCurrIdr] = useState(true);
+  const [sfxOn, setSfxOn] = useState(true);
+  const [bgmOn, setBgmOn] = useState(false);
   
   const isMecha = theme === "mecha";
 
@@ -314,65 +316,97 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
 
                 {/* Theme Selection */}
                 <div>
-                  <h3 className={`text-xs font-black uppercase tracking-wider mb-3 ml-2 ${isMecha ? 'text-blue-400' : 'text-pink-400'}`}>
-                    Assistant Theme
+                  <h3 className={`text-[10px] font-black uppercase tracking-widest mb-3 flex items-center gap-2 ${isMecha ? 'text-blue-400' : 'text-pink-500'}`}>
+                    <Sparkles size={14} /> AI Assistant Persona
                   </h3>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-3">
                     <button 
                       onClick={() => setTheme("genz")}
-                      className={`p-4 rounded-[24px] border-4 transition-all ${theme === 'genz' ? 'border-pink-400 bg-pink-50 shadow-lg shadow-pink-200/50' : 'border-slate-100 bg-white hover:bg-pink-50'}`}
+                      className={`relative p-4 rounded-[20px] border-2 overflow-hidden transition-all duration-300 ${theme === 'genz' ? 'border-pink-500 bg-pink-50/80 shadow-[0_0_15px_rgba(236,72,153,0.3)]' : 'border-slate-200 bg-white hover:border-pink-300'}`}
                     >
-                      <div className="text-4xl mb-2">✨</div>
-                      <div className={`font-black ${theme === 'genz' ? 'text-slate-800' : 'text-slate-500'}`}>Bon-chan</div>
-                      <div className={`text-[10px] font-bold mt-1 ${theme === 'genz' ? 'text-pink-500' : 'text-slate-400'}`}>GenZ Mode</div>
+                      {theme === 'genz' && <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-pink-200/20 to-transparent"></div>}
+                      <div className="text-4xl mb-2 relative z-10">🌸</div>
+                      <div className={`font-black tracking-tight relative z-10 ${theme === 'genz' ? 'text-pink-600' : 'text-slate-600'}`}>Bon-chan</div>
+                      <div className={`text-[9px] font-bold mt-1 uppercase tracking-wider relative z-10 ${theme === 'genz' ? 'text-pink-400' : 'text-slate-400'}`}>GenZ / Casual</div>
                     </button>
 
                     <button 
                       disabled={!inventory.themes.includes("mecha")}
                       onClick={() => setTheme("mecha")}
-                      className={`p-4 rounded-[24px] border-4 transition-all ${theme === 'mecha' ? (isMecha ? 'border-blue-500 bg-slate-800 shadow-lg shadow-blue-500/20' : 'border-slate-800 bg-slate-50') : 'border-slate-100 bg-slate-50 opacity-60'} ${inventory.themes.includes("mecha") ? 'hover:bg-slate-100 opacity-100 cursor-pointer' : ''}`}
+                      className={`relative p-4 rounded-[20px] border-2 overflow-hidden transition-all duration-300 ${theme === 'mecha' ? 'border-blue-500 bg-slate-800 shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'border-slate-200 bg-white hover:border-blue-300 opacity-60'} ${inventory.themes.includes("mecha") ? 'cursor-pointer' : 'opacity-40 grayscale'}`}
                     >
-                      <div className={`text-4xl mb-2 ${inventory.themes.includes("mecha") ? '' : 'grayscale'}`}>🤖</div>
-                      <div className={`font-black ${theme === 'mecha' ? (isMecha ? 'text-white' : 'text-slate-800') : 'text-slate-400'}`}>G-UNIT</div>
-                      <div className={`text-[10px] font-bold mt-1 inline-block rounded-full px-2 py-0.5 ${inventory.themes.includes("mecha") ? 'bg-blue-100 text-blue-600' : 'text-pink-500 bg-pink-100'}`}>
-                        {inventory.themes.includes("mecha") ? 'Unlocked' : 'Locked'}
+                      {theme === 'mecha' && <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-500/20 to-transparent"></div>}
+                      <div className="text-4xl mb-2 relative z-10">🤖</div>
+                      <div className={`font-black tracking-tight relative z-10 ${theme === 'mecha' ? 'text-white' : 'text-slate-600'}`}>G-UNIT</div>
+                      <div className={`text-[9px] font-bold mt-1 uppercase tracking-wider relative z-10 ${inventory.themes.includes("mecha") ? (theme === 'mecha' ? 'text-blue-400' : 'text-blue-500') : 'text-slate-400'}`}>
+                        {inventory.themes.includes("mecha") ? 'Tactical Mode' : 'Locked'}
                       </div>
                     </button>
                   </div>
                 </div>
 
-                {/* Preferences */}
+                {/* Audio Settings */}
                 <div>
-                  <h3 className={`text-xs font-black uppercase tracking-wider mb-3 ml-2 ${isMecha ? 'text-blue-400' : 'text-pink-400'}`}>
-                    Preferences
+                  <h3 className={`text-[10px] font-black uppercase tracking-widest mb-3 flex items-center gap-2 ${isMecha ? 'text-blue-400' : 'text-purple-500'}`}>
+                    <Volume2 size={14} /> Audio & FX
                   </h3>
-                  <div className={`border rounded-[24px] overflow-hidden ${isMecha ? 'bg-slate-900/50 border-slate-700' : 'bg-slate-50 border-slate-100'}`}>
-                    <div onClick={() => setNotifOn(!notifOn)} className={`flex items-center justify-between p-4 border-b transition cursor-pointer ${isMecha ? 'border-slate-700 hover:bg-slate-800' : 'border-slate-100 hover:bg-white'}`}>
-                      <div className={`flex items-center gap-3 font-bold ${isMecha ? 'text-slate-300' : 'text-slate-700'}`}>
-                        <Bell size={18} className={isMecha ? 'text-blue-400' : 'text-slate-400'} /> Notifications
+                  <div className={`rounded-[20px] overflow-hidden border-2 shadow-sm ${isMecha ? 'bg-slate-900 border-slate-700' : 'bg-white border-purple-100'}`}>
+                    <div onClick={() => setBgmOn(!bgmOn)} className={`flex items-center justify-between p-3.5 border-b-2 cursor-pointer transition-colors ${isMecha ? 'border-slate-800 hover:bg-slate-800' : 'border-purple-50 hover:bg-purple-50/50'}`}>
+                      <div className={`flex items-center gap-3 font-bold text-sm ${isMecha ? 'text-slate-300' : 'text-slate-700'}`}>
+                        <Music size={16} className={isMecha ? 'text-blue-400' : 'text-purple-400'} /> Background Music
                       </div>
-                      <div className={`w-10 h-6 rounded-full relative shadow-inner transition-colors ${notifOn ? (isMecha ? 'bg-teal-500' : 'bg-green-400') : 'bg-slate-300'}`}>
-                        <div className={`w-4 h-4 bg-white rounded-full absolute top-1 shadow-sm transition-all ${notifOn ? 'right-1' : 'left-1'}`}></div>
+                      <div className={`w-11 h-6 rounded-full relative transition-colors border-2 ${bgmOn ? (isMecha ? 'bg-blue-500 border-blue-400' : 'bg-purple-500 border-purple-400') : (isMecha ? 'bg-slate-800 border-slate-600' : 'bg-slate-200 border-slate-300')}`}>
+                        <div className={`w-4 h-4 rounded-full absolute top-0.5 transition-all shadow-sm ${bgmOn ? 'right-1 bg-white' : 'left-1 bg-white/70'}`}></div>
                       </div>
                     </div>
-                    <div onClick={() => setLangEn(!langEn)} className={`flex items-center justify-between p-4 border-b transition cursor-pointer ${isMecha ? 'border-slate-700 hover:bg-slate-800' : 'border-slate-100 hover:bg-white'}`}>
-                      <div className={`flex items-center gap-3 font-bold ${isMecha ? 'text-slate-300' : 'text-slate-700'}`}>
-                        <Globe size={18} className={isMecha ? 'text-blue-400' : 'text-slate-400'} /> Language
+                    <div onClick={() => setSfxOn(!sfxOn)} className={`flex items-center justify-between p-3.5 cursor-pointer transition-colors ${isMecha ? 'hover:bg-slate-800' : 'hover:bg-purple-50/50'}`}>
+                      <div className={`flex items-center gap-3 font-bold text-sm ${isMecha ? 'text-slate-300' : 'text-slate-700'}`}>
+                        <Zap size={16} className={isMecha ? 'text-blue-400' : 'text-purple-400'} /> SFX & Voice Lines
                       </div>
-                      <div className={`flex items-center gap-1 text-sm font-bold ${isMecha ? 'text-slate-400' : 'text-slate-400'}`}>{langEn ? "English" : "Bahasa"} <ChevronRight size={16} /></div>
+                      <div className={`w-11 h-6 rounded-full relative transition-colors border-2 ${sfxOn ? (isMecha ? 'bg-blue-500 border-blue-400' : 'bg-purple-500 border-purple-400') : (isMecha ? 'bg-slate-800 border-slate-600' : 'bg-slate-200 border-slate-300')}`}>
+                        <div className={`w-4 h-4 rounded-full absolute top-0.5 transition-all shadow-sm ${sfxOn ? 'right-1 bg-white' : 'left-1 bg-white/70'}`}></div>
+                      </div>
                     </div>
-                    <div onClick={() => setCurrIdr(!currIdr)} className={`flex items-center justify-between p-4 transition cursor-pointer ${isMecha ? 'hover:bg-slate-800' : 'hover:bg-white'}`}>
-                      <div className={`flex items-center gap-3 font-bold ${isMecha ? 'text-slate-300' : 'text-slate-700'}`}>
-                        <CreditCard size={18} className={isMecha ? 'text-blue-400' : 'text-slate-400'} /> Currency
+                  </div>
+                </div>
+
+                {/* System Settings */}
+                <div>
+                  <h3 className={`text-[10px] font-black uppercase tracking-widest mb-3 flex items-center gap-2 ${isMecha ? 'text-blue-400' : 'text-emerald-500'}`}>
+                    <Settings size={14} /> System Config
+                  </h3>
+                  <div className={`rounded-[20px] overflow-hidden border-2 shadow-sm ${isMecha ? 'bg-slate-900 border-slate-700' : 'bg-white border-emerald-100'}`}>
+                    <div onClick={() => setNotifOn(!notifOn)} className={`flex items-center justify-between p-3.5 border-b-2 cursor-pointer transition-colors ${isMecha ? 'border-slate-800 hover:bg-slate-800' : 'border-emerald-50 hover:bg-emerald-50/50'}`}>
+                      <div className={`flex items-center gap-3 font-bold text-sm ${isMecha ? 'text-slate-300' : 'text-slate-700'}`}>
+                        <Bell size={16} className={isMecha ? 'text-blue-400' : 'text-emerald-400'} /> Push Notifications
                       </div>
-                      <div className={`flex items-center gap-1 text-sm font-bold ${isMecha ? 'text-slate-400' : 'text-slate-400'}`}>{currIdr ? "IDR (Rp)" : "USD ($)"} <ChevronRight size={16} /></div>
+                      <div className={`w-11 h-6 rounded-full relative transition-colors border-2 ${notifOn ? (isMecha ? 'bg-blue-500 border-blue-400' : 'bg-emerald-500 border-emerald-400') : (isMecha ? 'bg-slate-800 border-slate-600' : 'bg-slate-200 border-slate-300')}`}>
+                        <div className={`w-4 h-4 rounded-full absolute top-0.5 transition-all shadow-sm ${notifOn ? 'right-1 bg-white' : 'left-1 bg-white/70'}`}></div>
+                      </div>
+                    </div>
+                    
+                    <div className={`flex items-center justify-between p-3.5 border-b-2 transition-colors ${isMecha ? 'border-slate-800' : 'border-emerald-50'}`}>
+                      <div className={`flex items-center gap-3 font-bold text-sm ${isMecha ? 'text-slate-300' : 'text-slate-700'}`}>
+                        <Globe size={16} className={isMecha ? 'text-blue-400' : 'text-emerald-400'} /> Language
+                      </div>
+                      <div className="flex bg-slate-200 rounded-lg p-0.5 border border-slate-300">
+                         <button onClick={() => setLangEn(true)} className={`px-2 py-1 text-[10px] font-black rounded-md transition ${langEn ? 'bg-white shadow-sm text-slate-800' : 'text-slate-500'}`}>EN</button>
+                         <button onClick={() => setLangEn(false)} className={`px-2 py-1 text-[10px] font-black rounded-md transition ${!langEn ? 'bg-white shadow-sm text-slate-800' : 'text-slate-500'}`}>ID</button>
+                      </div>
+                    </div>
+
+                    <div className={`flex items-center justify-between p-3.5 cursor-pointer transition-colors ${isMecha ? 'hover:bg-slate-800' : 'hover:bg-emerald-50/50'}`}>
+                      <div className={`flex items-center gap-3 font-bold text-sm ${isMecha ? 'text-slate-300' : 'text-slate-700'}`}>
+                        <Cloud size={16} className={isMecha ? 'text-blue-400' : 'text-emerald-400'} /> Cloud Save
+                      </div>
+                      <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-md ${isMecha ? 'bg-blue-500/20 text-blue-400' : 'bg-emerald-100 text-emerald-600'}`}>Synced</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Log Out */}
-                <button onClick={() => onNavigate("login")} className={`mt-2 w-full flex items-center justify-center gap-2 p-4 rounded-[24px] font-black transition ${isMecha ? 'bg-red-500/20 text-red-500 hover:bg-red-500/30 border border-red-500/30' : 'bg-red-50 text-red-500 hover:bg-red-100'}`}>
-                  <LogOut size={18} strokeWidth={2.5} /> TERMINATE SESSION
+                <button onClick={() => onNavigate("login")} className={`mt-2 mb-4 w-full relative overflow-hidden flex items-center justify-center gap-2 p-4 rounded-[20px] font-black uppercase tracking-widest transition-all hover:scale-[1.02] active:scale-95 border-2 ${isMecha ? 'bg-slate-900 border-red-500 text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.4)]' : 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100'}`}>
+                  <LogOut size={18} strokeWidth={3} /> LOG OUT / QUIT GAME
                 </button>
               </div>
             </motion.div>
