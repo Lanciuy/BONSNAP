@@ -3,6 +3,7 @@ import { Camera, Coffee, ShoppingBag, Car, Settings, Wallet, PieChart, Home, Spa
 import { motion, AnimatePresence } from "motion/react";
 import { Mascot, MascotMood, getGeneratedMascotUrl } from "./Mascot";
 import { ThemeState, Inventory, UserProfile } from '../App';
+import { AVATAR_OPTIONS } from "./ProfileView";
 
 interface DashboardViewProps {
   onGoToCamera: () => void;
@@ -60,7 +61,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
     { id: "rewards", label: "Rewards", icon: Gift, color: "text-purple-500", bg: "bg-purple-100", hoverMsg: "Tuker koin kamu sama hiasan profil kece! 🎁", hoverMood: "cute" },
   ];
 
-  const avatarUrl = theme === "original" ? "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400&h=400" : getGeneratedMascotUrl("happy", theme);
+  const activeAvatar = AVATAR_OPTIONS.find(a => a.id === userProfile.activeAvatarId) || AVATAR_OPTIONS[0];
+  const avatarUrl = (theme === "mecha" && activeAvatar.id === 'default') ? getGeneratedMascotUrl("happy", theme) : activeAvatar.imageUrl;
 
   return (
     <div className={`relative w-full h-full text-slate-800 overflow-hidden flex flex-col transition-colors duration-500 ${isMecha ? 'bg-slate-900' : 'bg-[#fdfbfb]'}`}>

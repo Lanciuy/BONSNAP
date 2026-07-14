@@ -30,11 +30,18 @@ const itemVariants = {
 };
 
 // Customization Options
+export const AVATAR_OPTIONS = [
+  { id: 'default', name: 'Default Anime', imageUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400&h=400' },
+  { id: 'custom1', name: 'Custom Avatar 1', imageUrl: '/avatars/custom1.png' },
+  { id: 'custom2', name: 'Custom Avatar 2', imageUrl: '/avatars/custom2.png' },
+];
+
 const BANNER_OPTIONS = [
-  { id: 'default', name: 'Default', bg: 'bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-400' },
-  { id: 'neon', name: 'Neon City', bg: 'bg-gradient-to-r from-fuchsia-600 to-pink-600' },
-  { id: 'holographic', name: 'Holographic', bg: 'bg-gradient-to-tr from-emerald-400 via-cyan-400 to-blue-500' },
-  { id: 'dark', name: 'Dark Mode', bg: 'bg-gradient-to-br from-slate-800 to-slate-900' }
+  { id: 'default', name: 'Default', bg: 'bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-400', imageUrl: '' },
+  { id: 'neon', name: 'Neon City', bg: 'bg-gradient-to-r from-fuchsia-600 to-pink-600', imageUrl: '' },
+  { id: 'holographic', name: 'Holographic', bg: 'bg-gradient-to-tr from-emerald-400 via-cyan-400 to-blue-500', imageUrl: '' },
+  { id: 'dark', name: 'Dark Mode', bg: 'bg-gradient-to-br from-slate-800 to-slate-900', imageUrl: '' },
+  { id: 'custom_banner1', name: 'Custom Banner 1', bg: 'bg-slate-200', imageUrl: '/banners/custom1.png' },
 ];
 
 const FRAME_OPTIONS = [
@@ -85,6 +92,9 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
   const [isViewingAchievements, setIsViewingAchievements] = useState(false);
 
   // Sync state with parent
+  const activeAvatar = AVATAR_OPTIONS.find(a => a.id === userProfile.activeAvatarId) || AVATAR_OPTIONS[0];
+  const setActiveAvatar = (opt: typeof AVATAR_OPTIONS[0]) => setUserProfile({...userProfile, activeAvatarId: opt.id});
+
   const activeBanner = BANNER_OPTIONS.find(b => b.id === userProfile.activeBannerId) || BANNER_OPTIONS[0];
   const setActiveBanner = (opt: typeof BANNER_OPTIONS[0]) => setUserProfile({...userProfile, activeBannerId: opt.id});
   
@@ -114,6 +124,16 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
   const setGoalSaved = (v: string) => setUserProfile({...userProfile, goalSaved: v});
 
   const isMecha = theme === "mecha";
+
+  const handleSelectAvatar = (opt: typeof AVATAR_OPTIONS[0]) => {
+    if (inventory.avatars.includes(opt.id)) {
+      setActiveAvatar(opt);
+      setMood("excited"); setMsg(`Avatar ${opt.name} cakep banget! 😍`);
+    } else {
+      setMood("alert"); setMsg(`Ups, avatar ${opt.name} masih dikunci. Beli dulu di Rewards Hub! 🛍️`);
+      onNavigate('store');
+    }
+  };
 
   const handleSelectBanner = (opt: typeof BANNER_OPTIONS[0]) => {
     if (inventory.banners.includes(opt.id)) {
@@ -152,7 +172,10 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
       <div className={`w-full max-w-sm mx-auto rounded-[24px] shadow-2xl overflow-hidden relative shrink-0 ${isMecha ? 'bg-slate-900 border border-slate-700 shadow-blue-900/20' : 'bg-white border border-slate-200 shadow-slate-200/50'}`}>
         
         {/* Banner */}
-        <div className={`h-32 w-full relative transition-all duration-500 ${activeBanner.bg}`}>
+        <div 
+           className={`h-32 w-full relative transition-all duration-500 ${activeBanner.bg}`}
+           style={activeBanner.imageUrl ? { backgroundImage: `url(${activeBanner.imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
+        >
           {/* Edit Profile Button over banner */}
           <button onClick={() => setIsEditing(true)} className="absolute top-3 right-3 px-3 py-1.5 rounded-full bg-black/40 hover:bg-black/60 flex items-center gap-1.5 text-white backdrop-blur-md transition-colors text-[10px] font-bold uppercase tracking-wider">
             <Edit2 size={12} /> Edit Profile
@@ -181,7 +204,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
               {/* Actual Avatar */}
               <div className="w-full h-full rounded-full overflow-hidden bg-white relative z-10 border-2 border-white">
                 <img 
-                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400&h=400" 
+                  src={activeAvatar.imageUrl} 
                   alt="Profile"
                   className="w-full h-full object-cover"
                 />
@@ -544,6 +567,35 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
           </div>
         </div>
 
+        {/* Avatar Customization */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className={`text-sm font-black uppercase tracking-wider ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>Select Avatar</h2>
+            <button onClick={() => onNavigate("store")} className={`text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1 ${isMecha ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-100 text-purple-600'}`}>
+               <User size={10} /> Get More
+            </button>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            {AVATAR_OPTIONS.map(opt => {
+              const isOwned = inventory.avatars.includes(opt.id);
+              const isActive = activeAvatar.id === opt.id;
+              return (
+                <button 
+                  key={opt.id}
+                  onClick={() => handleSelectAvatar(opt)}
+                  className={`p-2 rounded-[16px] border-2 transition-all flex flex-col items-center gap-2 text-center ${isActive ? (isMecha ? 'border-blue-500 bg-blue-900/20' : 'border-purple-500 bg-purple-50 shadow-sm') : (isMecha ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-white')}`}
+                >
+                  <div className="w-12 h-12 rounded-full overflow-hidden relative bg-slate-200">
+                     <img src={opt.imageUrl} className="w-full h-full object-cover" alt="" />
+                     {!isOwned && <div className="absolute inset-0 bg-black/50 flex items-center justify-center"><Lock size={12} className="text-white" /></div>}
+                  </div>
+                  <span className={`text-[9px] font-bold leading-tight ${isActive ? (isMecha ? 'text-blue-400' : 'text-purple-600') : (isMecha ? 'text-slate-300' : 'text-slate-600')}`}>{opt.name}</span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
         {/* Banner Customization */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
@@ -562,7 +614,10 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
                   onClick={() => handleSelectBanner(opt)}
                   className={`p-3 rounded-[16px] border-2 transition-all flex flex-col gap-2 text-left ${isActive ? (isMecha ? 'border-blue-500 bg-blue-900/20' : 'border-purple-500 bg-purple-50 shadow-sm') : (isMecha ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-white')}`}
                 >
-                  <div className={`w-full h-12 rounded-lg ${opt.bg}`}></div>
+                  <div 
+                     className={`w-full h-12 rounded-lg ${opt.bg}`}
+                     style={opt.imageUrl ? { backgroundImage: `url(${opt.imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
+                  ></div>
                   <div className="flex items-center gap-1.5 mt-1">
                     {!isOwned && <Lock size={12} className={isMecha ? 'text-slate-500' : 'text-slate-400'} />}
                     <span className={`text-xs font-bold ${isActive ? (isMecha ? 'text-blue-400' : 'text-purple-600') : (isMecha ? 'text-slate-300' : 'text-slate-600')}`}>{opt.name}</span>
@@ -605,7 +660,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
                        />
                     )}
                     <div className="w-full h-full rounded-full bg-slate-200 border-2 border-white relative z-10 overflow-hidden">
-                       <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400&h=400" className="w-full h-full object-cover" alt="" />
+                       <img src={activeAvatar.imageUrl} className="w-full h-full object-cover" alt="" />
                     </div>
                   </div>
                   <div className="flex items-center gap-1.5 flex-1 overflow-hidden">

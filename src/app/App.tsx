@@ -15,6 +15,7 @@ type ViewState = "splash" | "login" | "camera" | "dashboard" | "insights" | "inc
 export type ThemeState = "original" | "genz" | "mecha";
 
 export interface Inventory {
+  avatars: string[];
   banners: string[];
   frames: string[];
   themes: string[];
@@ -33,6 +34,7 @@ export interface UserProfile {
   goalSaved: string;
   activeBannerId: string;
   activeFrameId: string;
+  activeAvatarId: string;
 }
 
 const viewVariants = {
@@ -46,6 +48,7 @@ export default function App() {
   const [points, setPoints] = useState(1200);
   const [level, setLevel] = useState(12);
   const [inventory, setInventory] = useState<Inventory>({
+    avatars: ['default'],
     banners: ['default'],
     frames: ['none', 'gold'],
     themes: ['genz']
@@ -63,7 +66,8 @@ export default function App() {
     goalTarget: "2000000",
     goalSaved: "1500000",
     activeBannerId: "default",
-    activeFrameId: "gold"
+    activeFrameId: "gold",
+    activeAvatarId: "default"
   });
 
   useEffect(() => {
