@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Camera, PieChart, Home, ReceiptText, User, ChevronLeft, MapPin, GraduationCap, Link2, Sparkles, Trophy, Scan, ShieldCheck, LogOut, Lock, Palette, Edit2, Settings, Image as ImageIcon } from "lucide-react";
+import { Camera, PieChart, Home, ReceiptText, User, ChevronLeft, MapPin, GraduationCap, Link2, Sparkles, Trophy, Scan, ShieldCheck, LogOut, Lock, Palette, Edit2, Settings, Image as ImageIcon, Gamepad2, Target, Heart, Tag } from "lucide-react";
 import { Mascot, MascotMood } from "./Mascot";
 import { ThemeState, Inventory } from '../App';
 import { motion, AnimatePresence } from "motion/react";
@@ -186,6 +186,51 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
               </div>
               <span className={`text-lg font-black font-mono ${isMecha ? 'text-white' : 'text-slate-800'}`}>{points}</span>
             </div>
+          </div>
+
+          {/* Activity / Rich Presence (Discord Style) */}
+          <div className={`mt-5 p-3.5 rounded-[16px] border flex gap-3 items-center ${isMecha ? 'bg-slate-950/80 border-slate-800' : 'bg-slate-50/80 border-slate-100'}`}>
+             <div className={`w-12 h-12 rounded-[12px] flex items-center justify-center shrink-0 ${isMecha ? 'bg-blue-500/20 text-blue-400' : 'bg-green-100 text-green-500'}`}>
+                <Gamepad2 size={24} />
+             </div>
+             <div className="flex-1">
+                <h3 className={`text-[10px] font-black uppercase tracking-widest mb-0.5 ${isMecha ? 'text-blue-400' : 'text-green-600'}`}>Playing</h3>
+                <p className={`text-sm font-bold leading-tight ${isMecha ? 'text-slate-200' : 'text-slate-800'}`}>BONSNAP Financial Tracker</p>
+                <p className={`text-[11px] font-medium ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>Scanning daily receipts... 🧾</p>
+                <p className={`text-[11px] font-mono mt-0.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Elapsed: 04:20:15</p>
+             </div>
+          </div>
+
+          {/* Savings Goal Widget */}
+          <div className={`mt-3 p-3.5 rounded-[16px] border ${isMecha ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-100'}`}>
+             <div className="flex justify-between items-end mb-2">
+                <div className="flex items-center gap-1.5">
+                   <Target size={14} className={isMecha ? 'text-purple-400' : 'text-orange-500'} />
+                   <span className={`text-xs font-bold ${isMecha ? 'text-slate-300' : 'text-slate-700'}`}>Tiket Konser Blackpink</span>
+                </div>
+                <span className={`text-[10px] font-mono font-bold ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>75%</span>
+             </div>
+             <div className={`w-full h-2 rounded-full overflow-hidden ${isMecha ? 'bg-slate-800' : 'bg-slate-200'}`}>
+                <div className={`h-full rounded-full w-[75%] ${isMecha ? 'bg-gradient-to-r from-purple-500 to-pink-500' : 'bg-gradient-to-r from-orange-400 to-pink-500'}`}></div>
+             </div>
+             <p className={`text-[9px] font-bold mt-2 text-right ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Rp 1.500.000 / Rp 2.000.000</p>
+          </div>
+
+          {/* Roles Widget */}
+          <h2 className={`text-[10px] font-black uppercase tracking-widest mt-5 mb-2 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Roles</h2>
+          <div className="flex flex-wrap gap-2">
+             <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border ${isMecha ? 'bg-slate-900 border-slate-700 text-slate-300' : 'bg-white border-slate-200 text-slate-600'}`}>
+                <div className="w-2 h-2 rounded-full bg-red-500"></div> Gacha Victim
+             </div>
+             <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border ${isMecha ? 'bg-slate-900 border-slate-700 text-slate-300' : 'bg-white border-slate-200 text-slate-600'}`}>
+                <div className="w-2 h-2 rounded-full bg-teal-400"></div> Budget Ninja
+             </div>
+             <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border ${isMecha ? 'bg-slate-900 border-slate-700 text-slate-300' : 'bg-white border-slate-200 text-slate-600'}`}>
+                <div className="w-2 h-2 rounded-full bg-pink-500"></div> Matcha Lover
+             </div>
+             <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border cursor-pointer hover:scale-105 ${isMecha ? 'bg-slate-800 border-slate-700 text-slate-400' : 'bg-slate-100 border-slate-200 text-slate-500'}`}>
+                <Tag size={10} /> +2
+             </div>
           </div>
 
           {/* Integration Links */}
