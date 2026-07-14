@@ -47,6 +47,24 @@ const FRAME_OPTIONS = [
   { id: 'steampunk', name: 'Steampunk Ears', class: 'border-4 border-transparent', imageUrl: '/gifs/Steampunk_Cat_Ears.gif' }
 ];
 
+const PERSONAS = [
+  "Wise Owl 🦉 (Master Saver)",
+  "Coupon Hunter 🎫 (Promo Seeker)",
+  "Gacha Victim 🎰 (Zero Luck)",
+  "Dragon Hoarder 🐉 (Never Spends)",
+  "Flashy Peacock 🦚 (Flexer)",
+  "Coffee Zombie 🧟 (Caffeine Bankrupt)"
+];
+
+const ACCENT_COLORS = [
+  { id: 'teal', color: 'text-teal-400', bg: 'bg-teal-400' },
+  { id: 'pink', color: 'text-pink-500', bg: 'bg-pink-500' },
+  { id: 'purple', color: 'text-purple-500', bg: 'bg-purple-500' },
+  { id: 'orange', color: 'text-orange-500', bg: 'bg-orange-500' },
+  { id: 'blue', color: 'text-blue-500', bg: 'bg-blue-500' },
+  { id: 'gold', color: 'text-yellow-400', bg: 'bg-yellow-400' }
+];
+
 const ALL_ACHIEVEMENTS = [
   { id: '1', title: 'First Snap! 🎉', desc: 'Berhasil scan struk pertamamu.', icon: PartyPopper, color: 'text-amber-500', bg: 'bg-amber-100', unlocked: true },
   { id: '2', title: 'Coffee Addict ☕', desc: 'Scan 5 struk kopi dalam seminggu.', icon: Coffee, color: 'text-amber-700', bg: 'bg-amber-200', unlocked: true },
@@ -74,6 +92,13 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
   const [bio, setBio] = useState("Coffee addict ☕ | UI/UX Designer by day, professional overthinker by night. Trying to stop my Shopee checkout habit (failed miserably).");
   const [university, setUniversity] = useState("Universitas Indonesia");
   const [location, setLocation] = useState("Jakarta Selatan");
+  
+  // Wild Customizations
+  const [financialPersona, setFinancialPersona] = useState("Gacha Victim 🎰 (Zero Luck)");
+  const [accentColor, setAccentColor] = useState("text-teal-400"); 
+  const [goalName, setGoalName] = useState("Tiket Konser Blackpink");
+  const [goalTarget, setGoalTarget] = useState("2000000");
+  const [goalSaved, setGoalSaved] = useState("1500000");
 
   const isMecha = theme === "mecha";
 
@@ -159,8 +184,11 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
 
           {/* User Info */}
           <div className="mt-2">
-            <h1 className={`text-xl font-black tracking-tight ${isMecha ? 'text-white' : 'text-slate-800'}`}>{name}</h1>
-            <p className={`text-xs font-bold font-mono ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>@{username}</p>
+            <h1 className={`text-xl font-black tracking-tight ${accentColor}`}>{name}</h1>
+            <div className="flex items-center gap-2 mt-0.5">
+               <p className={`text-xs font-bold font-mono ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>@{username}</p>
+               <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold ${isMecha ? 'bg-slate-800 text-slate-300' : 'bg-slate-100 text-slate-500'}`}>{financialPersona}</span>
+            </div>
           </div>
 
           <hr className={`my-4 ${isMecha ? 'border-slate-800' : 'border-slate-100'}`} />
@@ -239,16 +267,25 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
           {/* Savings Goal Widget */}
           <div className={`mt-3 p-3.5 rounded-[16px] border ${isMecha ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-100'}`}>
              <div className="flex justify-between items-end mb-2">
-                <div className="flex items-center gap-1.5">
-                   <Target size={14} className={isMecha ? 'text-purple-400' : 'text-orange-500'} />
-                   <span className={`text-xs font-bold ${isMecha ? 'text-slate-300' : 'text-slate-700'}`}>Tiket Konser Blackpink</span>
+                <div className="flex items-center gap-1.5 overflow-hidden">
+                   <Target size={14} className={accentColor} />
+                   <span className={`text-xs font-bold truncate ${isMecha ? 'text-slate-300' : 'text-slate-700'}`}>{goalName}</span>
                 </div>
-                <span className={`text-[10px] font-mono font-bold ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>75%</span>
+                <span className={`text-[10px] font-mono font-bold shrink-0 ml-2 ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>
+                   {Math.min(100, Math.round((Number(goalSaved) / (Number(goalTarget) || 1)) * 100))}%
+                </span>
              </div>
-             <div className={`w-full h-2 rounded-full overflow-hidden ${isMecha ? 'bg-slate-800' : 'bg-slate-200'}`}>
-                <div className={`h-full rounded-full w-[75%] ${isMecha ? 'bg-gradient-to-r from-purple-500 to-pink-500' : 'bg-gradient-to-r from-orange-400 to-pink-500'}`}></div>
+             <div className={`w-full h-2 rounded-full overflow-hidden relative ${isMecha ? 'bg-slate-800' : 'bg-slate-200'}`}>
+                <div 
+                   className={`absolute top-0 left-0 h-full rounded-full transition-all duration-500 ${isMecha ? 'bg-slate-600' : 'bg-slate-400'}`} 
+                   style={{ width: `${Math.min(100, Math.round((Number(goalSaved) / (Number(goalTarget) || 1)) * 100))}%` }}
+                >
+                   <div className={`w-full h-full ${accentColor.replace('text-', 'bg-')}`}></div>
+                </div>
              </div>
-             <p className={`text-[9px] font-bold mt-2 text-right ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Rp 1.500.000 / Rp 2.000.000</p>
+             <p className={`text-[9px] font-bold mt-2 text-right ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>
+                Rp {Number(goalSaved).toLocaleString('id-ID')} / Rp {Number(goalTarget).toLocaleString('id-ID')}
+             </p>
           </div>
 
           {/* Roles Widget */}
@@ -453,6 +490,43 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
              <div>
                <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Location</label>
                <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-xs outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} />
+             </div>
+          </div>
+
+          <div>
+            <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 mt-2 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Financial Spirit Persona</label>
+            <select value={financialPersona} onChange={(e) => setFinancialPersona(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-xs outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`}>
+               {PERSONAS.map(p => <option key={p} value={p}>{p}</option>)}
+            </select>
+          </div>
+
+          <div>
+            <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 mt-2 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Signature Accent Color</label>
+            <div className="flex gap-3">
+               {ACCENT_COLORS.map(c => (
+                  <button key={c.id} onClick={() => setAccentColor(c.color)} className={`w-8 h-8 rounded-full ${c.bg} shadow-sm border-2 transition-transform ${accentColor === c.color ? 'border-white scale-110 shadow-md' : 'border-transparent hover:scale-105'}`} />
+               ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Custom Savings Goal */}
+        <div className="mb-10 flex flex-col gap-5">
+          <h2 className={`text-sm font-black uppercase tracking-wider ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>Savings Goal Target</h2>
+          
+          <div>
+            <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>What are you saving for?</label>
+            <input type="text" value={goalName} onChange={(e) => setGoalName(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-sm outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} placeholder="e.g. PS5, Konser, Liburan" />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+             <div>
+               <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Target (Rp)</label>
+               <input type="number" value={goalTarget} onChange={(e) => setGoalTarget(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-xs outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} />
+             </div>
+             <div>
+               <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Saved So Far (Rp)</label>
+               <input type="number" value={goalSaved} onChange={(e) => setGoalSaved(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-xs outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} />
              </div>
           </div>
         </div>
