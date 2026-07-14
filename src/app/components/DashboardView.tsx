@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Camera, Coffee, ShoppingBag, Car, Settings, Wallet, PieChart, Home, Sparkles, X, Bell, Globe, CreditCard, ChevronRight, LogOut, Swords, Send, Plus, Receipt, Gift, Target, ReceiptText, User, ArrowDownRight, ArrowUpRight } from "lucide-react";
+import { Camera, Coffee, ShoppingBag, Car, Settings, Wallet, PieChart, Home, Sparkles, X, Bell, Globe, CreditCard, ChevronRight, LogOut, Swords, Send, Plus, Receipt, Gift, Target, ReceiptText, User, ArrowDownRight, ArrowUpRight, Activity, Users } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { Mascot, MascotMood, getGeneratedMascotUrl } from "./Mascot";
 import { ThemeState, Inventory } from '../App';
@@ -77,7 +77,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
               <img src={avatarUrl} alt="Profile" className={`w-full h-full object-cover ${theme === 'original' ? '' : 'scale-110'}`} />
             </div>
             <div>
-              <div className={`text-sm font-bold ${isMecha ? 'text-blue-400' : 'text-slate-500'}`}>{isMecha ? 'Pilot Online,' : 'Okaeri,'}</div>
+              <div className={`text-sm font-bold ${isMecha ? 'text-blue-400' : 'text-slate-500'}`}>{isMecha ? 'System Online,' : 'Good Morning,'}</div>
               <div className={`text-xl font-black tracking-tight ${isMecha ? 'text-white' : 'text-slate-800'}`}>{isMecha ? 'PILOT-01 🚀' : 'Sarah 🌸'}</div>
             </div>
           </div>
@@ -97,41 +97,46 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
 
         <motion.div variants={containerVariants} initial="hidden" animate="show" className="px-6 flex flex-col gap-5 mt-2">
           
-          {/* 1. Premium Balance Card */}
+          {/* 1. Futuristic Virtual Card */}
           <motion.div variants={itemVariants}
-            className={`w-full rounded-[32px] p-6 relative overflow-hidden shadow-2xl ${isMecha ? 'bg-slate-800 border-2 border-blue-500 shadow-[0_15px_30px_rgba(59,130,246,0.2)]' : 'bg-gradient-to-br from-pink-400 via-purple-400 to-indigo-500 border border-white/40 shadow-purple-200/50 text-white'}`}
+            className={`w-full rounded-[28px] p-6 relative overflow-hidden shadow-2xl ${isMecha ? 'bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 border border-slate-700 shadow-blue-900/40' : 'bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 border border-white/20 shadow-purple-500/40 text-white'}`}
             onMouseEnter={() => { setMood("excited"); setMsg(isMecha ? "CREDITS SUFFICIENT FOR UPGRADE." : "Jujurly saldo lo bikin mupeng! 🤑"); }} 
             onMouseLeave={() => setMood("happy")}
           >
-            {/* Glass effect overlays */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 blur-2xl rounded-full -translate-y-10 translate-x-10"></div>
-            <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 blur-xl rounded-full translate-y-8 -translate-x-8"></div>
+            {/* Holographic overlays */}
+            <div className={`absolute top-0 right-0 w-64 h-64 rounded-full mix-blend-overlay blur-3xl opacity-50 ${isMecha ? 'bg-blue-400' : 'bg-pink-300'}`}></div>
+            <div className={`absolute bottom-[-20%] left-[-10%] w-48 h-48 rounded-full mix-blend-overlay blur-2xl opacity-60 ${isMecha ? 'bg-teal-400' : 'bg-orange-300'}`}></div>
             
-            <div className="relative z-10">
-              <div className="flex justify-between items-center mb-1">
-                <div className={`flex items-center gap-1.5 text-xs uppercase tracking-wider font-bold ${isMecha ? 'text-blue-300' : 'text-white/80'}`}>
-                  <Wallet size={14} /> Total Balance
+            <div className="relative z-10 flex flex-col justify-between h-full min-h-[160px]">
+              <div className="flex justify-between items-start">
+                <div className="flex flex-col">
+                  <span className={`text-[10px] font-bold uppercase tracking-widest mb-1 ${isMecha ? 'text-blue-300' : 'text-white/70'}`}>Current Balance</span>
+                  <div className="flex items-start gap-1">
+                     <span className={`text-lg font-bold mt-1 ${isMecha ? 'text-blue-400' : 'text-white/80'}`}>Rp</span>
+                     <span className={`text-[40px] font-black tracking-tighter leading-none font-mono ${isMecha ? 'text-white' : 'text-white'}`}>1.750<span className={isMecha ? 'text-blue-400' : 'text-white/70'}>.000</span></span>
+                  </div>
                 </div>
-                <div className={`text-xs font-black ${isMecha ? 'text-blue-400' : 'text-white'}`}>IDR</div>
+                {/* Chip Icon */}
+                <div className={`w-10 h-8 rounded-md flex items-center justify-center opacity-80 ${isMecha ? 'bg-slate-700/50 border border-slate-600' : 'bg-white/20 border border-white/30 backdrop-blur-sm'}`}>
+                   <div className={`w-6 h-4 border rounded-[4px] ${isMecha ? 'border-slate-500' : 'border-white/50'}`}>
+                      <div className={`w-full h-full border-t border-b ${isMecha ? 'border-slate-500' : 'border-white/50'}`}></div>
+                   </div>
+                </div>
               </div>
               
-              <div className={`text-[42px] font-black tracking-tighter leading-none mb-6 font-mono ${isMecha ? 'text-white' : 'text-white'}`}>
-                1.750<span className={isMecha ? 'text-blue-400' : 'text-white/70'}>.000</span>
-              </div>
-              
-              <div className="flex gap-4 pt-4 border-t border-white/20">
-                <div className="flex-1">
-                  <div className={`flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider mb-0.5 ${isMecha ? 'text-emerald-400' : 'text-emerald-300'}`}>
-                    <ArrowDownRight size={12} /> Income
+              <div className="mt-8 flex justify-between items-end">
+                <div>
+                  <div className={`text-[11px] font-bold font-mono tracking-widest ${isMecha ? 'text-slate-400' : 'text-white/80'}`}>
+                    **** **** **** 8892
                   </div>
-                  <div className={`text-sm font-black font-mono ${isMecha ? 'text-white' : 'text-white'}`}>Rp 5.200k</div>
+                  <div className={`text-[9px] font-black uppercase tracking-wider mt-1 ${isMecha ? 'text-slate-500' : 'text-white/60'}`}>
+                    {isMecha ? 'PILOT-01' : 'SARAH JENKINS'}
+                  </div>
                 </div>
-                <div className="w-px bg-white/20"></div>
-                <div className="flex-1">
-                  <div className={`flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider mb-0.5 ${isMecha ? 'text-rose-400' : 'text-rose-200'}`}>
-                    <ArrowUpRight size={12} /> Expense
-                  </div>
-                  <div className={`text-sm font-black font-mono ${isMecha ? 'text-white' : 'text-white'}`}>Rp 3.450k</div>
+                {/* Virtual Card Logo */}
+                <div className="flex -space-x-2">
+                   <div className={`w-6 h-6 rounded-full mix-blend-screen opacity-80 ${isMecha ? 'bg-blue-500' : 'bg-red-400'}`}></div>
+                   <div className={`w-6 h-6 rounded-full mix-blend-screen opacity-80 ${isMecha ? 'bg-teal-400' : 'bg-yellow-400'}`}></div>
                 </div>
               </div>
             </div>
@@ -157,40 +162,58 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
             ))}
           </motion.div>
 
-          {/* 3. Fun Mini-Widgets Grid */}
-          <motion.div variants={itemVariants} className="grid grid-cols-2 gap-4">
-            {/* Limit Widget */}
-            <div className={`rounded-[24px] p-4 flex flex-col justify-between border shadow-sm relative overflow-hidden ${isMecha ? 'bg-slate-800 border-slate-700' : 'bg-white/80 border-slate-100 backdrop-blur-md'}`}>
-              <div className="flex items-center gap-2 mb-2">
-                <div className={`p-1.5 rounded-lg ${isMecha ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-100 text-blue-500'}`}>
-                  <PieChart size={16} />
+          {/* 3. Spending Trend Chart */}
+          <motion.div variants={itemVariants} className={`p-5 rounded-[24px] border shadow-sm ${isMecha ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-100'}`}>
+             <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center gap-2">
+                   <div className={`p-1.5 rounded-lg ${isMecha ? 'bg-purple-500/20 text-purple-400' : 'bg-purple-100 text-purple-600'}`}>
+                      <Activity size={16} />
+                   </div>
+                   <h3 className={`text-[12px] font-black uppercase tracking-wider ${isMecha ? 'text-slate-300' : 'text-slate-700'}`}>Weekly Trend</h3>
                 </div>
-                <h4 className={`text-[11px] font-black uppercase tracking-wider ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>Daily Limit</h4>
-              </div>
-              <div className={`text-lg font-black font-mono mb-2 ${isMecha ? 'text-white' : 'text-slate-800'}`}>68%</div>
-              <div className={`w-full h-1.5 rounded-full overflow-hidden ${isMecha ? 'bg-slate-700' : 'bg-slate-100'}`}>
-                <motion.div 
-                  initial={{ width: 0 }} animate={{ width: "68%" }} transition={{ delay: 0.5, duration: 1 }}
-                  className={`h-full rounded-full ${isMecha ? 'bg-blue-400' : 'bg-blue-500'}`}
-                />
-              </div>
-            </div>
+                <span className={`text-[10px] font-bold ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>This Week</span>
+             </div>
+             
+             <div className="flex justify-between items-end h-24 gap-2">
+                {[
+                  { day: 'Mon', h: '40%', val: '40k' },
+                  { day: 'Tue', h: '70%', val: '70k' },
+                  { day: 'Wed', h: '30%', val: '30k' },
+                  { day: 'Thu', h: '90%', val: '90k', today: true },
+                  { day: 'Fri', h: '50%', val: '50k' },
+                  { day: 'Sat', h: '20%', val: '20k' },
+                  { day: 'Sun', h: '10%', val: '10k' },
+                ].map((bar, i) => (
+                  <div key={i} className="flex flex-col items-center flex-1 gap-1">
+                     <span className={`text-[8px] font-bold opacity-0 hover:opacity-100 transition-opacity ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>{bar.val}</span>
+                     <div className={`w-full rounded-t-[6px] transition-all duration-500 ${bar.today ? (isMecha ? 'bg-blue-400' : 'bg-pink-500') : (isMecha ? 'bg-slate-700' : 'bg-slate-100')} hover:bg-opacity-80`} style={{ height: bar.h }}></div>
+                     <span className={`text-[9px] font-bold mt-1 ${bar.today ? (isMecha ? 'text-blue-400' : 'text-pink-600') : (isMecha ? 'text-slate-500' : 'text-slate-400')}`}>{bar.day}</span>
+                  </div>
+                ))}
+             </div>
+          </motion.div>
 
-            {/* Savings Goal Widget */}
-            <div 
-              onClick={() => onNavigate("savings")}
-              className={`cursor-pointer rounded-[24px] p-4 flex flex-col justify-between border shadow-sm relative overflow-hidden ${isMecha ? 'bg-slate-800 border-slate-700' : 'bg-white/80 border-slate-100 backdrop-blur-md'}`}
-              onMouseEnter={() => { setMood("excited"); setMsg("Dikit lagi tiket konser kebeli nih! Puasa boba dulu ya! 🎫"); }}
-            >
-              <div className="flex items-center gap-2 mb-2">
-                <div className={`p-1.5 rounded-lg ${isMecha ? 'bg-pink-500/20 text-pink-400' : 'bg-pink-100 text-pink-500'}`}>
-                  <Target size={16} />
-                </div>
-                <h4 className={`text-[11px] font-black uppercase tracking-wider ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>Goal</h4>
-              </div>
-              <div className={`text-sm font-black truncate ${isMecha ? 'text-white' : 'text-slate-800'}`}>Konser Bias</div>
-              <div className={`text-[10px] font-bold ${isMecha ? 'text-pink-400' : 'text-pink-500'}`}>Rp 1.5M / Rp 3M</div>
-            </div>
+          {/* 4. Quick Transfer / Friends */}
+          <motion.div variants={itemVariants}>
+             <div className="flex justify-between items-center mb-3 px-1">
+               <h3 className={`text-[12px] font-black uppercase tracking-wider ${isMecha ? 'text-slate-400' : 'text-slate-600'}`}>Quick Transfer</h3>
+               <button className={`text-[10px] font-bold flex items-center gap-1 ${isMecha ? 'text-blue-400' : 'text-pink-500'}`}>Add New <Plus size={12}/></button>
+             </div>
+             <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 px-1">
+                {[
+                  { name: 'Diana', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&auto=format&fit=crop' },
+                  { name: 'Michael', img: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=150&auto=format&fit=crop' },
+                  { name: 'Jessica', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=150&auto=format&fit=crop' },
+                  { name: 'Kevin', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop' },
+                ].map((friend, i) => (
+                   <div key={i} className="flex flex-col items-center gap-1 shrink-0 cursor-pointer group">
+                      <div className={`w-12 h-12 rounded-full p-0.5 border-2 transition-all ${isMecha ? 'border-transparent group-hover:border-blue-400' : 'border-transparent group-hover:border-pink-400'}`}>
+                         <img src={friend.img} alt={friend.name} className="w-full h-full object-cover rounded-full" />
+                      </div>
+                      <span className={`text-[10px] font-bold ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>{friend.name}</span>
+                   </div>
+                ))}
+             </div>
           </motion.div>
 
           {/* 4. Transactions List */}
