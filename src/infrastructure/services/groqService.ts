@@ -5,8 +5,17 @@ export interface MascotResponse {
   mood: string;
 }
 
-// Memory Cache for Overpower Token Optimization
-const responseCache = new Map<string, MascotResponse>();
+// Memory Cache for Overpower Token Optimization (Persisted in LocalStorage)
+const CACHE_KEY = "bonsnap-ai-cache";
+const loadCache = (): Map<string, MascotResponse> => {
+  try {
+    const saved = localStorage.getItem(CACHE_KEY);
+    if (saved) return new Map(JSON.parse(saved));
+  } catch (e) {}
+  return new Map();
+};
+
+const responseCache = loadCache();
 
 export const generateMascotResponse = async (
   template: string, 
@@ -21,7 +30,7 @@ export const generateMascotResponse = async (
     };
   }
 
-  // Caching mechanism to minimize API usage
+  // Caching mechanism to minimize API usage (Zero tokens after first run!)
   const cacheKey = `${template}-${persona}-${isMecha}`;
   if (responseCache.has(cacheKey)) {
     return responseCache.get(cacheKey)!;
@@ -37,7 +46,8 @@ CRITICAL LANGUAGE RULES (MUST FOLLOW PERFECTLY):
 - Use "Bahasa Indonesia gaul ala anak Jaksel (Jakarta Selatan)".
 - Mix Indonesian with casual English loanwords naturally (e.g., literally, basically, which is, jujurly, prefer, vibes, red flag, valid no debat, slay).
 - Use Gen-Z vocabulary fluidly (e.g., bestie, fomo, tbh, cmiiw, cuy, ngab).
-- Ensure absolutely ZERO typos. The spelling must be perfectly accurate within the slang context.
+- WARNING: DO NOT MAKE ANY TYPOS! The spelling must be perfectly accurate within the slang context.
+- CRITICAL: Never drop letters at the start or end of words (e.g., do NOT write 'ira-kira' instead of 'kira-kira', do NOT write 'ngatuu' instead of 'ngatur'). Every Indonesian word MUST be spelled correctly.
 - Keep the core meaning the same, but change the tone to be highly engaging.
 - Make it VERY SHORT (max 15 words).
 
@@ -58,12 +68,12 @@ Respond STRICTLY in JSON format:
         "Authorization": `Bearer ${API_KEY}`
       },
       body: JSON.stringify({
-        model: "llama-3.1-8b-instant",
+        model: "llama-3.3-70b-versatile",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: `Template to rewrite: "${template}"` }
         ],
-        temperature: 0.7,
+        temperature: 0.5,
         response_format: { type: "json_object" }
       })
     });
@@ -81,8 +91,11 @@ Respond STRICTLY in JSON format:
       mood: parsed.mood || "neutral"
     };
     
-    // Save to Cache!
+    // Save to Cache and persist to localStorage
     responseCache.set(cacheKey, finalResult);
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify(Array.from(responseCache.entries())));
+    } catch (e) {}
     
     return finalResult;
   } catch (error) {
