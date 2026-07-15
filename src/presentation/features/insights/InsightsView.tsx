@@ -163,6 +163,7 @@ export const InsightsView: React.FC<InsightsViewProps> = ({ onGoToCamera, onGoTo
             </div>
           </motion.div>
 
+          <motion.div variants={itemVariants}>
              <div className="bg-white/90 backdrop-blur-2xl border border-pink-200 shadow-xl shadow-pink-100/50 rounded-[32px] p-5 cursor-pointer" onClick={() => { handleHover("Basically ini 3 transaksi yang bikin wallet lo nangis cuy! 😱", "alert"); }}>
               <div className="flex items-center justify-between mb-4 px-1">
                 <h3 className="text-sm font-black tracking-wider uppercase text-slate-800 flex items-center gap-2">
