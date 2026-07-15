@@ -80,11 +80,11 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
                   placeholder={isMecha ? "PILOT-01" : "@user"} 
                   onFocus={() => { 
                     setMood("thinking"); 
-                    setMsg(isMecha ? "IDENTIFYING PILOT CREDENTIALS..." : "Enter your handle to continue! 🧐"); 
+                    setMsg(isMecha ? "IDENTIFYING PILOT CREDENTIALS..." : "Input handle lo buat continue cuy! 🧐"); 
                   }}
                   onBlur={() => { 
                     setMood("happy"); 
-                    setMsg(isMecha ? "READY FOR INPUT." : "Ready to track your stats? ✨"); 
+                    setMsg(isMecha ? "READY FOR INPUT." : "Ready buat track financial stats lo? ✨"); 
                   }}
                   className="w-full bg-transparent text-slate-800 outline-none font-bold placeholder:text-slate-400/60 text-lg" 
                 />
@@ -99,11 +99,11 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
                   placeholder="••••••••" 
                   onFocus={() => { 
                     setMood("shy"); 
-                    setMsg(isMecha ? "ENCRYPTING CONNECTION..." : "Password secure, keep it hidden! 🫣"); 
+                    setMsg(isMecha ? "ENCRYPTING CONNECTION..." : "Password is secure, keep it hidden ya bestie! 🫣"); 
                   }}
                   onBlur={() => { 
                     setMood("love"); 
-                    setMsg(isMecha ? "ENCRYPTION SECURE." : "Welcome back! Ready to track your stats? ✨"); 
+                    setMsg(isMecha ? "ENCRYPTION SECURE." : "Welcome back cuy! Ready buat track stats lo? ✨"); 
                   }}
                   className="w-full bg-transparent text-slate-800 outline-none font-bold placeholder:text-slate-400/60 text-lg" 
                 />
@@ -128,7 +128,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
                 onClick={() => {
                   setMode("register");
                   setMood("surprised");
-                  setMsg(isMecha ? "NEW PILOT REGISTRATION PROTOCOL INITIATED." : "New user? Let's get you set up! 🎉");
+                  setMsg(isMecha ? "NEW PILOT REGISTRATION PROTOCOL INITIATED." : "New user ya? Let's set up account lo bestie! 🎉");
                 }}
                 className={`w-full font-black rounded-full py-4 flex items-center justify-center gap-2 transition-all active:scale-[0.96] border-2 backdrop-blur-md ${isMecha ? 'bg-slate-800/80 hover:bg-slate-700 border-slate-700 text-blue-400' : 'bg-white/90 hover:bg-white border-slate-200 text-slate-700 shadow-sm'}`}
               >
@@ -169,9 +169,9 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
                   placeholder="John Doe" 
                   onFocus={() => {
                     setMood("thinking");
-                    if (gender === 'm') setMsg(isMecha ? "INPUT NAME." : "Siapa nih nama asli lo, bro?");
-                    else if (gender === 'f') setMsg(isMecha ? "INPUT NAME." : "Spill nama asli kamu dong, bestie! ✨");
-                    else setMsg(isMecha ? "INPUT NAME." : "Ketik nama lengkap kamu ya! 📝");
+                    if (gender === 'm') setMsg(isMecha ? "INPUT NAME." : "Spill nama asli lo dong ngab!");
+                    else if (gender === 'f') setMsg(isMecha ? "INPUT NAME." : "Spill real name lo dong bestie! ✨");
+                    else setMsg(isMecha ? "INPUT NAME." : "Input nama lengkap lo cuy! 📝");
                   }}
                   className="w-full bg-transparent text-slate-800 outline-none font-bold placeholder:text-slate-400/60" 
                 />
@@ -184,9 +184,9 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
                   placeholder="@newbestie" 
                   onFocus={() => {
                     setMood("wink");
-                    if (gender === 'm') setMsg(isMecha ? "INPUT CALLSIGN." : "Bikin username yang kece dong, boy! 😎");
-                    else if (gender === 'f') setMsg(isMecha ? "INPUT CALLSIGN." : "Bikin username yang aesthetic dong, girly! 🌸");
-                    else setMsg(isMecha ? "INPUT CALLSIGN." : "Pilih username keren buat akunmu! 🎯");
+                    if (gender === 'm') setMsg(isMecha ? "INPUT CALLSIGN." : "Bikin username yang slay dong ngab! 😎");
+                    else if (gender === 'f') setMsg(isMecha ? "INPUT CALLSIGN." : "Bikin username yang aesthetic dong bestie! 🌸");
+                    else setMsg(isMecha ? "INPUT CALLSIGN." : "Choose username yang keren buat account lo! 🎯");
                   }}
                   className="w-full bg-transparent text-slate-800 outline-none font-bold placeholder:text-slate-400/60" 
                 />
@@ -199,9 +199,9 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
                   placeholder="••••••••" 
                   onFocus={() => {
                     setMood("shy");
-                    if (gender === 'm') setMsg(isMecha ? "INPUT ENCRYPTION KEY." : "Password-nya rahasia ya bro, jangan sampe bocor! 🤫");
-                    else if (gender === 'f') setMsg(isMecha ? "INPUT ENCRYPTION KEY." : "Password-nya disimpen baik-baik ya bestie, top secret! 🤫");
-                    else setMsg(isMecha ? "INPUT ENCRYPTION KEY." : "Password-nya yang kuat ya! 🔒");
+                    if (gender === 'm') setMsg(isMecha ? "INPUT ENCRYPTION KEY." : "Password-nya strictly secret ya ngab, jangan bocor! 🤫");
+                    else if (gender === 'f') setMsg(isMecha ? "INPUT ENCRYPTION KEY." : "Password-nya literally top secret ya bestie! 🤫");
+                    else setMsg(isMecha ? "INPUT ENCRYPTION KEY." : "Bikin password yang strong ya cuy! 🔒");
                   }}
                   className="w-full bg-transparent text-slate-800 outline-none font-bold placeholder:text-slate-400/60" 
                 />
@@ -217,10 +217,10 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
                       setGender(val);
                       if (val === 'm') {
                         setMood("cool");
-                        setMsg(isMecha ? "MALE PILOT IDENTIFIED." : "Wih, siap join squad nih bro? Gass lah! 🔥");
+                        setMsg(isMecha ? "MALE PILOT IDENTIFIED." : "Ready join squad nih ngab? Gass lah cuy! 🔥");
                       } else if (val === 'f') {
                         setMood("cute");
-                        setMsg(isMecha ? "FEMALE PILOT IDENTIFIED." : "Slayy bestie! Bakal seru banget nih kita budgeting bareng! 💅✨");
+                        setMsg(isMecha ? "FEMALE PILOT IDENTIFIED." : "Slay bestie! Bakal literally seru banget kita budgeting bareng! 💅✨");
                       } else {
                         setMood("happy");
                         setMsg(isMecha ? "AWAITING PILOT DATA." : "Yuk lengkapi profil kamu! 🌟");
@@ -259,9 +259,9 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
                   placeholder="Suka jajan boba tiap hari..." 
                   onFocus={() => {
                     setMood("excited");
-                    if (gender === 'm') setMsg(isMecha ? "INPUT PILOT BIO." : "Tulis bio singkat lo bro, biar makin asik! 🎸");
-                    else if (gender === 'f') setMsg(isMecha ? "INPUT PILOT BIO." : "Tulis bio yang lucu-lucu dong, girly! 🎀");
-                    else setMsg(isMecha ? "INPUT PILOT BIO." : "Ceritain dikit tentang kamu dong! ✍️");
+                    if (gender === 'm') setMsg(isMecha ? "INPUT PILOT BIO." : "Spill bio lo ngab, biar vibes-nya asik! 🎸");
+                    else if (gender === 'f') setMsg(isMecha ? "INPUT PILOT BIO." : "Spill bio yang cute dong bestie! 🎀");
+                    else setMsg(isMecha ? "INPUT PILOT BIO." : "Spill dikit tentang lo dong cuy! ✍️");
                   }}
                   className="w-full bg-transparent text-slate-800 outline-none font-bold placeholder:text-slate-400/60 resize-none"
                 ></textarea>
@@ -269,17 +269,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
 
               <button 
                 onClick={onLogin}
-                onMouseEnter={() => { 
-                  setMood("love"); 
-                  if (gender === 'm') {
-                    setMsg(isMecha ? "READY TO COMMIT DATA." : "Udah mantap semua kan, bro? Langsung gas daftar aja, man! 🚀");
-                  } else if (gender === 'f') {
-                    setMsg(isMecha ? "READY TO COMMIT DATA." : "Udah yakin, girly? Yuk langsung pencet daftar aja, gemes banget! 💖");
-                  } else {
-                    setMsg(isMecha ? "READY TO COMMIT DATA." : "Udah keisi semua? Yuk gass! 🚀");
-                  }
-                }}
-                className={`mt-4 w-full text-white font-black rounded-[24px] py-4 flex items-center justify-center gap-2 transition-all active:scale-[0.96] text-lg group border-2 border-white ${isMecha ? 'bg-gradient-to-r from-blue-500 to-red-500 hover:from-blue-600 hover:to-red-600 shadow-[0_10px_30px_rgba(59,130,246,0.4)]' : 'bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 shadow-[0_10px_30px_rgba(244,114,182,0.4)]'}`}
+                className="w-full flex justify-center items-center gap-3 p-4 rounded-[20px] font-black uppercase tracking-widest transition-all hover:scale-[1.02] active:scale-95 text-white bg-slate-800 shadow-[0_10px_30px_rgba(30,41,59,0.3)] hover:shadow-[0_10px_30px_rgba(30,41,59,0.5)] border border-slate-700 mt-6"
               >
                 {isMecha ? 'SUBMIT CONFIGURATION' : 'Daftar Sekarang! 🎉'}
               </button>

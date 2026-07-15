@@ -31,7 +31,6 @@ const itemVariants = {
 
 export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGoToInsights, theme, setTheme, onNavigate, points, level, inventory, userProfile }) => {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-  const [mood, setMood] = useState<MascotMood>("happy");
   const [notifOn, setNotifOn] = useState(true);
   const [langEn, setLangEn] = useState(true);
   const [currIdr, setCurrIdr] = useState(true);
@@ -47,7 +46,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
   
   const defaultMsg = isMecha 
     ? "CREDITS AT 29%. RECOMMEND TACTICAL CONSERVATION FOR UPGRADES." 
-    : `Wih, sisa budget lo masih Rp ${remainingBudget.toLocaleString('id-ID')}! Valid no debat, yuk jajan cantik! 🍰`;
+    : `Basically sisa budget lo Rp ${remainingBudget.toLocaleString('id-ID')} cuy! Valid no debat, yuk spending cantik! 🍰`;
     
   const { msg, mood, handleHover, resetMascot } = useMascotAI(userProfile.financialPersona, isMecha, defaultMsg, "happy");
 
@@ -62,10 +61,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
   }, [transactions, remainingBudget, handleHover, resetMascot]);
 
   const quickActions = [
-    { id: "income", label: "Income", icon: ArrowDownRight, color: "text-emerald-500", bg: "bg-emerald-100", hoverMsg: "Ada uang masuk? Upload SS-an notif transfer atau invoice-nya ke sini!", hoverMood: "excited" },
-    { id: "expense", label: "Expense", icon: ArrowUpRight, color: "text-rose-500", bg: "bg-rose-100", hoverMsg: "Habis jajan di e-commerce? Upload screenshot invoice atau foto struk kasirnya!", hoverMood: "alert" },
-    { id: "splitBill", label: "Split Bill", icon: Receipt, color: "text-orange-500", bg: "bg-orange-100", hoverMsg: "Makan bareng temen tapi nota digabung? Foto aja, nanti AI milihin mana menu yang lu beli doang!", hoverMood: "thinking" },
-    { id: "rewards", label: "Rewards", icon: Gift, color: "text-purple-500", bg: "bg-purple-100", hoverMsg: "Tuker koin kamu sama hiasan profil kece! 🎁", hoverMood: "cute" },
+    { id: "income", label: "Income", icon: ArrowDownRight, color: "text-emerald-500", bg: "bg-emerald-100" },
+    { id: "expense", label: "Expense", icon: ArrowUpRight, color: "text-rose-500", bg: "bg-rose-100" },
+    { id: "splitBill", label: "Split Bill", icon: Receipt, color: "text-orange-500", bg: "bg-orange-100" },
+    { id: "rewards", label: "Rewards", icon: Gift, color: "text-purple-500", bg: "bg-purple-100" },
   ];
 
   const activeAvatar = AVATAR_OPTIONS.find(a => a.id === userProfile.activeAvatarId) || AVATAR_OPTIONS[0];
@@ -91,8 +90,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
           <div className="flex items-center gap-4">
             <div 
               onClick={() => onNavigate('editProfile')} 
-              onMouseEnter={() => { handleHover("Mau update profil biar makin badai ya? 💅", "cute"); }} 
-              onMouseLeave={() => { resetMascot(); }}
               className={`cursor-pointer w-14 h-14 rounded-full overflow-hidden border-4 shadow-md relative transition-transform active:scale-95 bg-white ${isMecha ? 'border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.6)]' : 'border-pink-200'}`}
             >
               <img src={avatarUrl} alt="Profile" className={`w-full h-full object-cover ${theme === 'original' ? '' : 'scale-110'}`} />
@@ -108,7 +105,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
               <span className="absolute top-2 right-2 w-2 h-2 bg-pink-500 rounded-full"></span>
             </button>
             <button 
-              onClick={() => { setIsSettingsModalOpen(true); handleHover(isMecha ? "SYSTEM CONFIGURATION." : "Mau ngoprek settings nih? Kepo deh! ⚙️", "surprised"); }} 
+              onClick={() => { setIsSettingsModalOpen(true); handleHover(isMecha ? "SYSTEM CONFIGURATION." : "Kepo mau ngoprek settings ya bestie? ⚙️", "surprised"); }} 
               className={`w-10 h-10 rounded-full flex items-center justify-center shadow-sm border transition ${isMecha ? 'bg-slate-800 border-blue-500 hover:bg-blue-900 text-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.4)]' : 'bg-white border-slate-100 hover:bg-pink-50 text-slate-400 hover:text-pink-500'}`}
             >
               <Settings size={20} />
@@ -121,9 +118,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
           {/* 1. Wallet Card (Realistic ATM/VISA Style) */}
           <motion.div 
             variants={itemVariants} 
-            className={`w-full aspect-[1.586/1] rounded-[24px] p-5 sm:p-7 flex flex-col justify-between relative overflow-hidden shadow-2xl transition-all duration-700 ${activeWalletSkin.bg}`}
-            onMouseEnter={() => { handleHover(isMecha ? "ANALYZING FINANCIAL RESERVES..." : "Wah, isi dompetnya lumayan nih! 💳", "thinking"); }}
-            onMouseLeave={() => setMood("happy")}
+            className={`w-full aspect-[1.586/1] rounded-[24px] p-5 sm:p-7 flex flex-col justify-between relative overflow-hidden shadow-2xl transition-all duration-700 cursor-pointer ${activeWalletSkin.bg}`}
+            onClick={() => { handleHover(isMecha ? "ANALYZING FINANCIAL RESERVES..." : "Jujurly isi wallet lo lumayan banget nih! 💳", "thinking"); }}
           >
             {/* Holographic Anime/Manga Accents */}
             <div className="absolute inset-0 bg-gradient-to-tr from-white/20 via-white/40 to-transparent opacity-50 mix-blend-overlay z-0 pointer-events-none"></div>
@@ -189,8 +185,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => onNavigate(action.id)}
-                onMouseEnter={() => { handleHover(action.hoverMsg, action.hoverMood as MascotMood); }}
-                onMouseLeave={() => { resetMascot(); }}
                 className="flex flex-col items-center gap-2 group"
               >
                 <div className={`w-14 h-14 rounded-[20px] flex items-center justify-center border shadow-lg backdrop-blur-md transition-all duration-300 group-hover:scale-110 group-active:scale-95 ${isMecha ? 'bg-slate-800/80 border-slate-700/50 shadow-blue-500/10 group-hover:shadow-blue-500/30' : 'bg-white/80 border-white/60 shadow-pink-500/5 group-hover:shadow-pink-500/20'} ${action.bg}`}>
@@ -249,8 +243,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
                   key={tx.id} 
                   onClick={() => onNavigate("history")}
                   className={`flex items-center gap-3 group relative cursor-pointer p-3.5 rounded-[20px] transition-all duration-300 hover:scale-[1.02] backdrop-blur-md border shadow-sm ${isMecha ? 'bg-slate-800/50 border-slate-700/50 hover:bg-slate-800/80 hover:shadow-blue-500/10' : 'bg-white/60 border-white/60 hover:bg-white/90 hover:shadow-pink-500/10'}`}
-                  onMouseEnter={() => { handleHover(tx.hoverMsg, tx.hoverMood as any); }}
-                  onMouseLeave={() => { resetMascot(); }}
                 >
                   <div className={`p-2.5 rounded-[14px] shadow-sm ${tx.bg}`}>
                     {tx.iconName === 'Swords' && <Swords size={18} className={tx.color} />}
@@ -304,8 +296,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
           <div className="absolute -top-10">
             <button 
               onClick={onGoToCamera}
-              onMouseEnter={() => { handleHover(isMecha ? "SCANNER ONLINE." : "Ada struk baru? Sini gue scan-in pakai AI! 📸", "alert"); }}
-              onMouseLeave={() => { resetMascot(); }}
               className={`group flex flex-col items-center justify-center w-[68px] h-[68px] rounded-full hover:scale-105 active:scale-95 transition-all border-4 ${isMecha ? 'border-slate-900 bg-gradient-to-tr from-blue-600 to-teal-400 shadow-[0_0_25px_rgba(45,212,191,0.5)]' : 'border-white bg-gradient-to-tr from-pink-400 to-purple-400 shadow-[0_10px_20px_rgba(244,114,182,0.4)]'}`}
             >
               <Camera size={28} strokeWidth={2.5} className="text-white group-hover:-translate-y-0.5 transition-transform" />
@@ -316,8 +306,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
         {/* Insights */}
         <button 
           onClick={onGoToInsights} 
-          onMouseEnter={() => { handleHover(isMecha ? "ACCESSING DIAGNOSTICS." : "Yuk kita pantau pengeluaran lo, biar gak boncos! 📊", "thinking"); }}
-          onMouseLeave={() => { resetMascot(); }}
           className={`flex flex-col items-center justify-center w-[20%] group transition-colors ${isMecha ? 'text-slate-400 hover:text-red-400' : 'text-slate-400 hover:text-purple-500'}`}
         >
           <div className={`p-1.5 rounded-xl transition-colors mb-0.5 ${isMecha ? 'group-hover:bg-red-500/20' : 'group-hover:bg-purple-50'}`}>
@@ -329,8 +317,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
         {/* Profile */}
         <button 
           onClick={() => onNavigate('editProfile')}
-          onMouseEnter={() => { handleHover("Mau update profil biar makin cetar? 💅", "cute"); }}
-          onMouseLeave={() => { resetMascot(); }}
           className={`flex flex-col items-center justify-center w-[20%] group transition-colors ${isMecha ? 'text-slate-400 hover:text-teal-400' : 'text-slate-400 hover:text-pink-500'}`}
         >
           <div className={`p-1.5 rounded-xl transition-colors mb-0.5 ${isMecha ? 'group-hover:bg-teal-500/20' : 'group-hover:bg-pink-50'}`}>

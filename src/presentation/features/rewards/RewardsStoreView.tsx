@@ -76,14 +76,14 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
   const handleClaimQuest = (id: number, reward: number) => {
     setPoints(prev => prev + reward);
     setQuests(quests.map(q => q.id === id ? { ...q, claimed: true } : q));
-    handleHover(`Yeay! Dapet ${reward} Poin. Nabung terus ya! ✨`, "excited");
+    handleHover(`Literally dapet ${reward} Poin cuy! Nabung terus ya bestie! ✨`, "excited");
   };
 
   const handleDailyLogin = () => {
     if (!dailyClaimed) {
       setPoints(prev => prev + 100);
       setDailyClaimed(true);
-      handleHover("Makasih udah login hari ini! +100 Poin buat kamu 💖", "love");
+      handleHover("Thanks udah login hari ini bestie! +100 Poin vibes buat lo 💖", "love");
     }
   };
 
@@ -99,9 +99,9 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
         if (item.type === 'walletSkin' && !newInv.walletSkins.includes(item.id)) newInv.walletSkins.push(item.id);
         return newInv;
       });
-      handleHover(`Wuihhh ${item.name} berhasil dibeli! Langsung cek profil ya 💅`, "excited");
+      handleHover(`Slay! ${item.name} berhasil dibought! Langsung check profile lo ya 💅`, "excited");
     } else {
-      handleHover("Ups, poin kamu belum cukup bestie. Kumpulin dari quest dulu yuk! 🥲", "alert");
+      handleHover("Jujurly poin lo belum cukup bestie. Selesain quest dulu yuk! 🥲", "alert");
     }
   };
 

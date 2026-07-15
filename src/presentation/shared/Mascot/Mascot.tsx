@@ -103,17 +103,17 @@ export const Mascot: React.FC<MascotProps> = ({ mood, message = "", showDialogue
       <motion.div 
         initial={getInitialAnimation()}
         animate={{ x: 0, y: 0, scale: 1, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 250, damping: 25 }}
+        transition={{ type: "spring", stiffness: 350, damping: 20 }}
         className="flex flex-col items-end w-full pointer-events-none"
       >
         {/* Mascot Image */}
         <AnimatePresence mode="wait">
           <motion.div
             key={mood + theme}
-            initial={{ y: 20, opacity: 0, scale: 0.95 }}
+            initial={{ y: 20, opacity: 0, scale: 0.8 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: 20, opacity: 0, scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            exit={{ y: 20, opacity: 0, scale: 0.8 }}
+            transition={{ type: "spring", stiffness: 400, damping: 20 }}
             className={`relative z-10 drop-shadow-2xl ${isOriginal ? 'w-32 h-32 mr-[-10px] mb-[-15px]' : 'w-24 h-24 mr-2 mb-[-10px]'}`}
           >
             <img 
@@ -128,16 +128,17 @@ export const Mascot: React.FC<MascotProps> = ({ mood, message = "", showDialogue
         <AnimatePresence>
           {showDialogue && message && (
             <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              initial={{ scale: 0.85, opacity: 0, y: 15 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className={`w-full bg-white/95 backdrop-blur-xl border-[2px] rounded-[20px] p-3 relative ${theme === 'mecha' ? 'border-blue-200 shadow-[0_15px_40px_rgba(59,130,246,0.2)]' : 'border-pink-200 shadow-[0_15px_40px_rgba(244,114,182,0.2)]'}`}
+              exit={{ scale: 0.85, opacity: 0, y: 15 }}
+              transition={{ type: "spring", stiffness: 350, damping: 22 }}
+              className={`w-full bg-white/95 backdrop-blur-xl border-[2px] rounded-[20px] p-3.5 relative ${theme === 'mecha' ? 'border-blue-200 shadow-[0_15px_40px_rgba(59,130,246,0.2)]' : 'border-pink-200 shadow-[0_15px_40px_rgba(244,114,182,0.2)]'}`}
             >
               {/* Name Tag */}
               <div className={`absolute -top-3 left-4 text-white font-black px-3 py-0.5 rounded-full text-[9px] uppercase tracking-wider shadow-lg border-[2px] border-white ${theme === 'mecha' ? 'bg-gradient-to-r from-blue-500 to-red-500' : 'bg-gradient-to-r from-pink-400 to-purple-400'}`}>
                 {mascotName}
               </div>
-              <p className="text-slate-700 font-bold text-xs leading-relaxed min-h-[36px]">
+              <p className={`font-black text-[13px] leading-[1.4] min-h-[36px] tracking-tight ${theme === 'mecha' ? 'text-slate-700' : 'text-slate-800'}`}>
                 {displayedText}
                 <span className={`animate-pulse ml-1 ${theme === 'mecha' ? 'text-blue-500' : 'text-pink-400'}`}>▼</span>
               </p>

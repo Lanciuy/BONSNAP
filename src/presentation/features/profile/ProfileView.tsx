@@ -147,9 +147,9 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
   const handleSelectAvatar = (opt: typeof AVATAR_OPTIONS[0]) => {
     if (inventory.avatars.includes(opt.id)) {
       setActiveAvatar(opt);
-      handleHover(`Avatar ${opt.name} cakep banget! 😍`, "excited");
+      handleHover(`Avatar ${opt.name} literally cakep banget cuy! 😍`, "excited");
     } else {
-      handleHover(`Ups, avatar ${opt.name} masih dikunci. Beli dulu di Rewards Hub! 🛍️`, "alert");
+      handleHover(`Oops, avatar ${opt.name} masih ke-lock. Beli dulu di Rewards Hub ngab! 🛍️`, "alert");
       onNavigate('store');
     }
   };
@@ -157,9 +157,9 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
   const handleSelectBanner = (opt: typeof BANNER_OPTIONS[0]) => {
     if (inventory.banners.includes(opt.id)) {
       setActiveBanner(opt);
-      handleHover(`Wah, banner ${opt.name} kelihatan keren banget! ✨`, "cute");
+      handleHover(`Gila, vibes banner ${opt.name} keren banget sih! ✨`, "cute");
     } else {
-      handleHover(`Ups, banner ${opt.name} belum kebuka. Beli dulu di Rewards Hub! 🛍️`, "alert");
+      handleHover(`Sorry, banner ${opt.name} belum unlock. Beli dulu gih di Rewards Hub! 🛍️`, "alert");
       onNavigate('store');
     }
   };
@@ -167,9 +167,9 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
   const handleSelectFrame = (opt: typeof FRAME_OPTIONS[0]) => {
     if (inventory.frames.includes(opt.id)) {
       setActiveFrame(opt);
-      handleHover(`Frame ${opt.name} bikin foto profil lo makin bersinar! 👑`, "excited");
+      handleHover(`Frame ${opt.name} literally bikin profile lo makin slay! 👑`, "excited");
     } else {
-      handleHover(`Ups, frame ${opt.name} masih dikunci. Beli dulu pakai poin! 🛍️`, "alert");
+      handleHover(`Yah, frame ${opt.name} masih nge-lock. Beli dulu pake poin bestie! 🛍️`, "alert");
       onNavigate('store');
     }
   };
@@ -177,9 +177,9 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
   const handleSelectWalletSkin = (opt: typeof WALLET_SKIN_OPTIONS[0]) => {
     if (inventory.walletSkins.includes(opt.id)) {
       setActiveWalletSkin(opt);
-      handleHover(`Wallet Skin ${opt.name} aktif! 💳`, "excited");
+      handleHover(`Wallet Skin ${opt.name} is now active cuy! 💳`, "excited");
     } else {
-      handleHover(`Skin ${opt.name} belum dibeli! Beli dulu di Rewards Hub 🛒`, "alert");
+      handleHover(`Skin ${opt.name} belum lu beli! Checkout dulu di Rewards Hub 🛒`, "alert");
       onNavigate('store');
     }
   };
@@ -377,7 +377,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
           {/* Integration Links */}
           <h2 className={`text-[10px] font-black uppercase tracking-widest mt-5 mb-2 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Connections</h2>
           <div className="flex flex-col gap-2">
-            <div className={`p-3 rounded-[12px] flex items-center justify-between border cursor-pointer transition-colors backdrop-blur-md shadow-sm ${isMecha ? 'bg-slate-950/50 border-slate-800 hover:bg-slate-900/80' : 'bg-white/60 border-white/60 hover:bg-white/90'}`} onMouseEnter={() => { handleHover("Mau nyambungin ke Instagram ya? 🔗", "thinking"); }} onMouseLeave={resetMascot}>
+            <div className={`p-3 rounded-[12px] flex items-center justify-between border cursor-pointer transition-colors backdrop-blur-md shadow-sm ${isMecha ? 'bg-slate-950/50 border-slate-800 hover:bg-slate-900/80' : 'bg-white/60 border-white/60 hover:bg-white/90'}`} onClick={() => { handleHover("Mau connect ke Instagram ya bestie? 🔗", "thinking"); }}>
               <div className="flex items-center gap-3">
                 <Link2 size={16} className={isMecha ? 'text-slate-400' : 'text-slate-500'} />
                 <div className={`font-bold text-xs ${isMecha ? 'text-slate-300' : 'text-slate-700'}`}>Linked Accounts</div>
@@ -385,7 +385,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
               <ChevronLeft size={14} className="text-slate-400 rotate-180" />
             </div>
             
-            <div className={`p-3 rounded-[12px] flex items-center justify-between border cursor-pointer transition-colors backdrop-blur-md shadow-sm ${isMecha ? 'bg-slate-950/50 border-slate-800 hover:bg-slate-900/80' : 'bg-white/60 border-white/60 hover:bg-white/90'}`} onMouseEnter={() => { handleHover("Mau ngatur privasi akun? 🔒", "thinking"); }} onMouseLeave={resetMascot}>
+            <div className={`p-3 rounded-[12px] flex items-center justify-between border cursor-pointer transition-colors backdrop-blur-md shadow-sm ${isMecha ? 'bg-slate-950/50 border-slate-800 hover:bg-slate-900/80' : 'bg-white/60 border-white/60 hover:bg-white/90'}`} onClick={() => { handleHover("Mau set up privacy account lo? 🔒", "thinking"); }}>
               <div className="flex items-center gap-3">
                 <ShieldCheck size={16} className={isMecha ? 'text-slate-400' : 'text-slate-500'} />
                 <div className={`font-bold text-xs ${isMecha ? 'text-slate-300' : 'text-slate-700'}`}>Privacy & Security</div>
@@ -430,7 +430,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
            </div>
            <div className={`rounded-[24px] overflow-hidden border shadow-sm backdrop-blur-md ${isMecha ? 'bg-slate-900/50 border-slate-800/50' : 'bg-white/60 border-white/60'}`}>
               
-              <div className={`p-4 border-b flex items-center justify-between transition-colors cursor-pointer ${isMecha ? 'border-slate-800 hover:bg-slate-800' : 'border-slate-100 hover:bg-slate-50'}`} onMouseEnter={() => { handleHover("Biar kamu nggak ketinggalan info diskon! 🔔", "thinking"); }} onMouseLeave={resetMascot}>
+              <div className={`p-4 border-b flex items-center justify-between transition-colors cursor-pointer ${isMecha ? 'border-slate-800 hover:bg-slate-800' : 'border-slate-100 hover:bg-slate-50'}`} onClick={() => { handleHover("Biar lo nggak fomo info diskon cuy! 🔔", "thinking"); }}>
                  <div className="flex items-center gap-4">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isMecha ? 'bg-slate-800 text-blue-400' : 'bg-blue-50 text-blue-500'}`}>
                        <Bell size={20} />
@@ -443,7 +443,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
                  <ChevronLeft size={18} className="text-slate-400 rotate-180" />
               </div>
 
-              <div className={`p-4 border-b flex items-center justify-between transition-colors cursor-pointer ${isMecha ? 'border-slate-800 hover:bg-slate-800' : 'border-slate-100 hover:bg-slate-50'}`} onMouseEnter={() => { handleHover("Cetak laporan keuanganmu jadi Excel keren! 📊", "excited"); }} onMouseLeave={resetMascot}>
+              <div className={`p-4 border-b flex items-center justify-between transition-colors cursor-pointer ${isMecha ? 'border-slate-800 hover:bg-slate-800' : 'border-slate-100 hover:bg-slate-50'}`} onClick={() => { handleHover("Export financial report lo ke Excel, slay! 📊", "excited"); }}>
                  <div className="flex items-center gap-4">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isMecha ? 'bg-slate-800 text-emerald-400' : 'bg-emerald-50 text-emerald-500'}`}>
                        <Download size={20} />
@@ -456,7 +456,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
                  <ChevronLeft size={18} className="text-slate-400 rotate-180" />
               </div>
 
-              <div onClick={() => setIsEditingWallet(true)} className={`p-4 border-b flex items-center justify-between transition-colors cursor-pointer ${isMecha ? 'border-slate-800 hover:bg-slate-800' : 'border-slate-100 hover:bg-slate-50'}`} onMouseEnter={() => { handleHover("Atur nama dompet sama skinnya ya! 💳", "thinking"); }} onMouseLeave={resetMascot}>
+              <div onClick={() => { setIsEditingWallet(true); handleHover("Setup nama wallet sama skin-nya dong bestie! 💳", "thinking"); }} className={`p-4 border-b flex items-center justify-between transition-colors cursor-pointer ${isMecha ? 'border-slate-800 hover:bg-slate-800' : 'border-slate-100 hover:bg-slate-50'}`}>
                  <div className="flex items-center gap-4">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isMecha ? 'bg-slate-800 text-purple-400' : 'bg-purple-50 text-purple-500'}`}>
                        <ReceiptText size={20} />
@@ -469,7 +469,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
                  <ChevronLeft size={18} className="text-slate-400 rotate-180" />
               </div>
 
-              <div className={`p-4 flex items-center justify-between transition-colors cursor-pointer ${isMecha ? 'hover:bg-slate-800' : 'hover:bg-slate-50'}`} onMouseEnter={() => { handleHover("Bosan dengan tampilannya? Ayo atur aplikasinya! ⚙️", "happy"); }} onMouseLeave={resetMascot}>
+              <div className={`p-4 flex items-center justify-between transition-colors cursor-pointer ${isMecha ? 'hover:bg-slate-800' : 'hover:bg-slate-50'}`} onClick={() => { handleHover("Bosen sama vibes-nya? Yuk custom app lo! ⚙️", "happy"); }}>
                  <div className="flex items-center gap-4">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isMecha ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-600'}`}>
                        <Settings size={20} />

@@ -43,7 +43,7 @@ export const CameraView: React.FC<CameraViewProps> = ({ onGoToDashboard, theme, 
   const handleCapture = (file?: File) => {
     setSheetState("processing");
     setMood("surprised");
-    setMsg(isMecha ? "PROCESSING DATA ENGRAMS. STAND BY." : "Wait ya, AI gue lagi muter otak nih! ✨");
+    setMsg(isMecha ? "PROCESSING DATA ENGRAMS. STAND BY." : "Wait a minute, AI gue lagi processing nih bestie! ✨");
     setLoadingText(isMecha ? "EXTRACTING DATA ENGRAMS..." : "Lagi baca struk lo nih...");
     setLoadingIcon(isMecha ? <Cpu size={48} className="text-red-500" /> : <Sparkles size={48} className="text-purple-500" />);
 
@@ -68,7 +68,7 @@ export const CameraView: React.FC<CameraViewProps> = ({ onGoToDashboard, theme, 
           
           setSheetState("result");
           setMood("cute");
-          setMsg(isMecha ? "EXTRACTION COMPLETE." : "Tadaa! Kelar di-parse nih. AI gue emang se-slay itu! 🥺");
+          setMsg(isMecha ? "EXTRACTION COMPLETE." : "Done! Kelar di-parse cuy. AI gue literally se-slay itu! 🥺");
         } catch (error) {
           console.error(error);
           setSheetState("viewfinder");
@@ -82,7 +82,7 @@ export const CameraView: React.FC<CameraViewProps> = ({ onGoToDashboard, theme, 
       setTimeout(() => {
         setSheetState("result");
         setMood("cute");
-        setMsg(isMecha ? "EXTRACTION COMPLETE (MOCK)." : "Tadaa! Ketemu 3 barang nih (MOCK).");
+        setMsg(isMecha ? "EXTRACTION COMPLETE (MOCK)." : "Slay! Ketemu 3 items nih cuy (MOCK).");
       }, 3000);
     }
   };
@@ -143,7 +143,6 @@ export const CameraView: React.FC<CameraViewProps> = ({ onGoToDashboard, theme, 
               <button 
                 onClick={() => setIsFlashOn(!isFlashOn)}
                 className={`w-12 h-12 rounded-full backdrop-blur-md border flex items-center justify-center transition-all shrink-0 ${isFlashOn ? 'bg-yellow-400 text-black border-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.5)]' : 'bg-black/40 border-white/20 text-white hover:bg-white/20'}`}
-                onMouseEnter={() => { setMood("thinking"); setMsg("Gelap ya? Pake flash aja sini! 🔦"); }}
               >
                 <Flashlight size={20} />
               </button>
@@ -152,8 +151,6 @@ export const CameraView: React.FC<CameraViewProps> = ({ onGoToDashboard, theme, 
               <div className="relative z-20 flex flex-col items-center">
                 <button 
                   onClick={() => handleCapture()}
-                  onMouseEnter={() => { setMood("happy"); setMsg(isMecha ? "SCANNER PREPPED." : "Ready? 1, 2, 3... Cekrek! 🧀"); }}
-                  onMouseLeave={() => { setMood("excited"); setMsg(initialMsg); }}
                   className="group relative w-[100px] h-[100px] flex items-center justify-center"
                 >
                   {/* Outer animated pulsing ring */}
@@ -172,7 +169,6 @@ export const CameraView: React.FC<CameraViewProps> = ({ onGoToDashboard, theme, 
               <button 
                 onClick={() => fileInputRef.current?.click()}
                 className="w-12 h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all text-white shrink-0"
-                onMouseEnter={() => { setMood("cute"); setMsg("Upload dari galeri juga bisa lho! 🖼️"); }}
               >
                 <ImageIcon size={20} />
               </button>
@@ -254,7 +250,7 @@ export const CameraView: React.FC<CameraViewProps> = ({ onGoToDashboard, theme, 
               onClose={() => {
                 setSheetState("viewfinder");
                 setMood("excited");
-                setMsg("Scan lagi dong, biar rajin nyatet! 📸");
+                setMsg("Scan lagi dong bestie, biar nggak fomo nyatet! 📸");
               }} 
               onSave={onGoToDashboard}
               theme={theme}
