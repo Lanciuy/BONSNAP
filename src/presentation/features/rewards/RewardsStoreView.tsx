@@ -5,6 +5,7 @@ import { ThemeState, Inventory } from '../../../core/entities';
 import { Mascot, MascotMood } from "../../shared/Mascot/Mascot";
 import { useAppStore } from "../../../core/store/useAppStore";
 import { useMascotAI } from "../../hooks/useMascotAI";
+import { BANNER_OPTIONS, FRAME_OPTIONS, AVATAR_OPTIONS, WALLET_SKIN_OPTIONS } from "../profile/ProfileView";
 
 interface RewardsStoreViewProps {
   onBack: () => void;
@@ -199,14 +200,14 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
               {/* Quest List */}
               <div className="flex flex-col gap-3">
                 {quests.filter(q => q.type === questFilter).map(quest => (
-                  <motion.div key={quest.id} variants={itemVariants} className={`p-4 rounded-[20px] border flex items-center justify-between backdrop-blur-md transition-all duration-300 hover:scale-[1.02] shadow-sm ${isMecha ? 'bg-slate-800/50 border-slate-700/50 hover:bg-slate-800/80 hover:shadow-blue-500/10' : 'bg-white/60 border-white/60 hover:bg-white/90 hover:shadow-pink-500/10'}`}>
+                  <motion.div key={quest.id} variants={itemVariants} className={`p-4 rounded-[20px] border flex items-center justify-between backdrop-blur-md transition-all duration-300 hover:scale-[1.02] shadow-sm ${isMecha ? 'bg-slate-800/50 border-slate-700/50 hover:bg-slate-800/80 hover:shadow-blue-500/10' : 'bg-white/80 border-slate-200 hover:bg-white hover:shadow-pink-500/10'}`}>
                     <div className="flex-1 pr-4">
                       <div className="flex items-center gap-2 mb-1">
-                        <h4 className={`font-black text-sm ${isMecha ? 'text-white' : 'text-slate-800'}`}>{quest.title}</h4>
+                        <h4 className={`font-black text-sm ${isMecha ? 'text-white' : 'text-slate-900'}`}>{quest.title}</h4>
                         <div className="flex">{renderStars(quest.difficulty)}</div>
                       </div>
-                      <p className={`text-[11px] font-bold ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>{quest.desc}</p>
-                      <div className={`mt-2 flex items-center gap-1 font-bold text-[10px] uppercase tracking-wider ${isMecha ? 'text-blue-400' : 'text-pink-500'}`}>
+                      <p className={`text-[11px] font-bold ${isMecha ? 'text-slate-300' : 'text-slate-600'}`}>{quest.desc}</p>
+                      <div className={`mt-2 flex items-center gap-1 font-bold text-[10px] uppercase tracking-wider ${isMecha ? 'text-blue-400' : 'text-pink-600'}`}>
                         <Coins size={12} /> {quest.reward} Pts
                       </div>
                     </div>
@@ -248,27 +249,73 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
                     {STORE_ITEMS.filter(item => item.type === category).map(item => {
                       const owned = hasItem(item.type, item.id);
                       const IconComponent = item.icon;
+                      
+                      let PreviewContent = null;
+                      if (item.type === 'banner') {
+                        const opt = BANNER_OPTIONS.find(b => b.id === item.id);
+                        if (opt) {
+                          PreviewContent = (
+                            <div className={`w-full h-full rounded-[14px] ${opt.bg} bg-cover bg-center overflow-hidden relative`} style={opt.imageUrl ? { backgroundImage: `url(${opt.imageUrl})` } : {}}>
+                              <div className="absolute inset-0 bg-black/10"></div>
+                            </div>
+                          );
+                        }
+                      } else if (item.type === 'frame') {
+                        const opt = FRAME_OPTIONS.find(f => f.id === item.id);
+                        if (opt) {
+                          PreviewContent = (
+                            <div className="w-12 h-12 rounded-full relative bg-slate-200">
+                              {opt.imageUrl ? (
+                                <img src={opt.imageUrl} alt="frame" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] max-w-none pointer-events-none" />
+                              ) : (
+                                <div className={`absolute -inset-1 rounded-full ${opt.class}`}></div>
+                              )}
+                            </div>
+                          );
+                        }
+                      } else if (item.type === 'avatar') {
+                        const opt = AVATAR_OPTIONS.find(a => a.id === item.id);
+                        if (opt) {
+                          PreviewContent = (
+                            <div className="w-12 h-12 rounded-full bg-cover bg-center border-2 border-white shadow-sm" style={{ backgroundImage: `url(${opt.imageUrl})` }}></div>
+                          );
+                        }
+                      } else if (item.type === 'walletSkin') {
+                        const opt = WALLET_SKIN_OPTIONS.find(w => w.id === item.id);
+                        if (opt) {
+                          PreviewContent = (
+                            <div className={`w-14 h-9 rounded-lg shadow-sm border border-white/20 ${opt.bg.split(' ')[0]} ${opt.bg.split(' ')[1] || ''}`}></div>
+                          );
+                        }
+                      } else if (item.type === 'theme') {
+                        PreviewContent = (
+                          <div className="w-12 h-12 rounded-full bg-slate-900 border-[3px] border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)] flex items-center justify-center">
+                             <Zap size={20} className="text-blue-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.8)]" />
+                          </div>
+                        )
+                      }
+
                       return (
                         <motion.div 
                           variants={itemVariants}
                           key={item.id} 
-                          className={`p-4 rounded-[24px] border flex flex-col justify-between h-[140px] relative overflow-hidden backdrop-blur-md transition-all duration-300 hover:scale-[1.02] shadow-sm ${isMecha ? 'bg-slate-800/50 border-slate-700/50 hover:bg-slate-800/80 hover:shadow-blue-500/10' : 'bg-white/60 border-white/60 hover:bg-white/90 hover:shadow-purple-500/10'}`}
+                          className={`p-4 rounded-[24px] border flex flex-col justify-between h-[160px] relative overflow-hidden backdrop-blur-md transition-all duration-300 hover:scale-[1.02] shadow-sm ${isMecha ? 'bg-slate-800/50 border-slate-700/50 hover:bg-slate-800/80 hover:shadow-blue-500/10' : 'bg-white/80 border-slate-200 hover:bg-white hover:shadow-purple-500/10'}`}
                         >
-                          <div className={`w-10 h-10 rounded-[14px] flex items-center justify-center mb-2 ${isMecha ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-100 text-purple-500'}`}>
-                            <IconComponent size={20} />
+                          <div className={`w-14 h-14 rounded-[14px] flex items-center justify-center mb-2 overflow-hidden shrink-0 ${isMecha ? 'bg-slate-900/50' : 'bg-slate-100'} ${item.type === 'banner' ? 'w-full h-12 mb-3' : ''}`}>
+                            {PreviewContent ? PreviewContent : <IconComponent size={20} className={isMecha ? 'text-blue-400' : 'text-purple-500'} />}
                           </div>
                           
-                          <h4 className={`text-xs font-black leading-tight ${isMecha ? 'text-slate-200' : 'text-slate-700'}`}>{item.name}</h4>
+                          <h4 className={`text-xs font-black leading-tight line-clamp-2 ${isMecha ? 'text-white' : 'text-slate-900'}`}>{item.name}</h4>
                           
-                          <div className="mt-2">
+                          <div className="mt-2 shrink-0">
                             {owned ? (
-                              <div className={`flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider ${isMecha ? 'text-teal-400' : 'text-emerald-500'}`}>
+                              <div className={`flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider ${isMecha ? 'text-teal-400' : 'text-emerald-600'}`}>
                                 <Unlock size={12} /> Owned
                               </div>
                             ) : (
                               <button 
                                 onClick={() => handleBuy(item)}
-                                className={`w-full flex items-center justify-center gap-1.5 py-1.5 rounded-full font-bold text-[11px] transition-transform active:scale-95 ${points >= item.cost ? (isMecha ? 'bg-blue-500 hover:bg-blue-400 text-white' : 'bg-slate-800 text-white hover:bg-slate-700') : (isMecha ? 'bg-slate-700 text-slate-500 cursor-not-allowed' : 'bg-slate-100 text-slate-400 cursor-not-allowed')}`}
+                                className={`w-full flex items-center justify-center gap-1.5 py-1.5 rounded-full font-bold text-[11px] transition-transform active:scale-95 ${points >= item.cost ? (isMecha ? 'bg-blue-500 hover:bg-blue-400 text-white' : 'bg-slate-800 text-white hover:bg-slate-700') : (isMecha ? 'bg-slate-700 text-slate-400 cursor-not-allowed' : 'bg-slate-200 text-slate-500 cursor-not-allowed')}`}
                               >
                                 <Lock size={12} /> {item.cost}
                               </button>

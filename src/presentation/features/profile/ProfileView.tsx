@@ -37,7 +37,7 @@ export const AVATAR_OPTIONS = [
   { id: 'custom2', name: 'Custom Avatar 2', imageUrl: '/avatars/custom2.png' },
 ];
 
-const BANNER_OPTIONS = [
+export const BANNER_OPTIONS = [
   { id: 'default', name: 'Default', bg: 'bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-400', imageUrl: '' },
   { id: 'neon', name: 'Neon City', bg: 'bg-gradient-to-r from-fuchsia-600 to-pink-600', imageUrl: '' },
   { id: 'holographic', name: 'Holographic', bg: 'bg-gradient-to-tr from-emerald-400 via-cyan-400 to-blue-500', imageUrl: '' },
@@ -47,7 +47,7 @@ const BANNER_OPTIONS = [
   { id: 'sakura-bridge', name: 'Sakura Bridge', bg: 'bg-pink-200', imageUrl: '/banners/sakura-bridge.gif' },
 ];
 
-const FRAME_OPTIONS = [
+export const FRAME_OPTIONS = [
   { id: 'none', name: 'None', class: 'border-4 border-white' },
   { id: 'gold', name: 'Gold VIP', class: 'border-[6px] border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.6)]' },
   { id: 'neon', name: 'Cyber Neon', class: 'border-[6px] border-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.8)]' },
