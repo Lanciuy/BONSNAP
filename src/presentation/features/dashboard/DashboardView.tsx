@@ -5,7 +5,7 @@ import { Mascot, MascotMood, getGeneratedMascotUrl } from "../../shared/Mascot/M
 import { ThemeState, Inventory, UserProfile } from '../../../core/entities';
 import { AVATAR_OPTIONS, WALLET_SKIN_OPTIONS } from "../profile/ProfileView";
 import { useAppStore } from "../../../core/store/useAppStore";
-import { generateMascotResponse, MascotResponse } from "../../../infrastructure/services/groqService";
+import { useMascotAI } from "../../hooks/useMascotAI";
 
 interface DashboardViewProps {
   onGoToCamera: () => void;
@@ -49,37 +49,17 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
     ? "CREDITS AT 29%. RECOMMEND TACTICAL CONSERVATION FOR UPGRADES." 
     : `Wih, sisa budget lo masih Rp ${remainingBudget.toLocaleString('id-ID')}! Valid no debat, yuk jajan cantik! 🍰`;
     
-  const [msg, setMsg] = useState(defaultMsg);
+  const { msg, mood, handleHover, resetMascot } = useMascotAI(userProfile.financialPersona, isMecha, defaultMsg, "happy");
 
   React.useEffect(() => {
-    let isMounted = true;
-    const fetchDynamicGreeting = async () => {
-      if (transactions.length === 0) return; // Use default if no transactions
-      
-      try {
-        const lastTx = transactions[0];
-        const context = `User recently spent Rp ${lastTx.amount} at ${lastTx.name}. They have Rp ${remainingBudget} left. Give a quick reaction!`;
-        
-        const response: MascotResponse = await generateMascotResponse(context, userProfile.financialPersona, isMecha);
-        if (isMounted) {
-          setMsg(response.message);
-          setMood(response.mood as MascotMood);
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    };
-    
-    // Slight delay to avoid jitter on mount
-    const timeout = setTimeout(() => {
-      fetchDynamicGreeting();
-    }, 1000);
-
-    return () => {
-      isMounted = false;
-      clearTimeout(timeout);
-    };
-  }, [transactions, remainingBudget, userProfile.financialPersona, isMecha]);
+    if (transactions.length > 0) {
+      const lastTx = transactions[0];
+      const contextTemplate = `User recently spent Rp ${lastTx.amount} at ${lastTx.name}. They have Rp ${remainingBudget} left. Give a quick reaction!`;
+      handleHover(contextTemplate, "thinking");
+    } else {
+      resetMascot();
+    }
+  }, [transactions, remainingBudget, handleHover, resetMascot]);
 
   const quickActions = [
     { id: "income", label: "Income", icon: ArrowDownRight, color: "text-emerald-500", bg: "bg-emerald-100", hoverMsg: "Ada uang masuk? Upload SS-an notif transfer atau invoice-nya ke sini!", hoverMood: "excited" },
@@ -111,8 +91,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
           <div className="flex items-center gap-4">
             <div 
               onClick={() => onNavigate('editProfile')} 
-              onMouseEnter={() => { setMood("cute"); setMsg("Mau update profil biar makin badai ya? 💅"); }} 
-              onMouseLeave={() => { setMood("happy"); setMsg(defaultMsg); }}
+              onMouseEnter={() => { handleHover("Mau update profil biar makin badai ya? 💅", "cute"); }} 
+              onMouseLeave={() => { resetMascot(); }}
               className={`cursor-pointer w-14 h-14 rounded-full overflow-hidden border-4 shadow-md relative transition-transform active:scale-95 bg-white ${isMecha ? 'border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.6)]' : 'border-pink-200'}`}
             >
               <img src={avatarUrl} alt="Profile" className={`w-full h-full object-cover ${theme === 'original' ? '' : 'scale-110'}`} />
@@ -128,7 +108,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
               <span className="absolute top-2 right-2 w-2 h-2 bg-pink-500 rounded-full"></span>
             </button>
             <button 
-              onClick={() => { setIsSettingsModalOpen(true); setMood("surprised"); setMsg(isMecha ? "SYSTEM CONFIGURATION." : "Mau ngoprek settings nih? Kepo deh! ⚙️"); }} 
+              onClick={() => { setIsSettingsModalOpen(true); handleHover(isMecha ? "SYSTEM CONFIGURATION." : "Mau ngoprek settings nih? Kepo deh! ⚙️", "surprised"); }} 
               className={`w-10 h-10 rounded-full flex items-center justify-center shadow-sm border transition ${isMecha ? 'bg-slate-800 border-blue-500 hover:bg-blue-900 text-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.4)]' : 'bg-white border-slate-100 hover:bg-pink-50 text-slate-400 hover:text-pink-500'}`}
             >
               <Settings size={20} />
@@ -142,7 +122,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
           <motion.div 
             variants={itemVariants} 
             className={`w-full aspect-[1.586/1] rounded-[24px] p-5 sm:p-7 flex flex-col justify-between relative overflow-hidden shadow-2xl transition-all duration-700 ${activeWalletSkin.bg}`}
-            onMouseEnter={() => { setMood("thinking"); setMsg(isMecha ? "ANALYZING FINANCIAL RESERVES..." : "Wah, isi dompetnya lumayan nih! 💳"); }}
+            onMouseEnter={() => { handleHover(isMecha ? "ANALYZING FINANCIAL RESERVES..." : "Wah, isi dompetnya lumayan nih! 💳", "thinking"); }}
             onMouseLeave={() => setMood("happy")}
           >
             {/* Holographic Anime/Manga Accents */}
@@ -209,8 +189,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => onNavigate(action.id)}
-                onMouseEnter={() => { setMood(action.hoverMood as MascotMood); setMsg(action.hoverMsg); }}
-                onMouseLeave={() => { setMood("happy"); setMsg(defaultMsg); }}
+                onMouseEnter={() => { handleHover(action.hoverMsg, action.hoverMood as MascotMood); }}
+                onMouseLeave={() => { resetMascot(); }}
                 className="flex flex-col items-center gap-2 group"
               >
                 <div className={`w-14 h-14 rounded-[20px] flex items-center justify-center border shadow-lg backdrop-blur-md transition-all duration-300 group-hover:scale-110 group-active:scale-95 ${isMecha ? 'bg-slate-800/80 border-slate-700/50 shadow-blue-500/10 group-hover:shadow-blue-500/30' : 'bg-white/80 border-white/60 shadow-pink-500/5 group-hover:shadow-pink-500/20'} ${action.bg}`}>
@@ -269,8 +249,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
                   key={tx.id} 
                   onClick={() => onNavigate("history")}
                   className={`flex items-center gap-3 group relative cursor-pointer p-3.5 rounded-[20px] transition-all duration-300 hover:scale-[1.02] backdrop-blur-md border shadow-sm ${isMecha ? 'bg-slate-800/50 border-slate-700/50 hover:bg-slate-800/80 hover:shadow-blue-500/10' : 'bg-white/60 border-white/60 hover:bg-white/90 hover:shadow-pink-500/10'}`}
-                  onMouseEnter={() => { setMood(tx.hoverMood as any); setMsg(tx.hoverMsg); }}
-                  onMouseLeave={() => { setMood("happy"); setMsg(defaultMsg); }}
+                  onMouseEnter={() => { handleHover(tx.hoverMsg, tx.hoverMood as any); }}
+                  onMouseLeave={() => { resetMascot(); }}
                 >
                   <div className={`p-2.5 rounded-[14px] shadow-sm ${tx.bg}`}>
                     {tx.iconName === 'Swords' && <Swords size={18} className={tx.color} />}
@@ -324,8 +304,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
           <div className="absolute -top-10">
             <button 
               onClick={onGoToCamera}
-              onMouseEnter={() => { setMood("alert"); setMsg(isMecha ? "SCANNER ONLINE." : "Ada struk baru? Sini gue scan-in pakai AI! 📸"); }}
-              onMouseLeave={() => { setMood("thinking"); setMsg(defaultMsg); }}
+              onMouseEnter={() => { handleHover(isMecha ? "SCANNER ONLINE." : "Ada struk baru? Sini gue scan-in pakai AI! 📸", "alert"); }}
+              onMouseLeave={() => { resetMascot(); }}
               className={`group flex flex-col items-center justify-center w-[68px] h-[68px] rounded-full hover:scale-105 active:scale-95 transition-all border-4 ${isMecha ? 'border-slate-900 bg-gradient-to-tr from-blue-600 to-teal-400 shadow-[0_0_25px_rgba(45,212,191,0.5)]' : 'border-white bg-gradient-to-tr from-pink-400 to-purple-400 shadow-[0_10px_20px_rgba(244,114,182,0.4)]'}`}
             >
               <Camera size={28} strokeWidth={2.5} className="text-white group-hover:-translate-y-0.5 transition-transform" />
@@ -336,8 +316,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
         {/* Insights */}
         <button 
           onClick={onGoToInsights} 
-          onMouseEnter={() => { setMood("thinking"); setMsg(isMecha ? "ACCESSING DIAGNOSTICS." : "Yuk kita pantau pengeluaran lo, biar gak boncos! 📊"); }}
-          onMouseLeave={() => { setMood("happy"); setMsg(defaultMsg); }}
+          onMouseEnter={() => { handleHover(isMecha ? "ACCESSING DIAGNOSTICS." : "Yuk kita pantau pengeluaran lo, biar gak boncos! 📊", "thinking"); }}
+          onMouseLeave={() => { resetMascot(); }}
           className={`flex flex-col items-center justify-center w-[20%] group transition-colors ${isMecha ? 'text-slate-400 hover:text-red-400' : 'text-slate-400 hover:text-purple-500'}`}
         >
           <div className={`p-1.5 rounded-xl transition-colors mb-0.5 ${isMecha ? 'group-hover:bg-red-500/20' : 'group-hover:bg-purple-50'}`}>
@@ -349,8 +329,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
         {/* Profile */}
         <button 
           onClick={() => onNavigate('editProfile')}
-          onMouseEnter={() => { setMood("cute"); setMsg("Mau update profil biar makin cetar? 💅"); }}
-          onMouseLeave={() => { setMood("happy"); setMsg(defaultMsg); }}
+          onMouseEnter={() => { handleHover("Mau update profil biar makin cetar? 💅", "cute"); }}
+          onMouseLeave={() => { resetMascot(); }}
           className={`flex flex-col items-center justify-center w-[20%] group transition-colors ${isMecha ? 'text-slate-400 hover:text-teal-400' : 'text-slate-400 hover:text-pink-500'}`}
         >
           <div className={`p-1.5 rounded-xl transition-colors mb-0.5 ${isMecha ? 'group-hover:bg-teal-500/20' : 'group-hover:bg-pink-50'}`}>
@@ -368,7 +348,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
             <motion.div 
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               className="absolute inset-0 bg-slate-900/60 z-[60] backdrop-blur-sm pointer-events-auto"
-              onClick={() => { setIsSettingsModalOpen(false); setMood("happy"); setMsg(defaultMsg); }}
+              onClick={() => { setIsSettingsModalOpen(false); resetMascot(); }}
             />
             <motion.div
               initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }}
@@ -376,7 +356,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
             >
               <div className="flex justify-between items-center mb-6 shrink-0">
                 <h2 className={`text-xl font-black ${isMecha ? 'text-white' : 'text-slate-800'}`}>{isMecha ? 'SYSTEM CONFIG' : 'Settings ⚙️'}</h2>
-                <button onClick={() => { setIsSettingsModalOpen(false); setMood("happy"); setMsg(defaultMsg); }} className={`p-2 rounded-full transition ${isMecha ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' : 'bg-slate-100 hover:bg-slate-200'}`}><X size={20} /></button>
+                <button onClick={() => { setIsSettingsModalOpen(false); resetMascot(); }} className={`p-2 rounded-full transition ${isMecha ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' : 'bg-slate-100 hover:bg-slate-200'}`}><X size={20} /></button>
               </div>
               
               <div className="flex-1 overflow-y-auto no-scrollbar pb-10 flex flex-col gap-6">

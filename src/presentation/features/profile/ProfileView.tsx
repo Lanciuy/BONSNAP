@@ -3,6 +3,7 @@ import { Camera, PieChart, Home, ReceiptText, User, ChevronLeft, MapPin, Graduat
 import { Mascot, MascotMood } from "../../shared/Mascot/Mascot";
 import { ThemeState, Inventory, UserProfile } from '../../../core/entities';
 import { motion, AnimatePresence } from "motion/react";
+import { useMascotAI } from "../../hooks/useMascotAI";
 
 interface ProfileViewProps {
   onGoToCamera: () => void;
@@ -93,8 +94,9 @@ const ALL_ACHIEVEMENTS = [
 ];
 
 export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDashboard, theme, onNavigate, points, level, inventory, setInventory, setTheme, userProfile, setUserProfile }) => {
-  const [mood, setMood] = useState<MascotMood>("happy");
-  const [msg, setMsg] = useState("Profil lo udah cakep banget bestie! 💅");
+  const isMecha = theme === 'mecha';
+  const defaultMsg = "Profil lo udah cakep banget bestie! 💅";
+  const { msg, mood, handleHover, resetMascot } = useMascotAI(userProfile.financialPersona, isMecha, defaultMsg, "happy");
   
   // Tab States for Modals
   const [isEditing, setIsEditing] = useState(false);
@@ -147,9 +149,9 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
   const handleSelectAvatar = (opt: typeof AVATAR_OPTIONS[0]) => {
     if (inventory.avatars.includes(opt.id)) {
       setActiveAvatar(opt);
-      setMood("excited"); setMsg(`Avatar ${opt.name} cakep banget! 😍`);
+      handleHover(`Avatar ${opt.name} cakep banget! 😍`, "excited");
     } else {
-      setMood("alert"); setMsg(`Ups, avatar ${opt.name} masih dikunci. Beli dulu di Rewards Hub! 🛍️`);
+      handleHover(`Ups, avatar ${opt.name} masih dikunci. Beli dulu di Rewards Hub! 🛍️`, "alert");
       onNavigate('store');
     }
   };
@@ -157,9 +159,9 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
   const handleSelectBanner = (opt: typeof BANNER_OPTIONS[0]) => {
     if (inventory.banners.includes(opt.id)) {
       setActiveBanner(opt);
-      setMood("cute"); setMsg(`Wah, banner ${opt.name} kelihatan keren banget! ✨`);
+      handleHover(`Wah, banner ${opt.name} kelihatan keren banget! ✨`, "cute");
     } else {
-      setMood("alert"); setMsg(`Ups, banner ${opt.name} belum kebuka. Beli dulu di Rewards Hub! 🛍️`);
+      handleHover(`Ups, banner ${opt.name} belum kebuka. Beli dulu di Rewards Hub! 🛍️`, "alert");
       onNavigate('store');
     }
   };
@@ -167,9 +169,9 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
   const handleSelectFrame = (opt: typeof FRAME_OPTIONS[0]) => {
     if (inventory.frames.includes(opt.id)) {
       setActiveFrame(opt);
-      setMood("excited"); setMsg(`Frame ${opt.name} bikin foto profil lo makin bersinar! 👑`);
+      handleHover(`Frame ${opt.name} bikin foto profil lo makin bersinar! 👑`, "excited");
     } else {
-      setMood("alert"); setMsg(`Ups, frame ${opt.name} masih dikunci. Beli dulu pakai poin! 🛍️`);
+      handleHover(`Ups, frame ${opt.name} masih dikunci. Beli dulu pakai poin! 🛍️`, "alert");
       onNavigate('store');
     }
   };
@@ -177,9 +179,9 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
   const handleSelectWalletSkin = (opt: typeof WALLET_SKIN_OPTIONS[0]) => {
     if (inventory.walletSkins.includes(opt.id)) {
       setActiveWalletSkin(opt);
-      setMood("excited"); setMsg(`Wallet Skin ${opt.name} aktif! 💳`);
+      handleHover(`Wallet Skin ${opt.name} aktif! 💳`, "excited");
     } else {
-      setMood("alert"); setMsg(`Skin ${opt.name} belum dibeli! Beli dulu di Rewards Hub 🛒`);
+      handleHover(`Skin ${opt.name} belum dibeli! Beli dulu di Rewards Hub 🛒`, "alert");
       onNavigate('store');
     }
   };
@@ -377,7 +379,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
           {/* Integration Links */}
           <h2 className={`text-[10px] font-black uppercase tracking-widest mt-5 mb-2 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Connections</h2>
           <div className="flex flex-col gap-2">
-            <div className={`p-3 rounded-[12px] flex items-center justify-between border cursor-pointer transition-colors backdrop-blur-md shadow-sm ${isMecha ? 'bg-slate-950/50 border-slate-800 hover:bg-slate-900/80' : 'bg-white/60 border-white/60 hover:bg-white/90'}`} onMouseEnter={() => { setMood("thinking"); setMsg("Mau nyambungin ke Instagram ya? 🔗"); }}>
+            <div className={`p-3 rounded-[12px] flex items-center justify-between border cursor-pointer transition-colors backdrop-blur-md shadow-sm ${isMecha ? 'bg-slate-950/50 border-slate-800 hover:bg-slate-900/80' : 'bg-white/60 border-white/60 hover:bg-white/90'}`} onMouseEnter={() => { handleHover("Mau nyambungin ke Instagram ya? 🔗", "thinking"); }} onMouseLeave={resetMascot}>
               <div className="flex items-center gap-3">
                 <Link2 size={16} className={isMecha ? 'text-slate-400' : 'text-slate-500'} />
                 <div className={`font-bold text-xs ${isMecha ? 'text-slate-300' : 'text-slate-700'}`}>Linked Accounts</div>
@@ -385,7 +387,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
               <ChevronLeft size={14} className="text-slate-400 rotate-180" />
             </div>
             
-            <div className={`p-3 rounded-[12px] flex items-center justify-between border cursor-pointer transition-colors backdrop-blur-md shadow-sm ${isMecha ? 'bg-slate-950/50 border-slate-800 hover:bg-slate-900/80' : 'bg-white/60 border-white/60 hover:bg-white/90'}`} onMouseEnter={() => { setMood("thinking"); setMsg("Mau ngatur privasi akun? 🔒"); }}>
+            <div className={`p-3 rounded-[12px] flex items-center justify-between border cursor-pointer transition-colors backdrop-blur-md shadow-sm ${isMecha ? 'bg-slate-950/50 border-slate-800 hover:bg-slate-900/80' : 'bg-white/60 border-white/60 hover:bg-white/90'}`} onMouseEnter={() => { handleHover("Mau ngatur privasi akun? 🔒", "thinking"); }} onMouseLeave={resetMascot}>
               <div className="flex items-center gap-3">
                 <ShieldCheck size={16} className={isMecha ? 'text-slate-400' : 'text-slate-500'} />
                 <div className={`font-bold text-xs ${isMecha ? 'text-slate-300' : 'text-slate-700'}`}>Privacy & Security</div>
@@ -430,7 +432,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
            </div>
            <div className={`rounded-[24px] overflow-hidden border shadow-sm backdrop-blur-md ${isMecha ? 'bg-slate-900/50 border-slate-800/50' : 'bg-white/60 border-white/60'}`}>
               
-              <div className={`p-4 border-b flex items-center justify-between transition-colors cursor-pointer ${isMecha ? 'border-slate-800 hover:bg-slate-800' : 'border-slate-100 hover:bg-slate-50'}`} onMouseEnter={() => { setMood("thinking"); setMsg("Biar kamu nggak ketinggalan info diskon! 🔔"); }}>
+              <div className={`p-4 border-b flex items-center justify-between transition-colors cursor-pointer ${isMecha ? 'border-slate-800 hover:bg-slate-800' : 'border-slate-100 hover:bg-slate-50'}`} onMouseEnter={() => { handleHover("Biar kamu nggak ketinggalan info diskon! 🔔", "thinking"); }} onMouseLeave={resetMascot}>
                  <div className="flex items-center gap-4">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isMecha ? 'bg-slate-800 text-blue-400' : 'bg-blue-50 text-blue-500'}`}>
                        <Bell size={20} />
@@ -443,7 +445,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
                  <ChevronLeft size={18} className="text-slate-400 rotate-180" />
               </div>
 
-              <div className={`p-4 border-b flex items-center justify-between transition-colors cursor-pointer ${isMecha ? 'border-slate-800 hover:bg-slate-800' : 'border-slate-100 hover:bg-slate-50'}`} onMouseEnter={() => { setMood("excited"); setMsg("Cetak laporan keuanganmu jadi Excel keren! 📊"); }}>
+              <div className={`p-4 border-b flex items-center justify-between transition-colors cursor-pointer ${isMecha ? 'border-slate-800 hover:bg-slate-800' : 'border-slate-100 hover:bg-slate-50'}`} onMouseEnter={() => { handleHover("Cetak laporan keuanganmu jadi Excel keren! 📊", "excited"); }} onMouseLeave={resetMascot}>
                  <div className="flex items-center gap-4">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isMecha ? 'bg-slate-800 text-emerald-400' : 'bg-emerald-50 text-emerald-500'}`}>
                        <Download size={20} />
@@ -456,7 +458,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
                  <ChevronLeft size={18} className="text-slate-400 rotate-180" />
               </div>
 
-              <div onClick={() => setIsEditingWallet(true)} className={`p-4 border-b flex items-center justify-between transition-colors cursor-pointer ${isMecha ? 'border-slate-800 hover:bg-slate-800' : 'border-slate-100 hover:bg-slate-50'}`} onMouseEnter={() => { setMood("thinking"); setMsg("Atur nama dompet sama skinnya ya! 💳"); }}>
+              <div onClick={() => setIsEditingWallet(true)} className={`p-4 border-b flex items-center justify-between transition-colors cursor-pointer ${isMecha ? 'border-slate-800 hover:bg-slate-800' : 'border-slate-100 hover:bg-slate-50'}`} onMouseEnter={() => { handleHover("Atur nama dompet sama skinnya ya! 💳", "thinking"); }} onMouseLeave={resetMascot}>
                  <div className="flex items-center gap-4">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isMecha ? 'bg-slate-800 text-purple-400' : 'bg-purple-50 text-purple-500'}`}>
                        <ReceiptText size={20} />
@@ -469,7 +471,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
                  <ChevronLeft size={18} className="text-slate-400 rotate-180" />
               </div>
 
-              <div className={`p-4 flex items-center justify-between transition-colors cursor-pointer ${isMecha ? 'hover:bg-slate-800' : 'hover:bg-slate-50'}`} onMouseEnter={() => { setMood("happy"); setMsg("Bosan dengan tampilannya? Ayo atur aplikasinya! ⚙️"); }}>
+              <div className={`p-4 flex items-center justify-between transition-colors cursor-pointer ${isMecha ? 'hover:bg-slate-800' : 'hover:bg-slate-50'}`} onMouseEnter={() => { handleHover("Bosan dengan tampilannya? Ayo atur aplikasinya! ⚙️", "happy"); }} onMouseLeave={resetMascot}>
                  <div className="flex items-center gap-4">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isMecha ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-600'}`}>
                        <Settings size={20} />

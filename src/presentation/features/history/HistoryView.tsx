@@ -4,6 +4,7 @@ import { Mascot, MascotMood } from "../../shared/Mascot/Mascot";
 import { ThemeState } from '../../../core/entities';
 import { motion } from "motion/react";
 import { useAppStore } from "../../../core/store/useAppStore";
+import { useMascotAI } from "../../hooks/useMascotAI";
 
 interface HistoryViewProps {
   onGoToCamera: () => void;
@@ -27,8 +28,10 @@ const itemVariants = {
 
 export const HistoryView: React.FC<HistoryViewProps> = ({ onGoToCamera, onGoToDashboard, theme, onNavigate }) => {
   const isMecha = theme === 'mecha';
-  const [mood, setMood] = useState<MascotMood>("thinking");
-  const [msg, setMsg] = useState("Scroll ke bawah pelan-pelan ya, jangan kaget liat daftar dosanya! 📜");
+  const defaultMsg = "Scroll ke bawah pelan-pelan ya, jangan kaget liat daftar dosanya! 📜";
+  const { userProfile } = useAppStore();
+  const { msg, mood, handleHover, resetMascot } = useMascotAI(userProfile.financialPersona, isMecha, defaultMsg, "thinking");
+  
   const [searchQuery, setSearchQuery] = useState("");
 
   const formatIDR = (num: number) => `Rp ${num.toLocaleString('id-ID')}`;
@@ -95,8 +98,8 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ onGoToCamera, onGoToDa
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className={`flex-1 bg-transparent border-none outline-none text-sm font-bold placeholder-opacity-50 ${isMecha ? 'text-white placeholder-slate-500' : 'text-slate-700 placeholder-slate-400'}`}
-              onFocus={() => { setMood("cute"); setMsg("Lagi nyari dosa apa nih bestie? 🧐"); }}
-              onBlur={() => { setMood("thinking"); setMsg("Scroll ke bawah pelan-pelan ya, jangan kaget liat daftar dosanya! 📜"); }}
+              onFocus={() => { handleHover("Lagi nyari dosa apa nih bestie? 🧐", "cute"); }}
+              onBlur={() => { resetMascot(); }}
             />
             <button className={`p-1.5 rounded-full transition-colors ${isMecha ? 'bg-slate-700/50 text-slate-300 hover:bg-slate-600' : 'bg-pink-50/50 text-pink-400 hover:text-pink-500'}`}><Filter size={16} /></button>
           </div>
@@ -118,7 +121,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ onGoToCamera, onGoToDa
                   <div className="flex flex-col gap-3">
                     {transactions.map((t) => {
                       return (
-                        <motion.div variants={itemVariants} key={t.id} className={`flex items-center justify-between p-4 rounded-[24px] border backdrop-blur-md transition-all duration-300 hover:scale-[1.02] shadow-sm ${isMecha ? 'bg-slate-800/50 border-slate-700/50 hover:bg-slate-800/80 hover:shadow-blue-500/10' : 'bg-white/60 border-white/60 hover:bg-white/90 hover:shadow-pink-500/10'}`} onMouseEnter={() => { setMood(t.amount > 500000 ? "alert" : "happy"); setMsg(t.amount > 500000 ? `Wow ${t.name} mahal juga ya! 💸` : `Asyik jajan ${t.name}! ✨`); }}>
+                        <motion.div variants={itemVariants} key={t.id} className={`flex items-center justify-between p-4 rounded-[24px] border backdrop-blur-md transition-all duration-300 hover:scale-[1.02] shadow-sm ${isMecha ? 'bg-slate-800/50 border-slate-700/50 hover:bg-slate-800/80 hover:shadow-blue-500/10' : 'bg-white/60 border-white/60 hover:bg-white/90 hover:shadow-pink-500/10'}`} onMouseEnter={() => { handleHover(t.amount > 500000 ? `Wow ${t.name} mahal juga ya! 💸` : `Asyik jajan ${t.name}! ✨`, t.amount > 500000 ? "alert" : "happy"); }} onMouseLeave={() => resetMascot()}>
                           <div className="flex items-center gap-4">
                             <div className={`p-3 rounded-[16px] shadow-sm ${t.bg}`}>
                               {t.iconName === 'Swords' && <Sparkles size={18} className={t.color} />}

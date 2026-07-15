@@ -6,6 +6,7 @@ import { ThemeState } from '../../../core/entities';
 import { motion, AnimatePresence } from "motion/react";
 import { exportToExcel } from "../../../utils/exportExcel";
 import { useAppStore } from "../../../core/store/useAppStore";
+import { useMascotAI } from "../../hooks/useMascotAI";
 
 interface InsightsViewProps {
   onGoToCamera: () => void;
@@ -28,12 +29,12 @@ const itemVariants = {
 };
 
 export const InsightsView: React.FC<InsightsViewProps> = ({ onGoToCamera, onGoToDashboard, theme, onNavigate }) => {
-  const [mood, setMood] = useState<MascotMood>("thinking");
-  const [msg, setMsg] = useState("Sini gue bedah pengeluaran lo, semoga nggak jantungan ya! 🔍");
+  const isMecha = theme === 'mecha';
+  const defaultMsg = "Sini gue bedah pengeluaran lo, semoga nggak jantungan ya! 🔍";
+  const { userProfile, transactions } = useAppStore();
+  const { msg, mood, handleHover, resetMascot } = useMascotAI(userProfile.financialPersona, isMecha, defaultMsg, "thinking");
 
   const formatIDR = (num: number) => `Rp ${num.toLocaleString('id-ID')}`;
-
-  const { userProfile, transactions } = useAppStore();
 
   const totalBudget = userProfile.budget;
   const totalSpent = useMemo(() => transactions.reduce((acc, curr) => acc + curr.amount, 0), [transactions]);
@@ -91,13 +92,11 @@ export const InsightsView: React.FC<InsightsViewProps> = ({ onGoToCamera, onGoTo
           </div>
           <button 
             onClick={async () => {
-              setMood("excited");
-              setMsg("Lagi mencetak laporan Excel nih, tunggu bentar ya boss! 🖨️");
+              handleHover("Lagi mencetak laporan Excel nih, tunggu bentar ya boss! 🖨️", "thinking");
               await exportToExcel(transactions, totalBudget);
               setTimeout(() => {
-                setMood("happy");
-                setMsg("Laporan beres! Buka Excel-nya ya, rumusnya otomatis jalan lho! ✨");
-              }, 2000);
+                handleHover("Laporan beres! Buka Excel-nya ya, rumusnya otomatis jalan lho! ✨", "excited");
+              }, 1500);
             }}
             className={`px-3 py-2 text-[10px] font-black uppercase tracking-wider rounded-xl border-2 transition-all active:scale-95 flex items-center gap-1.5 ${theme === 'mecha' ? 'border-blue-500 bg-slate-800 text-blue-400 hover:bg-slate-700' : 'border-pink-200 bg-pink-50 text-pink-600 hover:bg-pink-100 shadow-sm shadow-pink-100'}`}
           >
@@ -108,7 +107,7 @@ export const InsightsView: React.FC<InsightsViewProps> = ({ onGoToCamera, onGoTo
         <motion.div variants={containerVariants} initial="hidden" animate="show" className="flex flex-col gap-6 px-6">
           
           {/* Budget Tracker Card */}
-          <motion.div variants={itemVariants} onMouseEnter={() => { setMood("alert"); setMsg("Awas boncos bestie! Rem dikit jajannya ⚠️"); }} onMouseLeave={() => { setMood("thinking"); setMsg("Batas aman pengeluaran lo 166rb/hari ya!"); }}>
+          <motion.div variants={itemVariants} onMouseEnter={() => { handleHover("Awas boncos bestie! Rem dikit jajannya ⚠️", "alert"); }} onMouseLeave={() => { resetMascot(); }}>
             <div className="bg-white/90 backdrop-blur-2xl border rounded-[32px] p-6 shadow-xl relative overflow-hidden border-pink-200 shadow-purple-100/50">
               <div className="absolute top-0 left-0 w-full h-1.5 bg-slate-200">
                 <motion.div 
@@ -147,8 +146,8 @@ export const InsightsView: React.FC<InsightsViewProps> = ({ onGoToCamera, onGoTo
           <motion.div variants={itemVariants}>
             <div 
               className="bg-gradient-to-r from-emerald-400 to-teal-400 rounded-[28px] p-5 shadow-lg shadow-emerald-200/50 text-white relative overflow-hidden flex items-center gap-4"
-              onMouseEnter={() => { setMood("excited"); setMsg("Financial score lo 85/100! Slay banget managing duitnya! 💅"); }}
-            >
+              onMouseEnter={() => { handleHover("Financial score lo 85/100! Slay banget managing duitnya! 💅", "excited"); }}
+              onMouseLeave={() => resetMascot()}>
               <div className="absolute right-[-20px] top-[-20px] opacity-20"><HeartPulse size={120} /></div>
               <div className="relative z-10 w-16 h-16 rounded-[20px] bg-white text-emerald-500 flex flex-col items-center justify-center font-black shadow-inner border-[3px] border-emerald-100 shrink-0">
                 <span className="text-2xl leading-none">85</span>
@@ -167,7 +166,7 @@ export const InsightsView: React.FC<InsightsViewProps> = ({ onGoToCamera, onGoTo
 
           {/* New: Top 3 Biggest Expenses */}
           <motion.div variants={itemVariants}>
-             <div className="bg-white/90 backdrop-blur-2xl border border-pink-200 shadow-xl shadow-pink-100/50 rounded-[32px] p-5" onMouseEnter={() => { setMood("alert"); setMsg("Waduh, ini nih 3 transaksi yang bikin dompet lo menjerit! 😱"); }}>
+             <div className="bg-white/90 backdrop-blur-2xl border border-pink-200 shadow-xl shadow-pink-100/50 rounded-[32px] p-5" onMouseEnter={() => { handleHover("Waduh, ini nih 3 transaksi yang bikin dompet lo menjerit! 😱", "alert"); }} onMouseLeave={() => resetMascot()}>
               <div className="flex items-center justify-between mb-4 px-1">
                 <h3 className="text-sm font-black tracking-wider uppercase text-slate-800 flex items-center gap-2">
                   <Crown size={18} className="text-yellow-500 fill-yellow-500" /> Top Spends
@@ -286,7 +285,7 @@ export const InsightsView: React.FC<InsightsViewProps> = ({ onGoToCamera, onGoTo
       {/* Modern Floating Bottom Navigation */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-[360px] h-[72px] bg-white/95 backdrop-blur-2xl border rounded-[32px] px-2 flex justify-between items-center shadow-[0_20px_40px_rgba(0,0,0,0.1)] z-40 pointer-events-auto border-slate-100">
         
-        <button onClick={onGoToDashboard} onMouseEnter={() => { setMood("happy"); setMsg("Balik ke home nih? Gas! ✨"); }} onMouseLeave={() => { setMood("thinking"); setMsg("Sini gue bedah pengeluaran lo, semoga nggak jantungan ya! 🔍"); }} className={`flex flex-col items-center justify-center w-[20%] group text-slate-400 hover:text-pink-500 transition-colors`}>
+        <button onClick={onGoToDashboard} onMouseEnter={() => { handleHover("Balik ke home nih? Gas! ✨", "happy"); }} onMouseLeave={() => { resetMascot(); }} className={`flex flex-col items-center justify-center w-[20%] group text-slate-400 hover:text-pink-500 transition-colors`}>
           <div className="p-1.5 rounded-xl transition-colors mb-0.5 group-hover:bg-pink-50"><Home size={22} strokeWidth={2.5} /></div>
           <span className="text-[9px] font-bold tracking-wide">Home</span>
         </button>
@@ -298,7 +297,7 @@ export const InsightsView: React.FC<InsightsViewProps> = ({ onGoToCamera, onGoTo
 
         <div className="w-[20%] flex justify-center relative">
           <div className="absolute -top-10">
-            <button onClick={onGoToCamera} onMouseEnter={() => { setMood("alert"); setMsg("Ada struk baru? Sini gue scan-in pakai AI! 📸"); }} onMouseLeave={() => { setMood("thinking"); setMsg("Sini gue bedah pengeluaran lo, semoga nggak jantungan ya! 🔍"); }} className={`group flex flex-col items-center justify-center w-[68px] h-[68px] rounded-full hover:scale-105 active:scale-95 transition-all border-4 border-white bg-gradient-to-tr from-pink-400 to-purple-400 shadow-[0_10px_20px_rgba(244,114,182,0.4)]`}>
+            <button onClick={onGoToCamera} onMouseEnter={() => { handleHover("Ada struk baru? Sini gue scan-in pakai AI! 📸", "alert"); }} onMouseLeave={() => { resetMascot(); }} className={`group flex flex-col items-center justify-center w-[68px] h-[68px] rounded-full hover:scale-105 active:scale-95 transition-all border-4 border-white bg-gradient-to-tr from-pink-400 to-purple-400 shadow-[0_10px_20px_rgba(244,114,182,0.4)]`}>
               <Camera size={28} strokeWidth={2.5} className="text-white group-hover:-translate-y-0.5 transition-transform" />
             </button>
           </div>

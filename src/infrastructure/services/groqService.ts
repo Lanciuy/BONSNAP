@@ -5,30 +5,40 @@ export interface MascotResponse {
   mood: string;
 }
 
+// Memory Cache for Overpower Token Optimization
+const responseCache = new Map<string, MascotResponse>();
+
 export const generateMascotResponse = async (
-  context: string, 
+  template: string, 
   persona: string, 
   isMecha: boolean
 ): Promise<MascotResponse> => {
-  // Fallback if API key is not set to prevent crashing
+  // Fallback if API key is not set
   if (!API_KEY) {
     return {
-      message: isMecha ? "API KEY MISSING. MOCK RESPONSE ENGAGED." : "API Key Groq belum disetting nih! (Mock)",
+      message: template, // Fallback directly to the static template
       mood: "neutral"
     };
+  }
+
+  // Caching mechanism to minimize API usage
+  const cacheKey = `${template}-${persona}-${isMecha}`;
+  if (responseCache.has(cacheKey)) {
+    return responseCache.get(cacheKey)!;
   }
 
   const systemPrompt = `
 You are the AI mascot for a financial app called BONSNAP. 
 Theme: ${isMecha ? "Mecha AI Assistant (Robotic, calculated, slightly sarcastic)" : "Gen Z Anime Waifu (Playful, uses slang, expressive, somewhat tsundere)"}.
 User Persona: ${persona}.
-Given the context of what the user just did, generate a VERY SHORT response (max 2 sentences) and a suitable mood.
+Task: Rewrite the given template text to perfectly match your theme and persona. Keep the core meaning the same, but change the tone and vocabulary.
+Make it VERY SHORT (max 15 words).
 
 Valid moods: "happy", "surprised", "sad", "wink", "cute", "thinking", "excited", "neutral", "alert", "confused", "love", "angry", "sleepy", "cool", "shy", "laughing", "scared", "smug".
 
-Respond STRICTLY in JSON format without any markdown blocks:
+Respond STRICTLY in JSON format:
 {
-  "message": "your message here",
+  "message": "your rewritten message here",
   "mood": "mood_name_here"
 }
 `;
@@ -44,7 +54,7 @@ Respond STRICTLY in JSON format without any markdown blocks:
         model: "llama3-8b-8192",
         messages: [
           { role: "system", content: systemPrompt },
-          { role: "user", content: context }
+          { role: "user", content: `Template to rewrite: "${template}"` }
         ],
         temperature: 0.7,
         response_format: { type: "json_object" }
@@ -58,11 +68,16 @@ Respond STRICTLY in JSON format without any markdown blocks:
     const data = await response.json();
     const resultContent = data.choices[0].message.content;
     const parsed = JSON.parse(resultContent);
-    return {
-      message: parsed.message || "Hmm...",
+    
+    const finalResult = {
+      message: parsed.message || template,
       mood: parsed.mood || "neutral"
     };
-
+    
+    // Save to Cache!
+    responseCache.set(cacheKey, finalResult);
+    
+    return finalResult;
   } catch (error) {
     console.error("Failed to fetch Mascot response from Groq:", error);
     return {

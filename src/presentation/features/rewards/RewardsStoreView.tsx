@@ -3,6 +3,8 @@ import { ChevronLeft, Coins, CalendarCheck, ShieldCheck, Flame, Sparkles, Trophy
 import { motion, AnimatePresence } from "motion/react";
 import { ThemeState, Inventory } from '../../../core/entities';
 import { Mascot, MascotMood } from "../../shared/Mascot/Mascot";
+import { useAppStore } from "../../../core/store/useAppStore";
+import { useMascotAI } from "../../hooks/useMascotAI";
 
 interface RewardsStoreViewProps {
   onBack: () => void;
@@ -26,8 +28,10 @@ const itemVariants = {
 
 export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, theme, points, setPoints, inventory, setInventory, initialTab = "quests" }) => {
   const isMecha = theme === "mecha";
-  const [mood, setMood] = useState<MascotMood>("excited");
-  const [msg, setMsg] = useState(isMecha ? "REWARDS TERMINAL ONLINE." : "Wih banyak poin nih! Mau tuker apa bestie? 🛍️");
+  const defaultMsg = isMecha ? "REWARDS TERMINAL ONLINE." : "Wih banyak poin nih! Mau tuker apa bestie? 🛍️";
+  const { userProfile } = useAppStore();
+  const { msg, mood, handleHover, resetMascot } = useMascotAI(userProfile.financialPersona, isMecha, defaultMsg, "excited");
+  
   const [activeTab, setActiveTab] = useState<"quests" | "store">(initialTab);
   const [questFilter, setQuestFilter] = useState<"daily" | "weekly" | "monthly">("daily");
 
@@ -72,16 +76,14 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
   const handleClaimQuest = (id: number, reward: number) => {
     setPoints(prev => prev + reward);
     setQuests(quests.map(q => q.id === id ? { ...q, claimed: true } : q));
-    setMood("excited");
-    setMsg(`Yeay! Dapet ${reward} Poin. Nabung terus ya! ✨`);
+    handleHover(`Yeay! Dapet ${reward} Poin. Nabung terus ya! ✨`, "excited");
   };
 
   const handleDailyLogin = () => {
     if (!dailyClaimed) {
       setPoints(prev => prev + 100);
       setDailyClaimed(true);
-      setMood("love");
-      setMsg("Makasih udah login hari ini! +100 Poin buat kamu 💖");
+      handleHover("Makasih udah login hari ini! +100 Poin buat kamu 💖", "love");
     }
   };
 
@@ -97,11 +99,9 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
         if (item.type === 'walletSkin' && !newInv.walletSkins.includes(item.id)) newInv.walletSkins.push(item.id);
         return newInv;
       });
-      setMood("excited");
-      setMsg(`Wuihhh ${item.name} berhasil dibeli! Langsung cek profil ya 💅`);
+      handleHover(`Wuihhh ${item.name} berhasil dibeli! Langsung cek profil ya 💅`, "excited");
     } else {
-      setMood("alert");
-      setMsg("Ups, poin kamu belum cukup bestie. Kumpulin dari quest dulu yuk! 🥲");
+      handleHover("Ups, poin kamu belum cukup bestie. Kumpulin dari quest dulu yuk! 🥲", "alert");
     }
   };
 
