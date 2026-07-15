@@ -144,8 +144,6 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
   const activeWalletSkin = WALLET_SKIN_OPTIONS.find(w => w.id === userProfile.activeWalletSkinId) || WALLET_SKIN_OPTIONS[0];
   const setActiveWalletSkin = (opt: typeof WALLET_SKIN_OPTIONS[0]) => setUserProfile({...userProfile, activeWalletSkinId: opt.id});
 
-  const isMecha = theme === "mecha";
-
   const handleSelectAvatar = (opt: typeof AVATAR_OPTIONS[0]) => {
     if (inventory.avatars.includes(opt.id)) {
       setActiveAvatar(opt);
