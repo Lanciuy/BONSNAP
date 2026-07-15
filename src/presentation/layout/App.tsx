@@ -10,6 +10,7 @@ import { ProfileView } from "../features/profile/ProfileView";
 import { RewardsStoreView } from "../features/rewards/RewardsStoreView";
 import { SubView } from "../features/dashboard/SubView";
 import { ThemeState, Inventory, UserProfile } from "../../core/entities";
+import { useAppStore } from "../../core/store/useAppStore";
 
 type ViewState = "splash" | "login" | "camera" | "dashboard" | "insights" | "income" | "splitBill" | "expense" | "rewards" | "store" | "history" | "savings" | "editProfile";
 
@@ -21,34 +22,14 @@ const viewVariants = {
 
 export default function App() {
   const [currentView, setCurrentView] = useState<ViewState>("splash");
-  const [points, setPoints] = useState(1200);
-  const [level, setLevel] = useState(12);
-  const [inventory, setInventory] = useState<Inventory>({
-    avatars: ['default'],
-    banners: ['default'],
-    frames: ['none', 'gold'],
-    themes: ['genz'],
-    walletSkins: ['default']
-  });
-
-  const [userProfile, setUserProfile] = useState<UserProfile>({
-    name: "Sarah Jenkins",
-    username: "sarahj.str",
-    bio: "Coffee addict ☕ | UI/UX Designer by day, professional overthinker by night. Trying to stop my Shopee checkout habit (failed miserably).",
-    university: "Universitas Indonesia",
-    location: "Jakarta Selatan",
-    financialPersona: "Gacha Victim 🎰 (Zero Luck)",
-    accentColor: "text-teal-400",
-    goalName: "Tiket Konser Blackpink",
-    goalTarget: "2000000",
-    goalSaved: "1500000",
-    activeBannerId: "default",
-    activeFrameId: "gold",
-    activeAvatarId: "default",
-    walletName: "MAGIC POUCH",
-    budget: 5000000,
-    activeWalletSkinId: "default"
-  });
+  
+  const { 
+    theme, setTheme, 
+    points, setPoints, 
+    level, setLevel, 
+    inventory, setInventory, 
+    userProfile, setUserProfile 
+  } = useAppStore();
 
   useEffect(() => {
     if (currentView === "splash") {
@@ -58,7 +39,6 @@ export default function App() {
       return () => clearTimeout(timer);
     }
   }, [currentView]);
-  const [theme, setTheme] = useState<ThemeState>("genz");
 
   const isMecha = theme === "mecha";
 

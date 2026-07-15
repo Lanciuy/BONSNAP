@@ -42,6 +42,8 @@ const BANNER_OPTIONS = [
   { id: 'holographic', name: 'Holographic', bg: 'bg-gradient-to-tr from-emerald-400 via-cyan-400 to-blue-500', imageUrl: '' },
   { id: 'dark', name: 'Dark Mode', bg: 'bg-gradient-to-br from-slate-800 to-slate-900', imageUrl: '' },
   { id: 'custom_banner1', name: 'Custom Banner 1', bg: 'bg-slate-200', imageUrl: '/banners/custom1.png' },
+  { id: 'moonlit-sky-6', name: 'Moonlit Sky', bg: 'bg-slate-900', imageUrl: '/banners/moonlit-sky-6.gif' },
+  { id: 'sakura-bridge', name: 'Sakura Bridge', bg: 'bg-pink-200', imageUrl: '/banners/sakura-bridge.gif' },
 ];
 
 const FRAME_OPTIONS = [
@@ -96,6 +98,8 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
   
   // Tab States for Modals
   const [isEditing, setIsEditing] = useState(false);
+  const [isEditingWallet, setIsEditingWallet] = useState(false);
+  const [isEditingGoal, setIsEditingGoal] = useState(false);
   const [isViewingAchievements, setIsViewingAchievements] = useState(false);
 
   // Sync state with parent
@@ -194,7 +198,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
       </div>
 
       {/* Discord Style Card Container */}
-      <div className={`w-full max-w-sm mx-auto rounded-[24px] shadow-2xl overflow-hidden relative shrink-0 ${isMecha ? 'bg-slate-900 border border-slate-700 shadow-blue-900/20' : 'bg-white border border-slate-200 shadow-slate-200/50'}`}>
+      <div className={`w-full max-w-sm mx-auto rounded-[24px] shadow-2xl overflow-hidden relative shrink-0 backdrop-blur-md transition-colors duration-500 ${isMecha ? 'bg-slate-900/80 border border-slate-700 shadow-blue-900/20' : 'bg-white/80 border border-white/60 shadow-slate-200/50'}`}>
         
         {/* Banner */}
         <div 
@@ -277,7 +281,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
           {/* Stats Grid */}
           <h2 className={`text-[10px] font-black uppercase tracking-widest mt-5 mb-2 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Stats & Info</h2>
           <div className="grid grid-cols-2 gap-2">
-            <div className={`p-3 rounded-[12px] flex flex-col justify-center border ${isMecha ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-100'}`}>
+            <div className={`p-3 rounded-[12px] flex flex-col justify-center border backdrop-blur-md shadow-sm ${isMecha ? 'bg-slate-950/50 border-slate-800' : 'bg-white/60 border-white/60'}`}>
               <div className="flex items-center gap-2 mb-1">
                 <Trophy size={14} className="text-yellow-500" />
                 <span className={`text-[10px] font-bold uppercase tracking-wider ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Rank</span>
@@ -285,7 +289,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
               <span className={`text-lg font-black font-mono ${isMecha ? 'text-white' : 'text-slate-800'}`}>Lvl {level}</span>
             </div>
             
-            <div onClick={() => onNavigate("store")} className={`p-3 rounded-[12px] flex flex-col justify-center border cursor-pointer hover:scale-105 transition-transform ${isMecha ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-100'}`}>
+            <div onClick={() => onNavigate("store")} className={`p-3 rounded-[12px] flex flex-col justify-center border cursor-pointer hover:scale-105 transition-transform backdrop-blur-md shadow-sm ${isMecha ? 'bg-slate-950/50 border-slate-800 hover:shadow-blue-500/10' : 'bg-white/60 border-white/60 hover:shadow-pink-500/10'}`}>
               <div className="flex items-center gap-2 mb-1">
                 <Sparkles size={14} className={isMecha ? 'text-blue-400' : 'text-pink-500'} />
                 <span className={`text-[10px] font-bold uppercase tracking-wider ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Points</span>
@@ -295,7 +299,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
           </div>
 
           {/* Monthly Budget (More Useful Widget) */}
-          <div className={`mt-5 p-4 rounded-[16px] border ${isMecha ? 'bg-gradient-to-br from-slate-900 to-slate-950 border-slate-800' : 'bg-gradient-to-br from-white to-slate-50 border-slate-200'}`}>
+          <div onClick={() => setIsEditingWallet(true)} className={`mt-5 p-4 rounded-[16px] border cursor-pointer hover:scale-[1.02] transition-transform backdrop-blur-md shadow-sm ${isMecha ? 'bg-slate-950/50 border-slate-800 hover:shadow-blue-500/10' : 'bg-white/60 border-white/60 hover:shadow-pink-500/10'}`}>
              <div className="flex justify-between items-center mb-3">
                 <div className="flex items-center gap-2">
                    <div className={`p-1.5 rounded-lg ${isMecha ? 'bg-indigo-500/20 text-indigo-400' : 'bg-indigo-100 text-indigo-600'}`}>
@@ -303,7 +307,10 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
                    </div>
                    <h3 className={`text-[11px] font-black uppercase tracking-widest ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>Budget Bulan Ini</h3>
                 </div>
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isMecha ? 'bg-rose-500/20 text-rose-400' : 'bg-rose-100 text-rose-600'}`}>Over budget!</span>
+                <div className="flex items-center gap-2">
+                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isMecha ? 'bg-rose-500/20 text-rose-400' : 'bg-rose-100 text-rose-600'}`}>Over budget!</span>
+                   <Edit2 size={12} className={isMecha ? 'text-slate-500' : 'text-slate-400'} />
+                </div>
              </div>
              
              <div className="flex justify-between items-end mb-2">
@@ -326,11 +333,12 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
           </div>
 
           {/* Savings Goal Widget */}
-          <div className={`mt-3 p-3.5 rounded-[16px] border ${isMecha ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-100'}`}>
+          <div onClick={() => setIsEditingGoal(true)} className={`mt-3 p-3.5 rounded-[16px] border cursor-pointer hover:scale-[1.02] transition-transform backdrop-blur-md shadow-sm ${isMecha ? 'bg-slate-950/50 border-slate-800 hover:shadow-blue-500/10' : 'bg-white/60 border-white/60 hover:shadow-pink-500/10'}`}>
              <div className="flex justify-between items-end mb-2">
                 <div className="flex items-center gap-1.5 overflow-hidden">
                    <Target size={14} className={accentColor} />
                    <span className={`text-xs font-bold truncate ${isMecha ? 'text-slate-300' : 'text-slate-700'}`}>{goalName}</span>
+                   <Edit2 size={10} className={`ml-1 ${isMecha ? 'text-slate-600' : 'text-slate-400'}`} />
                 </div>
                 <span className={`text-[10px] font-mono font-bold shrink-0 ml-2 ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>
                    {Math.min(100, Math.round((Number(goalSaved) / (Number(goalTarget) || 1)) * 100))}%
@@ -369,7 +377,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
           {/* Integration Links */}
           <h2 className={`text-[10px] font-black uppercase tracking-widest mt-5 mb-2 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Connections</h2>
           <div className="flex flex-col gap-2">
-            <div className={`p-3 rounded-[12px] flex items-center justify-between border cursor-pointer transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 hover:bg-slate-900' : 'bg-slate-50 border-slate-100 hover:bg-slate-100'}`} onMouseEnter={() => { setMood("thinking"); setMsg("Mau nyambungin ke Instagram ya? 🔗"); }}>
+            <div className={`p-3 rounded-[12px] flex items-center justify-between border cursor-pointer transition-colors backdrop-blur-md shadow-sm ${isMecha ? 'bg-slate-950/50 border-slate-800 hover:bg-slate-900/80' : 'bg-white/60 border-white/60 hover:bg-white/90'}`} onMouseEnter={() => { setMood("thinking"); setMsg("Mau nyambungin ke Instagram ya? 🔗"); }}>
               <div className="flex items-center gap-3">
                 <Link2 size={16} className={isMecha ? 'text-slate-400' : 'text-slate-500'} />
                 <div className={`font-bold text-xs ${isMecha ? 'text-slate-300' : 'text-slate-700'}`}>Linked Accounts</div>
@@ -377,7 +385,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
               <ChevronLeft size={14} className="text-slate-400 rotate-180" />
             </div>
             
-            <div className={`p-3 rounded-[12px] flex items-center justify-between border cursor-pointer transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 hover:bg-slate-900' : 'bg-slate-50 border-slate-100 hover:bg-slate-100'}`} onMouseEnter={() => { setMood("thinking"); setMsg("Mau ngatur privasi akun? 🔒"); }}>
+            <div className={`p-3 rounded-[12px] flex items-center justify-between border cursor-pointer transition-colors backdrop-blur-md shadow-sm ${isMecha ? 'bg-slate-950/50 border-slate-800 hover:bg-slate-900/80' : 'bg-white/60 border-white/60 hover:bg-white/90'}`} onMouseEnter={() => { setMood("thinking"); setMsg("Mau ngatur privasi akun? 🔒"); }}>
               <div className="flex items-center gap-3">
                 <ShieldCheck size={16} className={isMecha ? 'text-slate-400' : 'text-slate-500'} />
                 <div className={`font-bold text-xs ${isMecha ? 'text-slate-300' : 'text-slate-700'}`}>Privacy & Security</div>
@@ -420,7 +428,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
            <div className="flex items-center justify-between mb-3 px-1">
               <h2 className={`text-sm font-black uppercase tracking-wider ${isMecha ? 'text-white' : 'text-slate-800'}`}>System & Tools</h2>
            </div>
-           <div className={`rounded-[24px] overflow-hidden border shadow-sm ${isMecha ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'}`}>
+           <div className={`rounded-[24px] overflow-hidden border shadow-sm backdrop-blur-md ${isMecha ? 'bg-slate-900/50 border-slate-800/50' : 'bg-white/60 border-white/60'}`}>
               
               <div className={`p-4 border-b flex items-center justify-between transition-colors cursor-pointer ${isMecha ? 'border-slate-800 hover:bg-slate-800' : 'border-slate-100 hover:bg-slate-50'}`} onMouseEnter={() => { setMood("thinking"); setMsg("Biar kamu nggak ketinggalan info diskon! 🔔"); }}>
                  <div className="flex items-center gap-4">
@@ -448,6 +456,19 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
                  <ChevronLeft size={18} className="text-slate-400 rotate-180" />
               </div>
 
+              <div onClick={() => setIsEditingWallet(true)} className={`p-4 border-b flex items-center justify-between transition-colors cursor-pointer ${isMecha ? 'border-slate-800 hover:bg-slate-800' : 'border-slate-100 hover:bg-slate-50'}`} onMouseEnter={() => { setMood("thinking"); setMsg("Atur nama dompet sama skinnya ya! 💳"); }}>
+                 <div className="flex items-center gap-4">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isMecha ? 'bg-slate-800 text-purple-400' : 'bg-purple-50 text-purple-500'}`}>
+                       <ReceiptText size={20} />
+                    </div>
+                    <div>
+                       <div className={`font-black text-sm ${isMecha ? 'text-slate-200' : 'text-slate-700'}`}>Wallet Settings</div>
+                       <div className={`text-[10px] font-bold ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Manage budget & skins</div>
+                    </div>
+                 </div>
+                 <ChevronLeft size={18} className="text-slate-400 rotate-180" />
+              </div>
+
               <div className={`p-4 flex items-center justify-between transition-colors cursor-pointer ${isMecha ? 'hover:bg-slate-800' : 'hover:bg-slate-50'}`} onMouseEnter={() => { setMood("happy"); setMsg("Bosan dengan tampilannya? Ayo atur aplikasinya! ⚙️"); }}>
                  <div className="flex items-center gap-4">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isMecha ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-600'}`}>
@@ -470,7 +491,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
   );
 
   const renderAchievementsMode = () => (
-    <motion.div key="achievements-view" variants={containerVariants} initial="hidden" animate="show" exit="exit" className={`absolute inset-0 z-50 overflow-y-auto no-scrollbar flex flex-col ${isMecha ? 'bg-slate-900 text-white' : 'bg-[#fdfbfb] text-slate-800'}`}>
+    <motion.div key="achievements-view" variants={containerVariants} initial="hidden" animate="show" exit="exit" className={`absolute inset-0 z-50 overflow-y-auto no-scrollbar flex flex-col transition-colors duration-500 ${isMecha ? 'bg-slate-900/40 text-white backdrop-blur-md' : 'bg-white/40 text-slate-800 backdrop-blur-md'}`}>
       
       {/* Header */}
       <div className={`pt-12 pb-4 px-6 flex items-center justify-between z-20 sticky top-0 backdrop-blur-md ${isMecha ? 'bg-slate-900/80 border-b border-slate-700' : 'bg-[#fdfbfb]/80 border-b border-slate-100'}`}>
@@ -484,7 +505,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
 
       <div className="px-6 pt-6 pb-12 flex flex-col gap-4">
         {ALL_ACHIEVEMENTS.map(ach => (
-           <div key={ach.id} className={`p-4 rounded-[20px] flex gap-4 items-center border ${ach.unlocked ? (isMecha ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-100 shadow-sm') : (isMecha ? 'bg-slate-900 border-slate-800 opacity-60' : 'bg-slate-50 border-slate-200 opacity-60')}`}>
+           <div key={ach.id} className={`p-4 rounded-[20px] flex gap-4 items-center border backdrop-blur-md shadow-sm transition-transform hover:scale-[1.02] ${ach.unlocked ? (isMecha ? 'bg-slate-800/60 border-slate-700/50 hover:shadow-blue-500/10' : 'bg-white/80 border-white/60 hover:shadow-pink-500/10') : (isMecha ? 'bg-slate-900/40 border-slate-800/50 opacity-60' : 'bg-white/40 border-white/40 opacity-60')}`}>
               <div className={`w-14 h-14 shrink-0 rounded-[16px] flex items-center justify-center ${ach.bg} ${isMecha && ach.unlocked ? 'bg-opacity-20' : ''}`}>
                  <ach.icon size={24} className={ach.unlocked ? ach.color : (isMecha ? 'text-slate-600' : 'text-slate-400')} />
               </div>
@@ -507,7 +528,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
   );
 
   const renderEditMode = () => (
-    <motion.div key="edit-profile" variants={containerVariants} initial="hidden" animate="show" exit="exit" className={`absolute inset-0 z-50 overflow-y-auto no-scrollbar flex flex-col ${isMecha ? 'bg-slate-900 text-white' : 'bg-[#fdfbfb] text-slate-800'}`}>
+    <motion.div key="edit-profile" variants={containerVariants} initial="hidden" animate="show" exit="exit" className={`absolute inset-0 z-50 overflow-y-auto no-scrollbar flex flex-col transition-colors duration-500 ${isMecha ? 'bg-slate-900/40 text-white backdrop-blur-md' : 'bg-white/40 text-slate-800 backdrop-blur-md'}`}>
       
       {/* Edit Mode Header */}
       <div className={`pt-12 pb-4 px-6 flex items-center justify-between z-20 sticky top-0 backdrop-blur-md ${isMecha ? 'bg-slate-900/80 border-b border-slate-700' : 'bg-[#fdfbfb]/80 border-b border-slate-100'}`}>
@@ -526,37 +547,37 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
           <h2 className={`text-sm font-black uppercase tracking-wider ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>Personal Info</h2>
           
           <div>
-            <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Display Name</label>
-            <input type="text" value={name} onChange={(e) => setName(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-sm outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} />
+            <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-300' : 'text-slate-600'}`}>Display Name</label>
+            <input type="text" value={name} onChange={(e) => setName(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-sm outline-none border transition-colors backdrop-blur-sm ${isMecha ? 'bg-slate-900/50 border-slate-700 text-white focus:border-blue-500 shadow-inner' : 'bg-white/80 border-white/60 text-slate-800 focus:border-pink-400 shadow-sm'}`} />
           </div>
 
           <div>
-            <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Username</label>
-            <div className={`flex items-center w-full p-3 rounded-[12px] font-bold text-sm border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 focus-within:border-blue-500' : 'bg-slate-50 border-slate-200 focus-within:border-purple-500'}`}>
+            <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-300' : 'text-slate-600'}`}>Username</label>
+            <div className={`flex items-center w-full p-3 rounded-[12px] font-bold text-sm border transition-colors backdrop-blur-sm ${isMecha ? 'bg-slate-900/50 border-slate-700 focus-within:border-blue-500 shadow-inner' : 'bg-white/80 border-white/60 focus-within:border-pink-400 shadow-sm'}`}>
                <span className={isMecha ? 'text-slate-600' : 'text-slate-400'}>@</span>
                <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} className="w-full bg-transparent outline-none ml-1 text-inherit" />
             </div>
           </div>
 
           <div>
-            <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Bio / About Me</label>
-            <textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={3} className={`w-full p-3 rounded-[12px] font-medium text-xs outline-none border transition-colors resize-none ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} />
+            <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-300' : 'text-slate-600'}`}>Bio / About Me</label>
+            <textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={3} className={`w-full p-3 rounded-[12px] font-medium text-xs outline-none border transition-colors resize-none backdrop-blur-sm ${isMecha ? 'bg-slate-900/50 border-slate-700 text-white focus:border-blue-500 shadow-inner' : 'bg-white/80 border-white/60 text-slate-800 focus:border-pink-400 shadow-sm'}`} />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
              <div>
-               <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>University</label>
-               <input type="text" value={university} onChange={(e) => setUniversity(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-xs outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} />
+               <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-300' : 'text-slate-600'}`}>University</label>
+               <input type="text" value={university} onChange={(e) => setUniversity(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-xs outline-none border transition-colors backdrop-blur-sm ${isMecha ? 'bg-slate-900/50 border-slate-700 text-white focus:border-blue-500 shadow-inner' : 'bg-white/80 border-white/60 text-slate-800 focus:border-pink-400 shadow-sm'}`} />
              </div>
              <div>
-               <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Location</label>
-               <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-xs outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} />
+               <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-300' : 'text-slate-600'}`}>Location</label>
+               <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-xs outline-none border transition-colors backdrop-blur-sm ${isMecha ? 'bg-slate-900/50 border-slate-700 text-white focus:border-blue-500 shadow-inner' : 'bg-white/80 border-white/60 text-slate-800 focus:border-pink-400 shadow-sm'}`} />
              </div>
           </div>
 
           <div>
-            <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 mt-2 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Financial Spirit Persona</label>
-            <select value={financialPersona} onChange={(e) => setFinancialPersona(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-xs outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`}>
+            <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 mt-2 ${isMecha ? 'text-slate-300' : 'text-slate-600'}`}>Financial Spirit Persona</label>
+            <select value={financialPersona} onChange={(e) => setFinancialPersona(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-xs outline-none border transition-colors backdrop-blur-sm appearance-none ${isMecha ? 'bg-slate-900/50 border-slate-700 text-white focus:border-blue-500 shadow-inner' : 'bg-white/80 border-white/60 text-slate-800 focus:border-pink-400 shadow-sm'}`}>
                {PERSONAS.map(p => <option key={p} value={p}>{p}</option>)}
             </select>
           </div>
@@ -567,70 +588,6 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
                {ACCENT_COLORS.map(c => (
                   <button key={c.id} onClick={() => setAccentColor(c.color)} className={`w-8 h-8 rounded-full ${c.bg} shadow-sm border-2 transition-transform ${accentColor === c.color ? 'border-white scale-110 shadow-md' : 'border-transparent hover:scale-105'}`} />
                ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Custom Savings Goal */}
-        <div className="mb-10 flex flex-col gap-5">
-          <h2 className={`text-sm font-black uppercase tracking-wider ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>Savings Goal Target</h2>
-          
-          <div>
-            <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>What are you saving for?</label>
-            <input type="text" value={goalName} onChange={(e) => setGoalName(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-sm outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} placeholder="e.g. PS5, Konser, Liburan" />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-             <div>
-               <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Target (Rp)</label>
-               <input type="number" value={goalTarget} onChange={(e) => setGoalTarget(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-xs outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} />
-             </div>
-             <div>
-               <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Saved So Far (Rp)</label>
-               <input type="number" value={goalSaved} onChange={(e) => setGoalSaved(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-xs outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} />
-             </div>
-          </div>
-        </div>
-
-        {/* Wallet Configuration */}
-        <div className="mb-10 flex flex-col gap-5">
-          <h2 className={`text-sm font-black uppercase tracking-wider ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>Wallet Settings</h2>
-          
-          <div>
-            <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Wallet Name</label>
-            <input type="text" value={walletName} onChange={(e) => setWalletName(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-sm outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} placeholder="e.g. MAGIC POUCH" />
-          </div>
-
-          <div>
-            <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Monthly Budget (Rp)</label>
-            <input type="number" value={budget} onChange={(e) => setBudget(Number(e.target.value))} className={`w-full p-3 rounded-[12px] font-bold text-xs outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} />
-          </div>
-
-          <div>
-            <div className="flex items-center justify-between mb-4 mt-2">
-              <label className={`block text-[10px] font-bold uppercase tracking-wider ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Wallet Skin</label>
-              <button onClick={() => onNavigate("store")} className={`text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1 ${isMecha ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-100 text-purple-600'}`}>
-                 <Palette size={10} /> Get More
-              </button>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              {WALLET_SKIN_OPTIONS.map(opt => {
-                const isOwned = inventory.walletSkins.includes(opt.id);
-                const isActive = activeWalletSkin.id === opt.id;
-                return (
-                  <button 
-                    key={opt.id}
-                    onClick={() => handleSelectWalletSkin(opt)}
-                    className={`p-3 rounded-[16px] border-2 transition-all flex flex-col gap-2 text-left ${isActive ? (isMecha ? 'border-blue-500 bg-blue-900/20' : 'border-purple-500 bg-purple-50 shadow-sm') : (isMecha ? 'border-slate-700 bg-slate-800/50' : 'border-slate-200 bg-white')}`}
-                  >
-                    <div className={`w-full h-12 rounded-lg ${opt.bg} border`} />
-                    <div className="flex items-center gap-1.5 mt-1">
-                      {!isOwned && <Lock size={12} className={isMecha ? 'text-slate-500' : 'text-slate-400'} />}
-                      <span className={`text-xs font-bold ${isActive ? (isMecha ? 'text-blue-400' : 'text-purple-600') : (isMecha ? 'text-slate-300' : 'text-slate-600')}`}>{opt.name}</span>
-                    </div>
-                  </button>
-                )
-              })}
             </div>
           </div>
         </div>
@@ -740,27 +697,122 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onGoToCamera, onGoToDa
             })}
           </div>
         </div>
+      </div>
+    </motion.div>
+  );
 
+  const renderGoalMode = () => (
+    <motion.div key="edit-goal" variants={containerVariants} initial="hidden" animate="show" exit="exit" className={`absolute inset-0 z-50 overflow-y-auto no-scrollbar flex flex-col transition-colors duration-500 ${isMecha ? 'bg-slate-900/40 text-white backdrop-blur-md' : 'bg-white/40 text-slate-800 backdrop-blur-md'}`}>
+      <div className={`pt-12 pb-4 px-6 flex items-center justify-between z-20 sticky top-0 backdrop-blur-md ${isMecha ? 'bg-slate-900/80 border-b border-slate-700' : 'bg-[#fdfbfb]/80 border-b border-slate-100'}`}>
+        <div className="flex items-center gap-4">
+          <button onClick={() => setIsEditingGoal(false)} className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isMecha ? 'bg-slate-800 text-slate-300 hover:text-white' : 'bg-slate-100 text-slate-500 hover:text-slate-800'}`}>
+            <ChevronLeft size={24} strokeWidth={2.5} />
+          </button>
+          <h1 className="text-xl font-black tracking-tight">Savings Goal</h1>
+        </div>
+      </div>
+
+      <div className="px-6 pt-6 pb-12 flex-1">
+        <div className="mb-10 flex flex-col gap-5">
+          <h2 className={`text-sm font-black uppercase tracking-wider ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>Savings Goal Target</h2>
+          
+          <div>
+            <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>What are you saving for?</label>
+            <input type="text" value={goalName} onChange={(e) => setGoalName(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-sm outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} placeholder="e.g. PS5, Konser, Liburan" />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+             <div>
+               <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Target (Rp)</label>
+               <input type="number" value={goalTarget} onChange={(e) => setGoalTarget(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-xs outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} />
+             </div>
+             <div>
+               <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Saved So Far (Rp)</label>
+               <input type="number" value={goalSaved} onChange={(e) => setGoalSaved(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-xs outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} />
+             </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+
+  const renderWalletMode = () => (
+    <motion.div key="edit-wallet" variants={containerVariants} initial="hidden" animate="show" exit="exit" className={`absolute inset-0 z-50 overflow-y-auto no-scrollbar flex flex-col transition-colors duration-500 ${isMecha ? 'bg-slate-900/40 text-white backdrop-blur-md' : 'bg-white/40 text-slate-800 backdrop-blur-md'}`}>
+      <div className={`pt-12 pb-4 px-6 flex items-center justify-between z-20 sticky top-0 backdrop-blur-md ${isMecha ? 'bg-slate-900/80 border-b border-slate-700' : 'bg-[#fdfbfb]/80 border-b border-slate-100'}`}>
+        <div className="flex items-center gap-4">
+          <button onClick={() => setIsEditingWallet(false)} className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isMecha ? 'bg-slate-800 text-slate-300 hover:text-white' : 'bg-slate-100 text-slate-500 hover:text-slate-800'}`}>
+            <ChevronLeft size={24} strokeWidth={2.5} />
+          </button>
+          <h1 className="text-xl font-black tracking-tight">Wallet Settings</h1>
+        </div>
+      </div>
+
+      <div className="px-6 pt-6 pb-12 flex-1">
+        <div className="mb-10 flex flex-col gap-5">
+          <h2 className={`text-sm font-black uppercase tracking-wider ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>Wallet Setup</h2>
+          
+          <div>
+            <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Wallet Name</label>
+            <input type="text" value={walletName} onChange={(e) => setWalletName(e.target.value)} className={`w-full p-3 rounded-[12px] font-bold text-sm outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} placeholder="e.g. MAGIC POUCH" />
+          </div>
+
+          <div>
+            <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Monthly Budget (Rp)</label>
+            <input type="number" value={budget} onChange={(e) => setBudget(Number(e.target.value))} className={`w-full p-3 rounded-[12px] font-bold text-xs outline-none border transition-colors ${isMecha ? 'bg-slate-950 border-slate-800 text-white focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-800 focus:border-purple-500'}`} />
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-4 mt-2">
+              <label className={`block text-[10px] font-bold uppercase tracking-wider ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>Wallet Skin</label>
+              <button onClick={() => onNavigate("store")} className={`text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1 ${isMecha ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-100 text-purple-600'}`}>
+                 <Palette size={10} /> Get More
+              </button>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              {WALLET_SKIN_OPTIONS.map(opt => {
+                const isOwned = inventory.walletSkins.includes(opt.id);
+                const isActive = activeWalletSkin.id === opt.id;
+                return (
+                  <button 
+                    key={opt.id}
+                    onClick={() => handleSelectWalletSkin(opt)}
+                    className={`p-3 rounded-[16px] border-2 transition-all backdrop-blur-sm flex flex-col gap-2 text-left ${isActive ? (isMecha ? 'border-blue-500 bg-blue-900/30' : 'border-purple-500 bg-white/50 shadow-sm') : (isMecha ? 'border-slate-700/50 bg-slate-800/40' : 'border-white/60 bg-white/40')}`}
+                  >
+                    <div className={`w-full h-12 rounded-lg ${opt.bg} border`} />
+                    <div className="flex items-center gap-1.5 mt-1">
+                      {!isOwned && <Lock size={12} className={isMecha ? 'text-slate-500' : 'text-slate-400'} />}
+                      <span className={`text-xs font-bold ${isActive ? (isMecha ? 'text-blue-400' : 'text-purple-600') : (isMecha ? 'text-slate-300' : 'text-slate-600')}`}>{opt.name}</span>
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        </div>
       </div>
     </motion.div>
   );
 
   return (
-    <div className={`relative w-full h-full overflow-hidden flex flex-col ${isMecha ? 'bg-slate-900 text-white' : 'bg-[#fdfbfb] text-slate-800'}`}>
+    <div className={`relative w-full h-full overflow-hidden flex flex-col transition-colors duration-500 ${isMecha ? 'bg-slate-900 text-slate-200' : 'bg-[#fdfbfb] text-slate-800'}`}>
       
-      {/* The Global Blurred Background */}
+      {/* The Global Background */}
       <div 
-        className="absolute inset-0 z-0 bg-cover bg-top opacity-30"
+        className={`absolute inset-0 z-0 bg-cover bg-top transition-all duration-1000 ${isMecha ? 'mix-blend-luminosity opacity-20' : 'opacity-40'}`}
         style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1509803874385-db7c23652552?q=80&w=1000&auto=format&fit=crop")' }}
       />
 
       <AnimatePresence mode="wait">
-        {isViewingAchievements ? renderAchievementsMode() : (isEditing ? renderEditMode() : renderCardBody())}
+        {isViewingAchievements ? renderAchievementsMode() : 
+         isEditingGoal ? renderGoalMode() :
+         isEditingWallet ? renderWalletMode() :
+         isEditing ? renderEditMode() : 
+         renderCardBody()}
       </AnimatePresence>
 
       {/* Modern Floating Bottom Navigation (Only visible when NOT editing/viewing modals) */}
       <AnimatePresence>
-        {!isEditing && !isViewingAchievements && (
+        {!isEditing && !isViewingAchievements && !isEditingGoal && !isEditingWallet && (
           <motion.div initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 100, opacity: 0 }} className={`absolute bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-[360px] h-[72px] backdrop-blur-2xl border rounded-[32px] px-2 flex justify-between items-center z-40 pointer-events-auto ${isMecha ? 'bg-slate-800/95 border-blue-500/50 shadow-[0_0_20px_rgba(59,130,246,0.3)]' : 'bg-white/95 border-slate-100 shadow-[0_20px_40px_rgba(0,0,0,0.1)]'}`}>
             
             <button onClick={onGoToDashboard} className={`flex flex-col items-center justify-center w-[20%] group transition-colors ${isMecha ? 'text-slate-400 hover:text-blue-400' : 'text-slate-400 hover:text-pink-500'}`}>

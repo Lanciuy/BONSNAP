@@ -5,6 +5,7 @@ import { Mascot, MascotMood } from "../../shared/Mascot/Mascot";
 import { ThemeState } from '../../../core/entities';
 import { motion, AnimatePresence } from "motion/react";
 import { exportToExcel } from "../../../utils/exportExcel";
+import { useAppStore } from "../../../core/store/useAppStore";
 
 interface InsightsViewProps {
   onGoToCamera: () => void;
@@ -32,22 +33,10 @@ export const InsightsView: React.FC<InsightsViewProps> = ({ onGoToCamera, onGoTo
 
   const formatIDR = (num: number) => `Rp ${num.toLocaleString('id-ID')}`;
 
-  // Accurate Calculation Simulation
-  const mockTransactions = useMemo(() => [
-    { id: 1, name: "Sephora Haul", category: "Shopping", amount: 1250000, date: "2026-10-12", icon: ShoppingBag, color: "text-purple-500", bg: "bg-purple-100" },
-    { id: 2, name: "Genshin Welkin", category: "Others", amount: 79000, date: "2026-10-10", icon: Gamepad2, color: "text-yellow-500", bg: "bg-yellow-100" },
-    { id: 3, name: "Matcha Latte", category: "Sweets & Food", amount: 45000, date: "2026-10-09", icon: Coffee, color: "text-pink-500", bg: "bg-pink-100" },
-    { id: 4, name: "KRL Commuter", category: "Transport", amount: 150000, date: "2026-10-08", icon: TrainFront, color: "text-blue-500", bg: "bg-blue-100" },
-    { id: 5, name: "Sushi Tei", category: "Sweets & Food", amount: 320000, date: "2026-10-07", icon: Coffee, color: "text-pink-500", bg: "bg-pink-100" },
-    { id: 6, name: "Zara Outer", category: "Shopping", amount: 699000, date: "2026-10-05", icon: ShoppingBag, color: "text-purple-500", bg: "bg-purple-100" },
-    { id: 7, name: "Ojol GoRide", category: "Transport", amount: 450000, date: "2026-10-03", icon: TrainFront, color: "text-blue-500", bg: "bg-blue-100" },
-    { id: 8, name: "Cinema XXI", category: "Others", amount: 125000, date: "2026-10-01", icon: Gamepad2, color: "text-yellow-500", bg: "bg-yellow-100" },
-    { id: 9, name: "Sweet Desserts", category: "Sweets & Food", amount: 175000, date: "2026-09-28", icon: Coffee, color: "text-pink-500", bg: "bg-pink-100" },
-    { id: 10, name: "Skincare Refill", category: "Shopping", amount: 450000, date: "2026-09-26", icon: ShoppingBag, color: "text-purple-500", bg: "bg-purple-100" }
-  ], []);
+  const { userProfile, transactions } = useAppStore();
 
-  const totalBudget = 5000000;
-  const totalSpent = useMemo(() => mockTransactions.reduce((acc, curr) => acc + curr.amount, 0), [mockTransactions]);
+  const totalBudget = userProfile.budget;
+  const totalSpent = useMemo(() => transactions.reduce((acc, curr) => acc + curr.amount, 0), [transactions]);
   const remaining = totalBudget - totalSpent;
   const percentUsed = (totalSpent / totalBudget) * 100;
   
@@ -58,19 +47,24 @@ export const InsightsView: React.FC<InsightsViewProps> = ({ onGoToCamera, onGoTo
   const categoryData = useMemo(() => {
     const map: Record<string, { value: number, color: string }> = {
       'Sweets & Food': { value: 0, color: '#f472b6' },
-      'Shopping': { value: 0, color: '#a78bfa' },
-      'Transport': { value: 0, color: '#60a5fa' },
-      'Others': { value: 0, color: '#fbbf24' },
+      'Shopping': { value: 0, color: '#a855f7' },
+      'Transport': { value: 0, color: '#3b82f6' },
+      'Others': { value: 0, color: '#eab308' },
     };
-    mockTransactions.forEach(t => {
-      if (map[t.category]) map[t.category].value += t.amount;
+
+    transactions.forEach(t => {
+      if (map[t.category]) {
+        map[t.category].value += t.amount;
+      } else {
+        map['Others'].value += t.amount;
+      }
     });
     return Object.entries(map).map(([name, data]) => ({ name, ...data })).filter(c => c.value > 0);
-  }, [mockTransactions]);
+  }, [transactions]);
 
   const topExpenses = useMemo(() => {
-    return [...mockTransactions].sort((a, b) => b.amount - a.amount).slice(0, 3);
-  }, [mockTransactions]);
+    return [...transactions].sort((a, b) => b.amount - a.amount).slice(0, 3);
+  }, [transactions]);
 
   const weeklyData = [
     { name: 'W1', spent: 850000 },
@@ -99,7 +93,7 @@ export const InsightsView: React.FC<InsightsViewProps> = ({ onGoToCamera, onGoTo
             onClick={async () => {
               setMood("excited");
               setMsg("Lagi mencetak laporan Excel nih, tunggu bentar ya boss! 🖨️");
-              await exportToExcel(mockTransactions, totalBudget);
+              await exportToExcel(transactions, totalBudget);
               setTimeout(() => {
                 setMood("happy");
                 setMsg("Laporan beres! Buka Excel-nya ya, rumusnya otomatis jalan lho! ✨");
@@ -181,21 +175,26 @@ export const InsightsView: React.FC<InsightsViewProps> = ({ onGoToCamera, onGoTo
               </div>
               <div className="flex flex-col gap-3">
                 {topExpenses.map((expense, i) => {
-                  const Icon = expense.icon;
                   return (
                     <div key={expense.id} className="flex items-center justify-between p-3 rounded-[20px] border border-slate-100 bg-white/50 hover:bg-white transition-colors">
                       <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-[14px] flex items-center justify-center ${expense.bg} ${expense.color}`}>
-                          <Icon size={18} strokeWidth={2.5} />
+                        <div className={`p-2.5 rounded-[12px] ${expense.bg}`}>
+                          {expense.iconName === 'Swords' && <Sparkles size={16} className={expense.color} />}
+                          {expense.iconName === 'ShoppingBag' && <ShoppingBag size={16} className={expense.color} />}
+                          {expense.iconName === 'Car' && <TrainFront size={16} className={expense.color} />}
+                          {expense.iconName === 'Coffee' && <Coffee size={16} className={expense.color} />}
+                          {!['Swords', 'ShoppingBag', 'Car', 'Coffee'].includes(expense.iconName) && <Gamepad2 size={16} className={expense.color} />}
                         </div>
                         <div>
-                          <div className="text-sm font-black text-slate-800">{expense.name}</div>
-                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{expense.category}</div>
+                          <p className="text-[13px] font-black">{expense.merchant}</p>
+                          <p className="text-[10px] font-bold text-slate-400">{expense.category}</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm font-black font-mono text-slate-800">{formatIDR(expense.amount)}</div>
-                        <div className="text-[10px] font-bold text-slate-400">{expense.date}</div>
+                        <p className="text-[13px] font-black font-mono text-rose-500">
+                          -{formatIDR(expense.amount)}
+                        </p>
+                        <p className="text-[10px] font-bold text-slate-400">{expense.time}</p>
                       </div>
                     </div>
                   );

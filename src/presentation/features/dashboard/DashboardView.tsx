@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Mascot, MascotMood, getGeneratedMascotUrl } from "../../shared/Mascot/Mascot";
 import { ThemeState, Inventory, UserProfile } from '../../../core/entities';
 import { AVATAR_OPTIONS, WALLET_SKIN_OPTIONS } from "../profile/ProfileView";
+import { useAppStore } from "../../../core/store/useAppStore";
 
 interface DashboardViewProps {
   onGoToCamera: () => void;
@@ -37,23 +38,17 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
   const [bgmOn, setBgmOn] = useState(false);
   
   const isMecha = theme === "mecha";
-
-  const remainingBudget = Math.max(0, userProfile.budget - 3450000); // 3450000 is the hardcoded mock expense
+  const { transactions } = useAppStore();
+  
+  // Calculate expenses from transactions
+  const totalExpenses = transactions.reduce((sum, tx) => sum + tx.amount, 0);
+  const remainingBudget = Math.max(0, userProfile.budget - totalExpenses);
+  
   const defaultMsg = isMecha 
     ? "CREDITS AT 29%. RECOMMEND TACTICAL CONSERVATION FOR UPGRADES." 
     : `Wih, sisa budget lo masih Rp ${remainingBudget.toLocaleString('id-ID')}! Valid no debat, yuk jajan cantik! 🍰`;
     
   const [msg, setMsg] = useState(defaultMsg);
-
-  const transactions = isMecha ? [
-    { id: 1, merchant: "Ammunition Depot", category: "Supplies", time: "Today, 14:30", amount: "Rp 45.000", icon: Swords, color: "text-red-500", bg: "bg-red-100", hoverMsg: "RESTOCKING KINETIC ROUNDS.", hoverMood: "alert" },
-    { id: 2, merchant: "Energy Rations", category: "Fuel", time: "Yesterday, 18:15", amount: "Rp 125.000", icon: ShoppingBag, color: "text-blue-500", bg: "bg-blue-100", hoverMsg: "CORE REFUELING COMPLETED.", hoverMood: "thinking" },
-    { id: 3, merchant: "Mech Transit", category: "Transport", time: "Yesterday, 09:00", amount: "Rp 35.000", icon: Car, color: "text-slate-500", bg: "bg-slate-100", hoverMsg: "RELOCATING TO SECTOR 7.", hoverMood: "happy" },
-  ] : [
-    { id: 1, merchant: "Maid Cafe", category: "Food & Beverage", time: "Today, 14:30", amount: "Rp 45.000", icon: Coffee, color: "text-pink-500", bg: "bg-pink-100", hoverMsg: "Buset jajan manis mulu, gak takut diabetes? 🍰", hoverMood: "cute" },
-    { id: 2, merchant: "Convenience Store", category: "Groceries", time: "Yesterday, 18:15", amount: "Rp 125.000", icon: ShoppingBag, color: "text-purple-500", bg: "bg-purple-100", hoverMsg: "Nyetok camilan buat marathon drakor ya? 🍫", hoverMood: "thinking" },
-    { id: 3, merchant: "Train Ticket", category: "Transport", time: "Yesterday, 09:00", amount: "Rp 35.000", icon: Car, color: "text-blue-500", bg: "bg-blue-100", hoverMsg: "Jalan-jalan terus, FOMO ya bestie? 🚋", hoverMood: "happy" },
-  ];
 
   const quickActions = [
     { id: "income", label: "Income", icon: ArrowDownRight, color: "text-emerald-500", bg: "bg-emerald-100", hoverMsg: "Ada uang masuk? Upload SS-an notif transfer atau invoice-nya ke sini!", hoverMood: "excited" },
@@ -69,11 +64,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
 
   return (
     <div className={`relative w-full h-full text-slate-800 overflow-hidden flex flex-col transition-colors duration-500 ${isMecha ? 'bg-slate-900' : 'bg-[#fdfbfb]'}`}>
-      {/* Background graphic */}
+      {/* Dynamic Premium Background */}
       <div 
-        className={`absolute inset-0 z-0 bg-cover bg-top opacity-30 ${isMecha ? 'mix-blend-luminosity opacity-10' : ''}`}
+        className={`absolute inset-0 z-0 bg-cover bg-top transition-all duration-1000 ${isMecha ? 'mix-blend-luminosity opacity-20' : 'opacity-40'}`}
         style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1509803874385-db7c23652552?q=80&w=1000&auto=format&fit=crop")' }}
       />
+      
+      {/* Ambient glowing orbs */}
+      <div className={`absolute -top-20 -left-20 w-96 h-96 rounded-full mix-blend-screen filter blur-[100px] opacity-60 animate-pulse z-0 ${isMecha ? 'bg-blue-600/40' : 'bg-pink-300/50'}`}></div>
+      <div className={`absolute top-1/2 -right-20 w-80 h-80 rounded-full mix-blend-screen filter blur-[120px] opacity-50 animate-pulse z-0 ${isMecha ? 'bg-cyan-500/30' : 'bg-purple-300/40'}`} style={{ animationDelay: '2s' }}></div>
 
       <div className="relative z-10 flex-1 overflow-y-auto no-scrollbar pb-[280px]">
         {/* Profile Header */}
@@ -108,44 +107,65 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
 
         <motion.div variants={containerVariants} initial="hidden" animate="show" className="px-6 flex flex-col gap-5 mt-2">
           
-          {/* 1. Anime / RPG Style Balance Card */}
-          <motion.div variants={itemVariants}
-            className={`w-full rounded-[32px] p-6 relative overflow-hidden shadow-2xl border-2 ${isMecha ? 'bg-slate-900 border-blue-500 shadow-[0_15px_30px_rgba(59,130,246,0.3)] text-white' : activeWalletSkin.bg}`}
-            onMouseEnter={() => { setMood("excited"); setMsg(isMecha ? "CREDITS SUFFICIENT FOR UPGRADE." : "Jujurly saldo lo bikin mupeng! 🤑"); }} 
+          {/* 1. Wallet Card (Realistic ATM/VISA Style) */}
+          <motion.div 
+            variants={itemVariants} 
+            className={`w-full aspect-[1.586/1] rounded-[24px] p-5 sm:p-7 flex flex-col justify-between relative overflow-hidden shadow-2xl transition-all duration-700 ${activeWalletSkin.bg}`}
+            onMouseEnter={() => { setMood("thinking"); setMsg(isMecha ? "ANALYZING FINANCIAL RESERVES..." : "Wah, isi dompetnya lumayan nih! 💳"); }}
             onMouseLeave={() => setMood("happy")}
           >
-            {/* Anime Sparkles & Magic overlays */}
-            {!isMecha && <Sparkles className="absolute top-4 right-4 text-yellow-300 opacity-80" size={32} />}
-            {!isMecha && <Sparkles className="absolute bottom-10 left-6 text-pink-200 opacity-50" size={20} />}
-            <div className={`absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl opacity-50 ${isMecha ? 'bg-blue-600' : 'bg-white/40'}`}></div>
-            <div className={`absolute bottom-[-10%] left-[-10%] w-32 h-32 rounded-full blur-2xl opacity-60 ${isMecha ? 'bg-teal-600' : 'bg-pink-300'}`}></div>
+            {/* Holographic Anime/Manga Accents */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-white/20 via-white/40 to-transparent opacity-50 mix-blend-overlay z-0 pointer-events-none"></div>
             
-            <div className="relative z-10">
-              <div className="flex justify-between items-center mb-1">
-                <div className={`flex items-center gap-1.5 text-xs uppercase tracking-widest font-black ${isMecha ? 'text-blue-400' : 'opacity-90'}`}>
-                  {isMecha ? 'CORE CREDITS' : userProfile.walletName}
-                </div>
+            {/* Subtle halftone dots pattern for manga feel */}
+            <div className="absolute inset-0 opacity-[0.03] z-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '10px 10px' }}></div>
+            
+            {/* Hologram Effects */}
+            {!isMecha && <Sparkles className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white/20 pointer-events-none z-0" size={160} strokeWidth={1} />}
+            {!isMecha && <Sparkles className="absolute top-6 right-8 text-yellow-100/90 drop-shadow-[0_0_10px_rgba(253,224,71,0.8)] z-0 pointer-events-none" size={24} />}
+            {!isMecha && <Sparkles className="absolute bottom-12 left-6 text-pink-100/80 z-0 pointer-events-none animate-pulse" size={18} />}
+            
+            <div className={`absolute top-[-20%] right-[-10%] w-56 h-56 rounded-full blur-[60px] opacity-40 z-0 pointer-events-none ${isMecha ? 'bg-blue-500' : 'bg-white'}`}></div>
+            <div className={`absolute bottom-[-20%] left-[-20%] w-56 h-56 rounded-full blur-[50px] opacity-50 z-0 pointer-events-none ${isMecha ? 'bg-cyan-500' : 'bg-pink-300'}`}></div>
+            
+            {/* Top row: Contactless */}
+            <div className="relative z-10 flex justify-end items-start w-full">
+              <div className={isMecha ? 'text-blue-400/80' : 'text-white/90'}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="drop-shadow-sm"><path d="M8.5 4c2.5 0 4.5 2 4.5 4.5 0 1.2-.5 2.3-1.3 3.1"/><path d="M11.5 4c3.5 0 6.5 3 6.5 6.5 0 1.8-.7 3.4-1.9 4.6"/><path d="M14.5 4c4.5 0 8.5 4 8.5 8.5 0 2.3-.9 4.5-2.5 6.1"/><path d="M5.5 4c1.5 0 2.5 1 2.5 2.5 0 .7-.3 1.3-.8 1.8"/></svg>
               </div>
-              
-              <div className={`text-[46px] font-black tracking-tighter leading-none mb-6 mt-2 ${isMecha ? 'text-white font-mono' : 'drop-shadow-md'}`}>
-                <span className={`text-xl align-top mr-1 ${isMecha ? 'text-blue-400' : 'opacity-80'}`}>Rp</span>
+            </div>
+            
+            {/* Middle row: EMV Chip and Balance */}
+            <div className="relative z-10 flex flex-col justify-center flex-1 py-1">
+              {/* EMV Chip */}
+              <div className="w-11 h-8 rounded-[6px] bg-gradient-to-br from-yellow-200 via-yellow-400 to-yellow-500 mb-4 flex items-center justify-center opacity-95 shadow-[0_2px_4px_rgba(0,0,0,0.1)] border border-yellow-500/50 relative overflow-hidden shrink-0">
+                 <div className="absolute inset-0 border border-black/10 rounded-[6px]"></div>
+                 <div className="w-full h-[1px] bg-black/10 absolute top-1/2"></div>
+                 <div className="h-full w-[1px] bg-black/10 absolute left-1/3"></div>
+                 <div className="h-full w-[1px] bg-black/10 absolute right-1/3"></div>
+                 <div className="w-[50%] h-[40%] border border-black/10 rounded-sm absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+              </div>
+
+              {/* Balance */}
+              <div className={`text-[30px] sm:text-[38px] font-black tracking-tight leading-none flex items-center gap-2 drop-shadow-[0_2px_3px_rgba(0,0,0,0.2)] ${isMecha ? 'text-white' : 'text-white'}`} style={{ textShadow: '1px 2px 2px rgba(0,0,0,0.2)' }}>
+                <span className={`text-xl font-bold tracking-normal opacity-90`}>Rp</span>
                 {remainingBudget.toLocaleString('id-ID')}
               </div>
+            </div>
+            
+            {/* Bottom row: Details & Card Logo */}
+            <div className="relative z-10 flex justify-between items-end w-full">
+              <div className="flex flex-col gap-1">
+                <div className={`text-[9px] uppercase tracking-widest opacity-80 ${isMecha ? 'text-blue-200' : 'text-pink-100'}`}>CARDHOLDER</div>
+                <div className={`text-[13px] sm:text-[15px] font-black uppercase tracking-wider drop-shadow-sm ${isMecha ? 'text-white' : 'text-white'}`}>
+                  {userProfile.walletName.toUpperCase()}
+                </div>
+              </div>
               
-              <div className="flex gap-4 pt-4 border-t border-white/20">
-                <div className="flex-1">
-                  <div className={`flex items-center gap-1 text-[10px] font-black uppercase tracking-wider mb-1 ${isMecha ? 'text-emerald-400' : 'text-emerald-300'}`}>
-                    <ArrowDownRight size={12} strokeWidth={3} /> LOOT (IN)
-                  </div>
-                  <div className={`text-sm font-black ${isMecha ? 'font-mono' : ''}`}>Rp {(userProfile.budget || 0).toLocaleString('id-ID')}</div>
-                </div>
-                <div className="w-px bg-white/20"></div>
-                <div className="flex-1">
-                  <div className={`flex items-center gap-1 text-[10px] font-black uppercase tracking-wider mb-1 ${isMecha ? 'text-rose-400' : 'text-rose-200'}`}>
-                    <ArrowUpRight size={12} strokeWidth={3} /> GACHA (OUT)
-                  </div>
-                  <div className={`text-sm font-black ${isMecha ? 'font-mono' : ''}`}>Rp 3.450.000</div>
-                </div>
+              {/* VISA-style Logo */}
+              <div className={`text-[24px] sm:text-[28px] leading-none font-black italic tracking-tighter self-end relative ${isMecha ? 'text-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.8)]' : 'text-white drop-shadow-lg'}`}>
+                <span className="relative z-10">BONSNAP</span>
+                {!isMecha && <div className="absolute top-0 right-0 w-2 h-2 rounded-full bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.8)]"></div>}
               </div>
             </div>
           </motion.div>
@@ -160,28 +180,28 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
                 onClick={() => onNavigate(action.id)}
                 onMouseEnter={() => { setMood(action.hoverMood as MascotMood); setMsg(action.hoverMsg); }}
                 onMouseLeave={() => { setMood("happy"); setMsg(defaultMsg); }}
-                className="flex flex-col items-center gap-2"
+                className="flex flex-col items-center gap-2 group"
               >
-                <div className={`w-14 h-14 rounded-[20px] flex items-center justify-center border shadow-sm ${isMecha ? 'bg-slate-800 border-slate-700 shadow-blue-500/10' : 'bg-white border-slate-100'} ${action.bg}`}>
-                  <action.icon size={24} className={isMecha ? action.color.replace('500', '400') : action.color} strokeWidth={2.5} />
+                <div className={`w-14 h-14 rounded-[20px] flex items-center justify-center border shadow-lg backdrop-blur-md transition-all duration-300 group-hover:scale-110 group-active:scale-95 ${isMecha ? 'bg-slate-800/80 border-slate-700/50 shadow-blue-500/10 group-hover:shadow-blue-500/30' : 'bg-white/80 border-white/60 shadow-pink-500/5 group-hover:shadow-pink-500/20'} ${action.bg}`}>
+                  <action.icon size={24} className={`transition-transform duration-300 group-hover:scale-110 ${isMecha ? action.color.replace('500', '400') : action.color}`} strokeWidth={2.5} />
                 </div>
                 <span className={`text-[11px] font-black tracking-tight ${isMecha ? 'text-slate-300' : 'text-slate-700'}`}>{action.label}</span>
               </motion.button>
             ))}
           </motion.div>
 
-          {/* 3. Spending Trend Chart (Anime Style) */}
-          <motion.div variants={itemVariants} className={`p-5 rounded-[28px] border-2 shadow-sm ${isMecha ? 'bg-slate-800 border-slate-700' : 'bg-white border-pink-100'}`}>
-             <div className="flex justify-between items-center mb-6">
-                <div className="flex items-center gap-2">
-                   <div className={`p-2 rounded-xl ${isMecha ? 'bg-purple-500/20 text-purple-400' : 'bg-pink-100 text-pink-500'}`}>
-                      <Activity size={18} strokeWidth={3} />
+          {/* 3. Spending Trend Chart (Premium Anime Style) */}
+          <motion.div variants={itemVariants} className={`p-6 rounded-[32px] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.05)] border backdrop-blur-sm ${isMecha ? 'bg-slate-900/80 border-slate-700' : 'bg-white/90 border-slate-100/80'}`}>
+             <div className="flex justify-between items-center mb-8">
+                <div className="flex items-center gap-3">
+                   <div className={`p-2.5 rounded-[14px] shadow-sm ${isMecha ? 'bg-slate-800 text-purple-400 border border-slate-700' : 'bg-gradient-to-br from-pink-50 to-purple-50 text-pink-500 border border-pink-100/50'}`}>
+                      <Activity size={18} strokeWidth={2.5} />
                    </div>
-                   <h3 className={`text-[13px] font-black uppercase tracking-wider ${isMecha ? 'text-slate-300' : 'text-slate-700'}`}>Weekly Quest 📊</h3>
+                   <h3 className={`text-[14px] font-bold uppercase tracking-[0.1em] ${isMecha ? 'text-slate-300' : 'text-slate-700'}`}>Weekly Expense 📈</h3>
                 </div>
              </div>
              
-             <div className="flex justify-between items-end h-28 gap-2">
+             <div className="flex justify-between items-end h-32 gap-2 mt-2">
                 {[
                   { day: 'Mon', h: '40%', val: '40k' },
                   { day: 'Tue', h: '70%', val: '70k' },
@@ -191,10 +211,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
                   { day: 'Sat', h: '20%', val: '20k' },
                   { day: 'Sun', h: '10%', val: '10k' },
                 ].map((bar, i) => (
-                  <div key={i} className="flex flex-col items-center flex-1 gap-1">
-                     <span className={`text-[9px] font-black opacity-0 hover:opacity-100 transition-opacity ${isMecha ? 'text-slate-400' : 'text-pink-400'}`}>{bar.val}</span>
-                     <div className={`w-full rounded-full transition-all duration-500 ${bar.today ? (isMecha ? 'bg-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.6)]' : 'bg-pink-500 shadow-[0_4px_10px_rgba(236,72,153,0.4)]') : (isMecha ? 'bg-slate-700' : 'bg-slate-100')} hover:scale-110`} style={{ height: bar.h }}></div>
-                     <span className={`text-[10px] font-black mt-2 ${bar.today ? (isMecha ? 'text-blue-400' : 'text-pink-600') : (isMecha ? 'text-slate-500' : 'text-slate-400')}`}>{bar.day}</span>
+                  <div key={i} className="flex flex-col items-center flex-1 gap-2 group h-full">
+                     <span className={`text-[10px] font-bold opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-300 ${isMecha ? 'text-slate-400' : 'text-slate-500'}`}>{bar.val}</span>
+                     <div className="w-full relative flex justify-center h-full items-end">
+                       {/* Ghost Bar */}
+                       <div className={`absolute bottom-0 w-3 sm:w-4 rounded-full transition-all duration-300 h-full ${isMecha ? 'bg-slate-800/50' : 'bg-slate-100'}`}></div>
+                       {/* Active Bar */}
+                       <div className={`relative w-3 sm:w-4 rounded-full transition-all duration-700 ease-out ${bar.today ? (isMecha ? 'bg-gradient-to-t from-blue-600 to-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.5)]' : 'bg-gradient-to-t from-pink-500 to-purple-500 shadow-[0_4px_15px_rgba(236,72,153,0.4)]') : (isMecha ? 'bg-slate-600 group-hover:bg-slate-500' : 'bg-slate-300 group-hover:bg-slate-400')} group-hover:scale-110`} style={{ height: bar.h }}></div>
+                     </div>
+                     <span className={`text-[11px] font-bold mt-1 tracking-wider ${bar.today ? (isMecha ? 'text-cyan-400' : 'text-pink-600') : (isMecha ? 'text-slate-500' : 'text-slate-400')}`}>{bar.day}</span>
                   </div>
                 ))}
              </div>
@@ -212,21 +237,23 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
                 <div 
                   key={tx.id} 
                   onClick={() => onNavigate("history")}
-                  onMouseEnter={() => { setMood(tx.hoverMood as MascotMood); setMsg(tx.hoverMsg); }}
+                  className={`flex items-center gap-3 group relative cursor-pointer p-3.5 rounded-[20px] transition-all duration-300 hover:scale-[1.02] backdrop-blur-md border shadow-sm ${isMecha ? 'bg-slate-800/50 border-slate-700/50 hover:bg-slate-800/80 hover:shadow-blue-500/10' : 'bg-white/60 border-white/60 hover:bg-white/90 hover:shadow-pink-500/10'}`}
+                  onMouseEnter={() => { setMood(tx.hoverMood as any); setMsg(tx.hoverMsg); }}
                   onMouseLeave={() => { setMood("happy"); setMsg(defaultMsg); }}
-                  className={`flex items-center gap-3 p-3 rounded-[20px] border hover:shadow-md transition-all cursor-pointer ${isMecha ? 'bg-slate-800 border-slate-700 hover:border-blue-500/50' : 'bg-white border-slate-100 hover:border-pink-200'}`}
                 >
-                  <div className={`w-12 h-12 rounded-[16px] ${isMecha ? 'bg-slate-700' : tx.bg} flex items-center justify-center shrink-0`}>
-                    <tx.icon size={20} className={isMecha ? tx.color.replace('500', '400') : tx.color} strokeWidth={2.5} />
+                  <div className={`p-2.5 rounded-[14px] shadow-sm ${tx.bg}`}>
+                    {tx.iconName === 'Swords' && <Swords size={18} className={tx.color} />}
+                    {tx.iconName === 'ShoppingBag' && <ShoppingBag size={18} className={tx.color} />}
+                    {tx.iconName === 'Car' && <Car size={18} className={tx.color} />}
+                    {tx.iconName === 'Coffee' && <Coffee size={18} className={tx.color} />}
+                    {!['Swords', 'ShoppingBag', 'Car', 'Coffee'].includes(tx.iconName) && <ShoppingBag size={18} className={tx.color} />}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className={`font-bold text-[14px] truncate ${isMecha ? 'text-slate-200' : 'text-slate-800'}`}>{tx.merchant}</div>
-                    <div className={`text-[11px] truncate font-bold mt-0.5 ${isMecha ? 'text-slate-500' : 'text-slate-400'}`}>
-                      {tx.category} • {tx.time}
-                    </div>
+                  <div className="flex-1 text-left">
+                    <div className={`text-[14px] font-black tracking-tight ${isMecha ? 'text-slate-200 group-hover:text-white' : 'text-slate-800 group-hover:text-slate-900'}`}>{tx.merchant}</div>
+                    <div className="text-[11px] font-bold text-slate-400 group-hover:text-slate-500 transition-colors">{tx.category} • {tx.time}</div>
                   </div>
-                  <div className={`font-black text-[14px] shrink-0 tracking-tight font-mono ${isMecha ? 'text-red-400' : 'text-slate-800'}`}>
-                    -{tx.amount}
+                  <div className={`text-[15px] font-black font-mono tracking-tighter ${isMecha ? 'text-red-400' : 'text-slate-800'}`}>
+                    -Rp {tx.amount.toLocaleString('id-ID')}
                   </div>
                 </div>
               ))}
@@ -415,8 +442,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
 
                 {/* Log Out */}
                 <button onClick={() => onNavigate("login")} className={`mt-2 mb-4 w-full relative overflow-hidden flex items-center justify-center gap-2 p-4 rounded-[20px] font-black uppercase tracking-widest transition-all hover:scale-[1.02] active:scale-95 border-2 ${isMecha ? 'bg-slate-900 border-red-500 text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.4)]' : 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100'}`}>
-                  <LogOut size={18} strokeWidth={3} /> LOG OUT / QUIT GAME
+                  <LogOut size={18} strokeWidth={3} /> LOG OUT
                 </button>
+                <div className="h-[200px] shrink-0 w-full"></div>
               </div>
             </motion.div>
           </>

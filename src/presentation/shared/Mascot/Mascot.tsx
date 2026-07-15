@@ -99,12 +99,12 @@ export const Mascot: React.FC<MascotProps> = ({ mood, message = "", showDialogue
   const mascotName = theme === "mecha" ? "G-UNIT 01 🤖" : "Navi ✨";
 
   return (
-    <div className={`absolute ${customBottom || 'bottom-[104px]'} left-1/2 -translate-x-1/2 w-[92%] max-w-[360px] z-50 pointer-events-none flex flex-col items-end`}>
+    <div className={`absolute ${customBottom || 'bottom-[104px]'} left-1/2 -translate-x-1/2 w-[92%] max-w-[360px] z-[100] pointer-events-none flex flex-col items-end`}>
       <motion.div 
         initial={getInitialAnimation()}
         animate={{ x: 0, y: 0, scale: 1, opacity: 1 }}
         transition={{ type: "spring", stiffness: 250, damping: 25 }}
-        className="pointer-events-auto flex flex-col items-end w-full"
+        className="flex flex-col items-end w-full pointer-events-none"
       >
         {/* Mascot Image */}
         <AnimatePresence mode="wait">

@@ -47,6 +47,8 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
     { id: 'holographic', type: 'banner', name: 'Holographic Banner', cost: 800, icon: Sparkles },
     { id: 'dark', type: 'banner', name: 'Dark Mode Banner', cost: 300, icon: ShieldCheck },
     { id: 'custom_banner1', type: 'banner', name: 'Custom Banner 1', cost: 1000, icon: Zap },
+    { id: 'moonlit-sky-6', type: 'banner', name: 'Moonlit Sky', cost: 1500, icon: Sparkles },
+    { id: 'sakura-bridge', type: 'banner', name: 'Sakura Bridge', cost: 1500, icon: Sparkles },
 
     { id: 'custom1', type: 'avatar', name: 'Custom Avatar 1', cost: 600, icon: Trophy },
     { id: 'custom2', type: 'avatar', name: 'Custom Avatar 2', cost: 600, icon: Flame },
@@ -119,15 +121,19 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
   };
 
   return (
-    <div className={`relative w-full h-full overflow-hidden flex flex-col ${isMecha ? 'bg-slate-900 text-white' : 'bg-[#fdfbfb] text-slate-800'}`}>
+    <div className={`relative w-full h-full overflow-hidden flex flex-col transition-colors duration-500 ${isMecha ? 'bg-slate-900 text-slate-200' : 'bg-[#fdfbfb] text-slate-800'}`}>
+      <div 
+        className={`absolute inset-0 z-0 bg-cover bg-top transition-all duration-1000 ${isMecha ? 'mix-blend-luminosity opacity-20' : 'opacity-40'}`}
+        style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1509803874385-db7c23652552?q=80&w=1000&auto=format&fit=crop")' }}
+      />
       
       {/* Header */}
-      <div className={`pt-12 pb-4 px-6 flex items-center justify-between z-20 sticky top-0 backdrop-blur-md ${isMecha ? 'bg-slate-900/80 border-b border-slate-700' : 'bg-[#fdfbfb]/80 border-b border-slate-100'}`}>
+      <div className={`pt-12 pb-4 px-6 flex items-center justify-between z-20 sticky top-0 shadow-sm transition-all duration-500 backdrop-blur-xl border-b ${isMecha ? 'bg-slate-900/80 border-slate-700/50' : 'bg-white/80 border-pink-100/50'}`}>
         <div className="flex items-center gap-4">
-          <button onClick={onBack} className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isMecha ? 'bg-slate-800 text-slate-300 hover:text-white' : 'bg-slate-100 text-slate-500 hover:text-slate-800'}`}>
-            <ChevronLeft size={24} strokeWidth={2.5} />
+          <button onClick={onBack} className={`w-10 h-10 rounded-full flex items-center justify-center shadow-sm backdrop-blur-md border transition-all hover:scale-105 active:scale-95 ${isMecha ? 'bg-slate-800/80 border-slate-700/50 text-slate-300 hover:bg-slate-700' : 'bg-white/80 border-white/60 text-slate-600 hover:bg-white hover:text-pink-500'}`}>
+            <ChevronLeft size={24} strokeWidth={3} />
           </button>
-          <h1 className="text-xl font-black tracking-tight">{isMecha ? 'REWARDS TERMINAL' : 'Rewards Hub 🎁'}</h1>
+          <h1 className={`text-xl font-black tracking-tight ${isMecha ? 'text-white' : 'text-slate-800'}`}>{isMecha ? 'REWARDS TERMINAL' : 'Rewards Hub 🎁'}</h1>
         </div>
         <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full font-bold text-sm font-mono ${isMecha ? 'bg-blue-500/20 text-blue-400' : 'bg-yellow-100 text-yellow-600'}`}>
           <Coins size={16} /> {points}
@@ -136,11 +142,11 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
 
       <div className="flex-1 overflow-y-auto no-scrollbar pb-[180px]">
         {/* Main Tabs */}
-        <div className="flex gap-4 px-6 mt-4 mb-2">
-          <button onClick={() => setActiveTab("quests")} className={`flex-1 py-3 font-black text-sm rounded-[20px] transition-all ${activeTab === "quests" ? (isMecha ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)]' : 'bg-pink-500 text-white shadow-lg shadow-pink-200') : (isMecha ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-400 hover:bg-slate-200')}`}>
+        <div className="flex gap-4 px-6 mt-4 mb-2 relative z-10">
+          <button onClick={() => setActiveTab("quests")} className={`flex-1 py-3 font-black text-sm rounded-[20px] transition-all duration-300 backdrop-blur-md ${activeTab === "quests" ? (isMecha ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)] border border-blue-500' : 'bg-pink-500 text-white shadow-[0_0_15px_rgba(236,72,153,0.3)] border border-pink-400') : (isMecha ? 'bg-slate-800/50 border border-slate-700/50 text-slate-400 hover:bg-slate-800/80' : 'bg-white/60 border border-white/60 text-slate-500 hover:bg-white/90 hover:text-pink-500')}`}>
             🎯 Quests
           </button>
-          <button onClick={() => setActiveTab("store")} className={`flex-1 py-3 font-black text-sm rounded-[20px] transition-all ${activeTab === "store" ? (isMecha ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)]' : 'bg-purple-500 text-white shadow-lg shadow-purple-200') : (isMecha ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-400 hover:bg-slate-200')}`}>
+          <button onClick={() => setActiveTab("store")} className={`flex-1 py-3 font-black text-sm rounded-[20px] transition-all duration-300 backdrop-blur-md ${activeTab === "store" ? (isMecha ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)] border border-blue-500' : 'bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.3)] border border-purple-400') : (isMecha ? 'bg-slate-800/50 border border-slate-700/50 text-slate-400 hover:bg-slate-800/80' : 'bg-white/60 border border-white/60 text-slate-500 hover:bg-white/90 hover:text-purple-500')}`}>
             🛍️ Store
           </button>
         </div>
@@ -182,7 +188,7 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
               {/* Quest List */}
               <div className="flex flex-col gap-3">
                 {quests.filter(q => q.type === questFilter).map(quest => (
-                  <motion.div key={quest.id} variants={itemVariants} className={`p-4 rounded-[20px] border flex items-center justify-between ${isMecha ? 'bg-slate-800/80 border-slate-700' : 'bg-white border-slate-100 shadow-sm'}`}>
+                  <motion.div key={quest.id} variants={itemVariants} className={`p-4 rounded-[20px] border flex items-center justify-between backdrop-blur-md transition-all duration-300 hover:scale-[1.02] shadow-sm ${isMecha ? 'bg-slate-800/50 border-slate-700/50 hover:bg-slate-800/80 hover:shadow-blue-500/10' : 'bg-white/60 border-white/60 hover:bg-white/90 hover:shadow-pink-500/10'}`}>
                     <div className="flex-1 pr-4">
                       <div className="flex items-center gap-2 mb-1">
                         <h4 className={`font-black text-sm ${isMecha ? 'text-white' : 'text-slate-800'}`}>{quest.title}</h4>
@@ -235,7 +241,7 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
                         <motion.div 
                           variants={itemVariants}
                           key={item.id} 
-                          className={`p-4 rounded-[24px] border flex flex-col justify-between h-[140px] relative overflow-hidden ${isMecha ? 'bg-slate-800/80 border-slate-700' : 'bg-white border-slate-100 shadow-sm'}`}
+                          className={`p-4 rounded-[24px] border flex flex-col justify-between h-[140px] relative overflow-hidden backdrop-blur-md transition-all duration-300 hover:scale-[1.02] shadow-sm ${isMecha ? 'bg-slate-800/50 border-slate-700/50 hover:bg-slate-800/80 hover:shadow-blue-500/10' : 'bg-white/60 border-white/60 hover:bg-white/90 hover:shadow-purple-500/10'}`}
                         >
                           <div className={`w-10 h-10 rounded-[14px] flex items-center justify-center mb-2 ${isMecha ? 'bg-blue-500/20 text-blue-400' : 'bg-purple-100 text-purple-500'}`}>
                             <IconComponent size={20} />

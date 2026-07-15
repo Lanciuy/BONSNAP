@@ -14,6 +14,7 @@ interface LoginViewProps {
 export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
   const [mood, setMood] = useState<MascotMood>("happy");
   const [mode, setMode] = useState<"login" | "register">("login");
+  const [gender, setGender] = useState("");
   
   const initialMsg = theme === "mecha" 
     ? "SYSTEM ONLINE. AWAITING PILOT AUTHENTICATION." 
@@ -31,7 +32,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
         className="absolute inset-0 z-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${bgImage})` }}
       />
-      <div className="absolute inset-0 z-0 bg-white/20 backdrop-blur-[2px]" />
+      <div className={`absolute inset-0 z-0 backdrop-blur-[4px] ${isMecha ? 'bg-slate-900/70' : 'bg-white/60'}`} />
 
       <AnimatePresence mode="wait">
         {mode === "login" ? (
@@ -49,17 +50,17 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
               transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="flex flex-col items-center mb-10 -mt-24"
             >
-              <div className={`w-28 h-28 backdrop-blur-xl border-4 border-white rounded-[32px] flex items-center justify-center mb-6 shadow-xl overflow-hidden ${isMecha ? 'bg-blue-50 shadow-blue-200/50' : 'bg-pink-50 shadow-pink-200/50'}`}>
+              <div className={`w-28 h-28 backdrop-blur-xl border-[3px] rounded-[32px] flex items-center justify-center mb-5 shadow-xl overflow-hidden ${isMecha ? 'bg-slate-800 border-blue-500/50 shadow-blue-500/20' : 'bg-white/80 border-white shadow-slate-200/50'}`}>
                 {isMecha ? (
                   <ShieldAlert size={44} className="text-blue-500" strokeWidth={2.5} />
                 ) : (
                   <img src={avatarUrl} alt="Logo" className={`w-full h-full object-contain ${theme === 'original' ? 'scale-[1.3] pt-4' : 'scale-110'}`} />
                 )}
               </div>
-              <h1 className="text-[32px] font-black tracking-tight text-white mb-2 drop-shadow-md">
+              <h1 className={`text-[36px] font-black tracking-tight mb-1 ${isMecha ? 'text-white drop-shadow-[0_0_8px_rgba(59,130,246,0.8)]' : 'text-slate-800 drop-shadow-sm'}`}>
                 BONSNAP
               </h1>
-              <p className="text-sm font-bold text-indigo-100 mb-8 max-w-[260px] mx-auto opacity-90">
+              <p className={`text-[13px] font-bold mb-8 max-w-[260px] mx-auto ${isMecha ? 'text-blue-200/80' : 'text-slate-600'}`}>
                 {isMecha ? 'Tactical Asset Management' : 'Level up your financial stats!'}
               </p>
             </motion.div>
@@ -70,8 +71,8 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
               transition={{ delay: 0.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="w-full flex flex-col gap-4"
             >
-              <div className={`bg-white/80 backdrop-blur-xl rounded-[24px] p-4 border-2 border-white transition-all shadow-lg focus-within:${isMecha ? 'border-blue-500' : 'border-indigo-400'}`}>
-                <label className={`text-[11px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-500' : 'text-indigo-500'}`}>
+              <div className={`bg-white/90 backdrop-blur-xl rounded-[24px] p-4 border-2 transition-all shadow-sm focus-within:${isMecha ? 'border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'border-indigo-400 shadow-indigo-500/20'} ${isMecha ? 'border-slate-700/50 text-slate-800' : 'border-slate-200'}`}>
+                <label className={`text-[11px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-600' : 'text-indigo-500'}`}>
                   {isMecha ? 'Pilot ID' : 'Username'}
                 </label>
                 <input 
@@ -89,8 +90,8 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
                 />
               </div>
               
-              <div className={`bg-white/80 backdrop-blur-xl rounded-[24px] p-4 border-2 border-white transition-all shadow-lg focus-within:${isMecha ? 'border-blue-500' : 'border-indigo-400'}`}>
-                <label className={`text-[11px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-500' : 'text-indigo-500'}`}>
+              <div className={`bg-white/90 backdrop-blur-xl rounded-[24px] p-4 border-2 transition-all shadow-sm focus-within:${isMecha ? 'border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'border-indigo-400 shadow-indigo-500/20'} ${isMecha ? 'border-slate-700/50 text-slate-800' : 'border-slate-200'}`}>
+                <label className={`text-[11px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-600' : 'text-indigo-500'}`}>
                   {isMecha ? 'Access Code' : 'Password'}
                 </label>
                 <input 
@@ -117,7 +118,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
             >
               <button 
                 onClick={onLogin}
-                className={`w-full text-white font-black rounded-full py-4 flex items-center justify-center gap-2 transition-transform active:scale-95 shadow-xl ${isMecha ? 'bg-blue-600 hover:bg-blue-500 shadow-blue-500/30' : 'bg-gradient-to-r from-indigo-500 to-pink-500 hover:from-indigo-400 hover:to-pink-400 shadow-pink-500/30'}`}
+                className={`w-full text-white font-black rounded-full py-4 flex items-center justify-center gap-2 transition-transform active:scale-95 shadow-lg ${isMecha ? 'bg-blue-600 hover:bg-blue-500 shadow-blue-500/30' : 'bg-gradient-to-r from-indigo-500 to-pink-500 hover:from-indigo-400 hover:to-pink-400 shadow-pink-500/30'}`}
               >
                 {isMecha ? 'INITIALIZE 🚀' : 'Login'}
                 <ChevronRight size={20} strokeWidth={3} className="group-hover:translate-x-1.5 transition-transform duration-300" />
@@ -129,7 +130,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
                   setMood("surprised");
                   setMsg(isMecha ? "NEW PILOT REGISTRATION PROTOCOL INITIATED." : "New user? Let's get you set up! 🎉");
                 }}
-                className={`w-full bg-white/50 hover:bg-white/80 font-black rounded-[24px] py-4 flex items-center justify-center gap-2 transition-all active:scale-[0.96] border-2 border-white backdrop-blur-md ${isMecha ? 'text-blue-600' : 'text-indigo-500'}`}
+                className={`w-full font-black rounded-full py-4 flex items-center justify-center gap-2 transition-all active:scale-[0.96] border-2 backdrop-blur-md ${isMecha ? 'bg-slate-800/80 hover:bg-slate-700 border-slate-700 text-blue-400' : 'bg-white/90 hover:bg-white border-slate-200 text-slate-700 shadow-sm'}`}
               >
                 <UserPlus size={18} strokeWidth={2.5} /> 
                 {isMecha ? 'REGISTER NEW PILOT' : 'Create Account'}
@@ -143,7 +144,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -50 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="flex flex-col h-full w-full relative z-10 pt-16 pb-32 overflow-y-auto no-scrollbar"
+            className="flex flex-col h-full w-full relative z-10 pt-16 overflow-y-auto no-scrollbar"
           >
             <button 
               onClick={() => {
@@ -163,32 +164,86 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
             <div className="flex flex-col gap-3">
               <div className={`bg-white/80 backdrop-blur-xl rounded-[20px] p-3 border-2 border-white transition-all shadow-sm focus-within:${isMecha ? 'border-blue-500' : 'border-pink-400'}`}>
                 <label className={`text-[10px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-500' : 'text-pink-500'}`}>Full Name</label>
-                <input type="text" placeholder="John Doe" className="w-full bg-transparent text-slate-800 outline-none font-bold placeholder:text-slate-400/60" />
+                <input 
+                  type="text" 
+                  placeholder="John Doe" 
+                  onFocus={() => {
+                    setMood("thinking");
+                    if (gender === 'm') setMsg(isMecha ? "INPUT NAME." : "Siapa nih nama asli lo, bro?");
+                    else if (gender === 'f') setMsg(isMecha ? "INPUT NAME." : "Spill nama asli kamu dong, bestie! ✨");
+                    else setMsg(isMecha ? "INPUT NAME." : "Ketik nama lengkap kamu ya! 📝");
+                  }}
+                  className="w-full bg-transparent text-slate-800 outline-none font-bold placeholder:text-slate-400/60" 
+                />
               </div>
               
               <div className={`bg-white/80 backdrop-blur-xl rounded-[20px] p-3 border-2 border-white transition-all shadow-sm focus-within:${isMecha ? 'border-blue-500' : 'border-pink-400'}`}>
                 <label className={`text-[10px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-500' : 'text-pink-500'}`}>Username</label>
-                <input type="text" placeholder="@newbestie" className="w-full bg-transparent text-slate-800 outline-none font-bold placeholder:text-slate-400/60" />
+                <input 
+                  type="text" 
+                  placeholder="@newbestie" 
+                  onFocus={() => {
+                    setMood("wink");
+                    if (gender === 'm') setMsg(isMecha ? "INPUT CALLSIGN." : "Bikin username yang kece dong, boy! 😎");
+                    else if (gender === 'f') setMsg(isMecha ? "INPUT CALLSIGN." : "Bikin username yang aesthetic dong, girly! 🌸");
+                    else setMsg(isMecha ? "INPUT CALLSIGN." : "Pilih username keren buat akunmu! 🎯");
+                  }}
+                  className="w-full bg-transparent text-slate-800 outline-none font-bold placeholder:text-slate-400/60" 
+                />
               </div>
               
               <div className={`bg-white/80 backdrop-blur-xl rounded-[20px] p-3 border-2 border-white transition-all shadow-sm focus-within:${isMecha ? 'border-blue-500' : 'border-pink-400'}`}>
                 <label className={`text-[10px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-500' : 'text-pink-500'}`}>Password</label>
-                <input type="password" placeholder="••••••••" className="w-full bg-transparent text-slate-800 outline-none font-bold placeholder:text-slate-400/60" />
+                <input 
+                  type="password" 
+                  placeholder="••••••••" 
+                  onFocus={() => {
+                    setMood("shy");
+                    if (gender === 'm') setMsg(isMecha ? "INPUT ENCRYPTION KEY." : "Password-nya rahasia ya bro, jangan sampe bocor! 🤫");
+                    else if (gender === 'f') setMsg(isMecha ? "INPUT ENCRYPTION KEY." : "Password-nya disimpen baik-baik ya bestie, top secret! 🤫");
+                    else setMsg(isMecha ? "INPUT ENCRYPTION KEY." : "Password-nya yang kuat ya! 🔒");
+                  }}
+                  className="w-full bg-transparent text-slate-800 outline-none font-bold placeholder:text-slate-400/60" 
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div className={`bg-white/80 backdrop-blur-xl rounded-[20px] p-3 border-2 border-white transition-all shadow-sm`}>
                   <label className={`text-[10px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-500' : 'text-pink-500'}`}>Gender</label>
-                  <select className="w-full bg-transparent text-slate-800 outline-none font-bold">
+                  <select 
+                    value={gender}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setGender(val);
+                      if (val === 'm') {
+                        setMood("cool");
+                        setMsg(isMecha ? "MALE PILOT IDENTIFIED." : "Wih, siap join squad nih bro? Gass lah! 🔥");
+                      } else if (val === 'f') {
+                        setMood("cute");
+                        setMsg(isMecha ? "FEMALE PILOT IDENTIFIED." : "Slayy bestie! Bakal seru banget nih kita budgeting bareng! 💅✨");
+                      } else {
+                        setMood("happy");
+                        setMsg(isMecha ? "AWAITING PILOT DATA." : "Yuk lengkapi profil kamu! 🌟");
+                      }
+                    }}
+                    className="w-full bg-transparent text-slate-800 outline-none font-bold"
+                  >
                     <option value="">Pilih...</option>
                     <option value="m">Cowok 👦</option>
                     <option value="f">Cewek 👧</option>
-                    <option value="o">Lainnya ✨</option>
                   </select>
                 </div>
                 <div className={`bg-white/80 backdrop-blur-xl rounded-[20px] p-3 border-2 border-white transition-all shadow-sm`}>
                   <label className={`text-[10px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-500' : 'text-pink-500'}`}>Status</label>
-                  <select className="w-full bg-transparent text-slate-800 outline-none font-bold">
+                  <select 
+                    onFocus={() => {
+                      setMood("happy");
+                      if (gender === 'm') setMsg(isMecha ? "SELECT PILOT CLASS." : "Kesibukan lo sekarang apa nih, man? 💼");
+                      else if (gender === 'f') setMsg(isMecha ? "SELECT PILOT CLASS." : "Kesibukan kamu sekarang apa nih, bestie? 💼");
+                      else setMsg(isMecha ? "SELECT PILOT CLASS." : "Pilih status kamu saat ini ya! 🎓");
+                    }}
+                    className="w-full bg-transparent text-slate-800 outline-none font-bold"
+                  >
                     <option value="">Pilih...</option>
                     <option value="student">Pelajar 📚</option>
                     <option value="worker">Bekerja 💼</option>
@@ -199,16 +254,38 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, theme }) => {
 
               <div className={`bg-white/80 backdrop-blur-xl rounded-[20px] p-3 border-2 border-white transition-all shadow-sm focus-within:${isMecha ? 'border-blue-500' : 'border-pink-400'}`}>
                 <label className={`text-[10px] uppercase tracking-wider font-black mb-1 block ${isMecha ? 'text-blue-500' : 'text-pink-500'}`}>Bio (Opsional)</label>
-                <textarea rows={2} placeholder="Suka jajan boba tiap hari..." className="w-full bg-transparent text-slate-800 outline-none font-bold placeholder:text-slate-400/60 resize-none"></textarea>
+                <textarea 
+                  rows={2} 
+                  placeholder="Suka jajan boba tiap hari..." 
+                  onFocus={() => {
+                    setMood("excited");
+                    if (gender === 'm') setMsg(isMecha ? "INPUT PILOT BIO." : "Tulis bio singkat lo bro, biar makin asik! 🎸");
+                    else if (gender === 'f') setMsg(isMecha ? "INPUT PILOT BIO." : "Tulis bio yang lucu-lucu dong, girly! 🎀");
+                    else setMsg(isMecha ? "INPUT PILOT BIO." : "Ceritain dikit tentang kamu dong! ✍️");
+                  }}
+                  className="w-full bg-transparent text-slate-800 outline-none font-bold placeholder:text-slate-400/60 resize-none"
+                ></textarea>
               </div>
 
               <button 
                 onClick={onLogin}
-                onMouseEnter={() => { setMood("love"); setMsg(isMecha ? "READY TO COMMIT DATA." : "Udah keisi semua? Yuk gass! 🚀"); }}
+                onMouseEnter={() => { 
+                  setMood("love"); 
+                  if (gender === 'm') {
+                    setMsg(isMecha ? "READY TO COMMIT DATA." : "Udah mantap semua kan, bro? Langsung gas daftar aja, man! 🚀");
+                  } else if (gender === 'f') {
+                    setMsg(isMecha ? "READY TO COMMIT DATA." : "Udah yakin, girly? Yuk langsung pencet daftar aja, gemes banget! 💖");
+                  } else {
+                    setMsg(isMecha ? "READY TO COMMIT DATA." : "Udah keisi semua? Yuk gass! 🚀");
+                  }
+                }}
                 className={`mt-4 w-full text-white font-black rounded-[24px] py-4 flex items-center justify-center gap-2 transition-all active:scale-[0.96] text-lg group border-2 border-white ${isMecha ? 'bg-gradient-to-r from-blue-500 to-red-500 hover:from-blue-600 hover:to-red-600 shadow-[0_10px_30px_rgba(59,130,246,0.4)]' : 'bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 shadow-[0_10px_30px_rgba(244,114,182,0.4)]'}`}
               >
                 {isMecha ? 'SUBMIT CONFIGURATION' : 'Daftar Sekarang! 🎉'}
               </button>
+              
+              {/* Spacer so the button can be scrolled past the Mascot */}
+              <div className="h-[220px] w-full shrink-0"></div>
             </div>
           </motion.div>
         )}
