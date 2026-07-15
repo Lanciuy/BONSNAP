@@ -116,7 +116,7 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
 
   const renderStars = (diff: number) => {
     return Array(5).fill(0).map((_, i) => (
-      <span key={i} className={`text-[10px] ${i < diff ? 'text-yellow-400' : 'text-slate-200'}`}>★</span>
+      <span key={i} className={`text-[10px] ${i < diff ? 'text-yellow-400' : (isMecha ? 'text-slate-600' : 'text-slate-300')}`}>★</span>
     ));
   };
 
@@ -140,7 +140,7 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto no-scrollbar pb-[180px]">
+      <div className="flex-1 overflow-y-auto no-scrollbar pb-32 relative z-10">
         {/* Main Tabs */}
         <div className="flex gap-4 px-6 mt-4 mb-2 relative z-10">
           <button onClick={() => setActiveTab("quests")} className={`flex-1 py-3 font-black text-sm rounded-[20px] transition-all duration-300 backdrop-blur-md ${activeTab === "quests" ? (isMecha ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)] border border-blue-500' : 'bg-pink-500 text-white shadow-[0_0_15px_rgba(236,72,153,0.3)] border border-pink-400') : (isMecha ? 'bg-slate-800/50 border border-slate-700/50 text-slate-400 hover:bg-slate-800/80' : 'bg-white/60 border border-white/60 text-slate-500 hover:bg-white/90 hover:text-pink-500')}`}>
@@ -156,10 +156,10 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
             <motion.div key="quests" variants={containerVariants} initial="hidden" animate="show" exit="hidden" className="px-6 flex flex-col gap-4">
               
               {/* Daily Login Card */}
-              <motion.div variants={itemVariants} className={`mt-2 rounded-[24px] p-5 relative overflow-hidden ${isMecha ? 'bg-gradient-to-r from-slate-800 to-slate-700 border border-slate-600' : 'bg-gradient-to-r from-yellow-300 to-orange-400 text-white shadow-lg shadow-orange-200'}`}>
+              <motion.div variants={itemVariants} className={`mt-2 rounded-[24px] p-5 relative overflow-hidden ${isMecha ? 'bg-gradient-to-r from-slate-800 to-slate-700 border border-slate-600' : 'bg-gradient-to-r from-orange-400 to-rose-400 text-white shadow-lg shadow-orange-200'}`}>
                 <div className="absolute top-0 right-0 p-4 opacity-20"><CalendarCheck size={64} /></div>
                 <h3 className="font-black text-lg mb-1 relative z-10">Daily Login!</h3>
-                <p className={`text-xs font-bold mb-4 relative z-10 ${isMecha ? 'text-slate-300' : 'text-orange-50'}`}>Claim your free points every day.</p>
+                <p className={`text-xs font-bold mb-4 relative z-10 ${isMecha ? 'text-slate-300' : 'text-white'}`}>Claim your free points every day.</p>
                 <button 
                   onClick={handleDailyLogin}
                   disabled={dailyClaimed}
@@ -213,7 +213,7 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
                           Claim
                         </button>
                       ) : (
-                        <div className={`px-4 py-2 rounded-full font-bold text-xs border ${isMecha ? 'border-slate-600 text-slate-500 bg-slate-800' : 'border-slate-200 text-slate-400 bg-slate-50'}`}>
+                        <div className={`px-4 py-2 rounded-full font-bold text-xs border ${isMecha ? 'border-slate-600 text-slate-400 bg-slate-800' : 'border-slate-300 text-slate-500 bg-slate-50'}`}>
                           0 / 1
                         </div>
                       )}
@@ -276,7 +276,7 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
 
       </div>
 
-      <Mascot mood={mood} message={msg} theme={theme} placement="right" />
+      <Mascot mood={mood} message={msg} theme={theme} placement="right" customBottom="bottom-6" />
     </div>
   );
 };
