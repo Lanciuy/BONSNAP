@@ -74,31 +74,42 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
   ];
 
   const handleClaimQuest = (id: number, reward: number) => {
-    setPoints(prev => prev + reward);
+    const currentPoints = typeof points === 'number' && !isNaN(points) ? points : 0;
+    setPoints(currentPoints + reward);
     setQuests(quests.map(q => q.id === id ? { ...q, claimed: true } : q));
     handleHover(`Literally dapet ${reward} Poin cuy! Nabung terus ya bestie! ✨`, "excited");
   };
 
   const handleDailyLogin = () => {
     if (!dailyClaimed) {
-      setPoints(prev => prev + 100);
+      const currentPoints = typeof points === 'number' && !isNaN(points) ? points : 0;
+      setPoints(currentPoints + 100);
       setDailyClaimed(true);
       handleHover("Thanks udah login hari ini bestie! +100 Poin vibes buat lo 💖", "love");
     }
   };
 
   const handleBuy = (item: typeof STORE_ITEMS[0]) => {
-    if (points >= item.cost) {
-      setPoints(prev => prev - item.cost);
-      setInventory(prev => {
-        const newInv = { ...prev };
-        if (item.type === 'banner' && !newInv.banners.includes(item.id)) newInv.banners.push(item.id);
-        if (item.type === 'frame' && !newInv.frames.includes(item.id)) newInv.frames.push(item.id);
-        if (item.type === 'theme' && !newInv.themes.includes(item.id)) newInv.themes.push(item.id);
-        if (item.type === 'avatar' && !newInv.avatars.includes(item.id)) newInv.avatars.push(item.id);
-        if (item.type === 'walletSkin' && !newInv.walletSkins.includes(item.id)) newInv.walletSkins.push(item.id);
-        return newInv;
-      });
+    const currentPoints = typeof points === 'number' && !isNaN(points) ? points : 0;
+    if (currentPoints >= item.cost) {
+      setPoints(currentPoints - item.cost);
+      
+      const newInv = { 
+        ...inventory, 
+        avatars: [...inventory.avatars],
+        banners: [...inventory.banners],
+        frames: [...inventory.frames],
+        themes: [...inventory.themes],
+        walletSkins: [...inventory.walletSkins]
+      };
+      
+      if (item.type === 'banner' && !newInv.banners.includes(item.id)) newInv.banners.push(item.id);
+      if (item.type === 'frame' && !newInv.frames.includes(item.id)) newInv.frames.push(item.id);
+      if (item.type === 'theme' && !newInv.themes.includes(item.id)) newInv.themes.push(item.id);
+      if (item.type === 'avatar' && !newInv.avatars.includes(item.id)) newInv.avatars.push(item.id);
+      if (item.type === 'walletSkin' && !newInv.walletSkins.includes(item.id)) newInv.walletSkins.push(item.id);
+      
+      setInventory(newInv);
       handleHover(`Slay! ${item.name} berhasil dibought! Langsung check profile lo ya 💅`, "excited");
     } else {
       handleHover("Jujurly poin lo belum cukup bestie. Selesain quest dulu yuk! 🥲", "alert");
@@ -136,7 +147,7 @@ export const RewardsStoreView: React.FC<RewardsStoreViewProps> = ({ onBack, them
           <h1 className={`text-xl font-black tracking-tight ${isMecha ? 'text-white' : 'text-slate-800'}`}>{isMecha ? 'REWARDS TERMINAL' : 'Rewards Hub 🎁'}</h1>
         </div>
         <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full font-bold text-sm font-mono ${isMecha ? 'bg-blue-500/20 text-blue-400' : 'bg-yellow-100 text-yellow-600'}`}>
-          <Coins size={16} /> {points}
+          <Coins size={16} /> {typeof points === 'number' && !isNaN(points) ? points : 0}
         </div>
       </div>
 
