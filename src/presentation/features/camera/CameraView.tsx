@@ -5,6 +5,7 @@ import { ResultSheet } from "./ResultSheet";
 import { Mascot, MascotMood } from "../../shared/Mascot/Mascot";
 import { ThemeState } from '../../../core/entities';
 import { analyzeReceipt, ScannedReceiptData } from '../../../infrastructure/services/geminiService';
+import { categorizeTransaction } from '../../../infrastructure/services/openRouterService';
 
 interface CameraViewProps {
   onGoToDashboard: () => void;
@@ -55,6 +56,14 @@ export const CameraView: React.FC<CameraViewProps> = ({ onGoToDashboard, theme, 
           setLoadingIcon(isMecha ? <Crosshair size={48} className="text-blue-500" /> : <Heart size={48} className="text-pink-500" />);
           
           const data = await analyzeReceipt(base64String, file.type);
+          
+          setLoadingText(isMecha ? "CATEGORIZING DATA ENGRAMS..." : "Bentar, AI lagi nebak kategorinya...");
+          setLoadingIcon(isMecha ? <Cpu size={48} className="text-blue-500" /> : <Sparkles size={48} className="text-pink-500" />);
+          
+          // Use OpenRouter Llama 3 for fast categorization
+          const category = await categorizeTransaction(data.merchant);
+          data.category = category;
+
           setParsedData(data);
           
           setSheetState("result");

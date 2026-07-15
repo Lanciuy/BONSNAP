@@ -5,6 +5,7 @@ import { Mascot, MascotMood, getGeneratedMascotUrl } from "../../shared/Mascot/M
 import { ThemeState, Inventory, UserProfile } from '../../../core/entities';
 import { AVATAR_OPTIONS, WALLET_SKIN_OPTIONS } from "../profile/ProfileView";
 import { useAppStore } from "../../../core/store/useAppStore";
+import { generateMascotResponse, MascotResponse } from "../../../infrastructure/services/groqService";
 
 interface DashboardViewProps {
   onGoToCamera: () => void;
@@ -49,6 +50,36 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onGoToCamera, onGo
     : `Wih, sisa budget lo masih Rp ${remainingBudget.toLocaleString('id-ID')}! Valid no debat, yuk jajan cantik! 🍰`;
     
   const [msg, setMsg] = useState(defaultMsg);
+
+  React.useEffect(() => {
+    let isMounted = true;
+    const fetchDynamicGreeting = async () => {
+      if (transactions.length === 0) return; // Use default if no transactions
+      
+      try {
+        const lastTx = transactions[0];
+        const context = `User recently spent Rp ${lastTx.amount} at ${lastTx.name}. They have Rp ${remainingBudget} left. Give a quick reaction!`;
+        
+        const response: MascotResponse = await generateMascotResponse(context, userProfile.financialPersona, isMecha);
+        if (isMounted) {
+          setMsg(response.message);
+          setMood(response.mood as MascotMood);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    
+    // Slight delay to avoid jitter on mount
+    const timeout = setTimeout(() => {
+      fetchDynamicGreeting();
+    }, 1000);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timeout);
+    };
+  }, [transactions, remainingBudget, userProfile.financialPersona, isMecha]);
 
   const quickActions = [
     { id: "income", label: "Income", icon: ArrowDownRight, color: "text-emerald-500", bg: "bg-emerald-100", hoverMsg: "Ada uang masuk? Upload SS-an notif transfer atau invoice-nya ke sini!", hoverMood: "excited" },
